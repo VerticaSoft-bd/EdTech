@@ -688,7 +688,7 @@ export default function Dashboard() {
           </div>
 
           {/* Learning Content Chart */}
-          <div className="bg-white p-6 rounded-[32px] shadow-sm">
+          <div className="bg-white p-6 rounded-[32px] shadow-sm ">
             <div className="flex items-center justify-between mb-8">
               <h3 className="font-bold text-[#1A1D1F] flex items-center gap-2">
                 Learning content
@@ -698,17 +698,18 @@ export default function Dashboard() {
 
             <div className="relative w-[200px] h-[100px] mx-auto mb-8">
               {/* Half Donut Implementation with CSS/SVG */}
-              <svg viewBox="0 0 200 110" className="overflow-visible transform -rotate-180">
-                {/* Background Arc */}
-                {/* Passed: Purple */}
-                <path d="M 20 100 A 80 80 0 0 1 60 30" fill="none" stroke="#6C5DD3" strokeWidth="20" strokeLinecap="round" />
-                {/* Completed: Teal */}
-                <path d="M 68 25 A 80 80 0 0 1 132 25" fill="none" stroke="#4BD37B" strokeWidth="20" strokeLinecap="round" />
-                {/* Warning: Red */}
-                <path d="M 140 30 A 80 80 0 0 1 180 100" fill="none" stroke="#FF4C4C" strokeWidth="20" strokeLinecap="round" />
-                {/* Orange Segment overlay */}
-                <path d="M 175 80 A 80 80 0 0 1 180 100" fill="none" stroke="#FFAB7B" strokeWidth="20" strokeLinecap="round" />
+              <svg viewBox="0 0 200 110" className="overflow-visible">
+                {/* Purple Segment (Left) */}
+                <path d="M 20 100 A 80 80 0 0 1 32.3 57.3" fill="none" stroke="#6C5DD3" strokeWidth="20" strokeLinecap="round" />
 
+                {/* Teal Segment (Top-Left) */}
+                <path d="M 47.8 39.4 A 80 80 0 0 1 88.2 20.9" fill="none" stroke="#4BD37B" strokeWidth="20" strokeLinecap="round" />
+
+                {/* Red Segment (Top-Right) */}
+                <path d="M 111.8 20.9 A 80 80 0 0 1 152.2 39.4" fill="none" stroke="#FF4C4C" strokeWidth="20" strokeLinecap="round" />
+
+                {/* Yellow Segment (Right) */}
+                <path d="M 167.7 57.3 A 80 80 0 0 1 180 100" fill="none" stroke="#FFAB7B" strokeWidth="20" strokeLinecap="round" />
               </svg>
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-center">
                 <span className="text-4xl font-bold text-[#1A1D1F] block">120</span>
@@ -716,26 +717,37 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-y-4 gap-x-2">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#6C5DD3]"></span>
-                <span className="text-[11px] font-medium text-gray-600">Passed</span>
-                <span className="text-[11px] font-bold text-[#1A1D1F] ml-auto">74%</span>
+            <div className="grid grid-cols-2 gap-3.5">
+              <div className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 bg-white shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#6C5DD3]"></span>
+                  <span className="text-[11px] font-bold text-gray-600">Passed</span>
+                </div>
+                <span className="text-[11px] font-bold text-[#1A1D1F]">74%</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#4BD37B]"></span>
-                <span className="text-[11px] font-medium text-gray-600">Progress</span>
-                <span className="text-[11px] font-bold text-[#1A1D1F] ml-auto">82%</span>
+
+              <div className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 bg-white shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#4BD37B]"></span>
+                  <span className="text-[11px] font-bold text-gray-600">Progress</span>
+                </div>
+                <span className="text-[11px] font-bold text-[#1A1D1F]">82%</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#FF4C4C]"></span>
-                <span className="text-[11px] font-medium text-gray-600">Overdue</span>
-                <span className="text-[11px] font-bold text-[#1A1D1F] ml-auto">45%</span>
+
+              <div className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 bg-white shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FF4C4C]"></span>
+                  <span className="text-[11px] font-bold text-gray-600">Overdue</span>
+                </div>
+                <span className="text-[11px] font-bold text-[#1A1D1F]">45%</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#FFAB7B]"></span>
-                <span className="text-[11px] font-medium text-gray-600">Failed</span>
-                <span className="text-[11px] font-bold text-[#1A1D1F] ml-auto">45%</span>
+
+              <div className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 bg-white shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FFAB7B]"></span>
+                  <span className="text-[11px] font-bold text-gray-600">Failed</span>
+                </div>
+                <span className="text-[11px] font-bold text-[#1A1D1F]">45%</span>
               </div>
             </div>
           </div>
