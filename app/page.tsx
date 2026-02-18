@@ -169,49 +169,9 @@ export default function Dashboard() {
       </header>
 
       <main className="max-w-[1600px] mx-auto p-6 md:p-8 grid grid-cols-12 gap-8">
-        {/* Feature Banner */}
-        <div className="col-span-12 relative overflow-hidden bg-gradient-to-r from-white to-[#F0F2FF] p-6 rounded-[24px] shadow-sm border border-white">
-          <div className="absolute top-0 right-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-          <div className="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-[#6C5DD3] to-transparent opacity-10"></div>
-          <div className="relative z-10 flex items-start justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="px-2.5 py-1 bg-[#FF4C4C] text-white text-[10px] font-bold rounded-lg uppercase tracking-wide">
-                  New
-                </span>
-                <h3 className="font-bold text-[#1A1D1F]">
-                  Feature Discussion
-                </h3>
-              </div>
-              <p className="text-sm text-gray-500 max-w-xl leading-relaxed">
-                Smart Tutoring are a new feature in &quot;Feature Discussion&quot;
-                Can be explain the material problem chat.{" "}
-                <a
-                  href="#"
-                  className="text-[#1A1D1F] font-bold inline-flex items-center hover:underline decoration-2 underline-offset-4"
-                >
-                  Go to detail{" "}
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    className="ml-1"
-                  >
-                    <path d="M5 12h14m-7-7 7 7-7 7" />
-                  </svg>
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Left Column */}
-        <div className="col-span-12 lg:col-span-8 space-y-8">
+        <div className="col-span-12">
           {/* Greeting & Stats */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
               <h1 className="text-3xl font-bold text-[#1A1D1F] flex items-center gap-2">
                 Good morning, Syed
@@ -287,6 +247,49 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+        </div>
+        {/* Feature Banner */}
+        <div className="col-span-12 relative overflow-hidden bg-gradient-to-r from-white to-[#F0F2FF] p-6 rounded-[24px] shadow-sm border border-white">
+          <div className="absolute top-0 right-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+          <div className="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-[#6C5DD3] to-transparent opacity-10"></div>
+          <div className="relative z-10 flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <span className="px-2.5 py-1 bg-[#FF4C4C] text-white text-[10px] font-bold rounded-lg uppercase tracking-wide">
+                  New
+                </span>
+                <h3 className="font-bold text-[#1A1D1F]">
+                  Feature Discussion
+                </h3>
+              </div>
+              <p className="text-sm text-gray-500 w-full leading-relaxed">
+                Smart Tutoring are a new feature in &quot;Feature Discussion&quot;
+                Can be explain the material problem chat.{" "}
+                <a
+                  href="#"
+                  className="text-[#1A1D1F] font-bold inline-flex items-center hover:underline decoration-2 underline-offset-4"
+                >
+                  Go to detail{" "}
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    className="ml-1"
+                  >
+                    <path d="M5 12h14m-7-7 7 7-7 7" />
+                  </svg>
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Left Column */}
+        <div className="col-span-12 lg:col-span-8 space-y-8">
+
 
 
 
