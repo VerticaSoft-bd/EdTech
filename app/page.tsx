@@ -248,12 +248,13 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
         {/* Feature Banner */}
-        <div className="col-span-12 relative overflow-hidden bg-gradient-to-r from-white to-[#F0F2FF] p-6 rounded-[24px] shadow-sm border border-white">
+        <div className="col-span-12 relative overflow-hidden bg-gradient-to-r from-white to-[#E2E6FF] p-6 rounded-[24px] shadow-sm border border-white">
           <div className="absolute top-0 right-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-          <div className="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-[#6C5DD3] to-transparent opacity-10"></div>
+          <div className="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-[#6C5DD3] to-transparent opacity-30"></div>
           <div className="relative z-10 flex items-start justify-between">
-            <div>
+            <div className="w-full">
               <div className="flex items-center gap-3 mb-3">
                 <span className="px-2.5 py-1 bg-[#FF4C4C] text-white text-[10px] font-bold rounded-lg uppercase tracking-wide">
                   New
