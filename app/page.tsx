@@ -670,9 +670,9 @@ export default function Dashboard() {
         </div>
 
         {/* Right Column */}
-        <div className="col-span-12 lg:col-span-4 space-y-6">
+        <div className="col-span-12 lg:col-span-4 space-y-6 mt-12">
           {/* Promo Card */}
-          <div className="h-[180px] rounded-[32px] bg-gradient-to-br from-[#8E8AFF] to-[#6C5DD3] relative overflow-hidden flex flex-col items-center justify-center text-center p-6 shadow-xl shadow-[#6C5DD3]/20">
+          <div className="h-[340px] rounded-[32px] bg-gradient-to-br from-[#8E8AFF] to-[#6C5DD3] relative overflow-hidden flex flex-col items-center justify-center text-center p-6 shadow-xl shadow-[#6C5DD3]/20">
             <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
 
             {/* Decorative Stars */}
