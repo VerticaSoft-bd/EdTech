@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans text-[#1A1D1F]">
+    <div className="min-h-screen bg-white font-sans text-[#1A1D1F]">
       {/* Top Header */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-6">
@@ -444,7 +444,7 @@ export default function Dashboard() {
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-white p-4 rounded-[20px] shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow group"
+                  className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow group"
                 >
                   <div
                     className={`w-[120px] h-[70px] rounded-xl bg-gradient-to-br ${item.thumbGradient} flex items-center justify-center shrink-0`}
@@ -562,7 +562,7 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-3">
-              <div className="bg-white p-3 rounded-[16px] flex items-center justify-between group hover:bg-gray-50 transition-colors cursor-pointer">
+              <div className="bg-[#F0F2F4] p-3 rounded-[16px] flex items-center justify-between group hover:bg-gray-50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-4">
                   <div className="w-8 h-8 rounded-lg bg-[#FFAB7B]/10 flex items-center justify-center text-[#FFAB7B]">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
@@ -578,7 +578,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white p-3 rounded-[16px] flex items-center justify-between group hover:bg-gray-50 transition-colors cursor-pointer">
+              <div className="bg-[#F0F2F4] p-3 rounded-[16px] flex items-center justify-between group hover:bg-gray-50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-4">
                   <div className="w-8 h-8 rounded-lg bg-[#FF9AD5]/10 flex items-center justify-center text-[#FF9AD5]">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
@@ -594,7 +594,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="bg-white p-3 rounded-[16px] flex items-center justify-between opacity-60">
+              <div className="bg-[#F0F2F4] p-3 rounded-[16px] flex items-center justify-between opacity-60">
                 <div className="flex items-center gap-4">
                   <span className="text-sm font-bold text-[#1A1D1F] ml-12">Other Task</span>
                 </div>
@@ -638,7 +638,7 @@ export default function Dashboard() {
                 { type: "Assignment", color: "text-[#FF4C4C]", bg: "bg-[#FF4C4C]/10", icon: "file-text" },
                 { type: "Assignment", color: "text-[#4BD37B]", bg: "bg-[#4BD37B]/10", icon: "bar-chart" },
               ].map((item, idx) => (
-                <div key={idx} className="bg-white p-4 rounded-[20px] shadow-sm flex items-center justify-between hover:scale-[1.02] transition-transform cursor-pointer">
+                <div key={idx} className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex items-center justify-between hover:scale-[1.02] transition-transform cursor-pointer">
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center ${item.color}`}>
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -688,7 +688,7 @@ export default function Dashboard() {
           </div>
 
           {/* Learning Content Chart */}
-          <div className="bg-white p-6 rounded-[32px] shadow-sm ">
+          <div className="bg-[#F0F2F4] p-6 rounded-[32px] shadow-sm ">
             <div className="flex items-center justify-between mb-8">
               <h3 className="font-bold text-[#1A1D1F] flex items-center gap-2">
                 Learning content
@@ -753,7 +753,7 @@ export default function Dashboard() {
           </div>
 
           {/* Goals */}
-          <div className="bg-white p-6 rounded-[32px] shadow-sm flex flex-col items-center">
+          <div className="bg-[#F0F2F4] p-6 rounded-[32px] shadow-sm flex flex-col items-center">
             <div className="w-full flex items-center justify-between mb-4">
               <h3 className="font-bold text-[#1A1D1F] flex items-center gap-2">
                 Goals
