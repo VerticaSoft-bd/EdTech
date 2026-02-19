@@ -728,6 +728,13 @@ export default function Dashboard() {
 
         </div>
       </main>
-    </div >
+      {/* Floating AI Assistant Button (SRS) */}
+      <button className="fixed bottom-8 right-8 w-16 h-16 bg-[#1A1D1F] rounded-full flex items-center justify-center text-white shadow-2xl hover:scale-110 transition-transform z-50 group">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] rounded-full opacity-0 group-hover:opacity-100 transition-opacity animate-spin-slow"></div>
+        <div className="relative z-10">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"></path><path d="M12 22a2 2 0 0 1 2-2v-2a2 2 0 0 1-2-2 2 2 0 0 1-2 2v2a2 2 0 0 1 2 2z"></path><path d="M22 12a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2 2 2 0 0 1 2-2h2a2 2 0 0 1 2 2z"></path><path d="M6 12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2 2 2 0 0 1 2-2h2a2 2 0 0 1 2 2z"></path><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg>
+        </div>
+      </button>
+    </div>
   );
 }
