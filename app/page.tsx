@@ -305,7 +305,7 @@ export default function Dashboard() {
                 View All
               </a>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 {
                   title: "Instgram Marketing Hacks",
@@ -337,60 +337,66 @@ export default function Dashboard() {
               ].map((course, idx) => (
                 <div
                   key={idx}
-                  className="bg-white p-5 rounded-[24px] shadow-sm hover:shadow-md transition-shadow group cursor-pointer"
+                  className="bg-[#F6F8FA] p-2 rounded-[32px] shadow-sm hover:shadow-md transition-shadow group cursor-pointer"
                 >
                   <div
-                    className={`h-[100px] rounded-2xl bg-gradient-to-r ${course.color} relative p-4 mb-4`}
+                    className={`h-[180px] rounded-[24px] bg-gradient-to-r ${course.color} relative p-6 flex flex-col justify-between`}
                   >
-                    <div className="absolute top-3 right-3 bg-white/30 backdrop-blur-md px-2 py-1 rounded-lg text-white text-[10px] font-medium">
-                      {course.materials}
+                    <div className="flex justify-end">
+                      <div className="bg-white/30 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs font-medium">
+                        {course.materials}
+                      </div>
                     </div>
-                    <div className="absolute bottom-3 left-3 px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-lg text-white text-[10px] font-medium border border-white/20">
-                      {course.tag}
-                    </div>
-                    <div className="absolute bottom-[-24px] right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm z-10">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={course.iconColor.replace('text-[', '').replace(']', '')} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                      </svg>
+
+                    <div>
+                      <h3 className="text-2xl font-bold text-white mb-4 leading-tight">
+                        {course.title}
+                      </h3>
+                      <div className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-white text-xs font-medium border border-white/20">
+                        {course.tag}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className={`p-1.5 rounded-lg ${course.bgColor}`}>
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        className={course.iconColor}
-                        strokeWidth="2.5"
-                      >
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                      </svg>
-                    </span>
-                    <span className="text-xs font-semibold text-gray-500">
-                      Course
-                    </span>
-                  </div>
-                  <h3 className="font-bold text-[#1A1D1F] leading-tight mb-2 min-h-[48px]">
-                    {course.title}
-                  </h3>
-                  <p className="text-xs text-gray-500 mb-4 line-clamp-2">
-                    {course.subtitle}
-                  </p>
-                  <div className="flex items-center gap-2 mt-auto">
-                    <span className="px-2 py-1 bg-gray-100 rounded-lg text-[10px] font-medium text-gray-500">
-                      Prototyping
-                    </span>
-                    <span className="px-2 py-1 bg-gray-100 rounded-lg text-[10px] font-medium text-gray-500">
-                      Not Urgent
-                    </span>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-gray-400">
-                      Not Started
-                    </span>
+
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`p-1.5 rounded-lg ${course.bgColor}`}>
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          className={course.iconColor}
+                          strokeWidth="2.5"
+                        >
+                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        </svg>
+                      </span>
+                      <span className="text-sm font-semibold text-gray-500">
+                        Course
+                      </span>
+                    </div>
+
+                    <p className="text-sm font-bold text-[#1A1D1F] mb-4 leading-relaxed">
+                      {course.subtitle}
+                    </p>
+
+                    <div className="flex items-center gap-3 mb-6">
+                      <span className="px-3 py-1.5 bg-gray-50 rounded-xl text-xs font-semibold text-gray-400">
+                        Prototyping
+                      </span>
+                      <span className="px-3 py-1.5 bg-gray-50 rounded-xl text-xs font-semibold text-gray-400">
+                        Not Urgent
+                      </span>
+                    </div>
+
+                    <div className="pt-2">
+                      <span className="text-xs font-bold text-[#1A1D1F]">
+                        Not Started
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}
