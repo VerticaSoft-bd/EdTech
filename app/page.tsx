@@ -1,4 +1,7 @@
 import React from "react";
+import FeeStatusCard from "./components/FeeStatusCard";
+import AttendanceChart from "./components/AttendanceChart";
+import JobFeed from "./components/JobFeed";
 
 export default function Dashboard() {
   return (
@@ -701,123 +704,30 @@ export default function Dashboard() {
 
         </div>
 
-        {/* Right Column */}
+        {/* Right Column (Status & Career) */}
         <div className="col-span-12 lg:col-span-4 space-y-6 mt-12">
-          {/* Promo Card */}
-          <div className="h-[340px] rounded-[32px] bg-gradient-to-br from-[#8E8AFF] to-[#6C5DD3] relative overflow-hidden flex flex-col items-center justify-center text-center p-6 shadow-xl shadow-[#6C5DD3]/20">
-            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
 
-            {/* Decorative Stars */}
-            <div className="absolute top-8 left-8 text-white/40">✦</div>
-            <div className="absolute bottom-8 right-8 text-white/40 text-xl">✦</div>
-            <div className="absolute top-6 right-12 text-white/20 text-xs">✦</div>
+          {/* Fee Status (Critical) */}
+          <FeeStatusCard
+            totalFee={1200}
+            paidAmount={450}
+            nextDueDate="Oct 15, 2026"
+          />
 
-            <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mb-4 text-white">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-            </div>
-
-            <h3 className="text-white font-bold text-lg relative z-10 w-2/3 mx-auto">Streva for Smart Tutoring</h3>
+          {/* Attendance Tracker */}
+          <div className="h-[340px]">
+            <AttendanceChart
+              present={18}
+              limit={24}
+              total={30}
+            />
           </div>
 
-          {/* Learning Content Chart */}
-          <div className="bg-[#F0F2F4] p-6 rounded-[32px] shadow-sm ">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="font-bold text-[#1A1D1F] flex items-center gap-2">
-                Learning content
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A4A4A4" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-              </h3>
-            </div>
-
-            <div className="relative w-[200px] h-[100px] mx-auto mb-8">
-              {/* Half Donut Implementation with CSS/SVG */}
-              <svg viewBox="0 0 200 110" className="overflow-visible">
-                {/* Purple Segment (Left) */}
-                <path d="M 20 100 A 80 80 0 0 1 32.3 57.3" fill="none" stroke="#6C5DD3" strokeWidth="20" strokeLinecap="round" />
-
-                {/* Teal Segment (Top-Left) */}
-                <path d="M 47.8 39.4 A 80 80 0 0 1 88.2 20.9" fill="none" stroke="#4BD37B" strokeWidth="20" strokeLinecap="round" />
-
-                {/* Red Segment (Top-Right) */}
-                <path d="M 111.8 20.9 A 80 80 0 0 1 152.2 39.4" fill="none" stroke="#FF4C4C" strokeWidth="20" strokeLinecap="round" />
-
-                {/* Yellow Segment (Right) */}
-                <path d="M 167.7 57.3 A 80 80 0 0 1 180 100" fill="none" stroke="#FFAB7B" strokeWidth="20" strokeLinecap="round" />
-              </svg>
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-center">
-                <span className="text-4xl font-bold text-[#1A1D1F] block">120</span>
-                <span className="text-xs text-gray-500">Content</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3.5">
-              <div className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 bg-white shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#6C5DD3]"></span>
-                  <span className="text-[11px] font-bold text-gray-600">Passed</span>
-                </div>
-                <span className="text-[11px] font-bold text-[#1A1D1F]">74%</span>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 bg-white shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#4BD37B]"></span>
-                  <span className="text-[11px] font-bold text-gray-600">Progress</span>
-                </div>
-                <span className="text-[11px] font-bold text-[#1A1D1F]">82%</span>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 bg-white shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#FF4C4C]"></span>
-                  <span className="text-[11px] font-bold text-gray-600">Overdue</span>
-                </div>
-                <span className="text-[11px] font-bold text-[#1A1D1F]">45%</span>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-2xl border border-gray-100 bg-white shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#FFAB7B]"></span>
-                  <span className="text-[11px] font-bold text-gray-600">Failed</span>
-                </div>
-                <span className="text-[11px] font-bold text-[#1A1D1F]">45%</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Goals */}
-          <div className="bg-[#F0F2F4] p-6 rounded-[32px] shadow-sm flex flex-col items-center">
-            <div className="w-full flex items-center justify-between mb-4">
-              <h3 className="font-bold text-[#1A1D1F] flex items-center gap-2">
-                Goals
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A4A4A4" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
-              </h3>
-            </div>
-
-            <div className="relative w-40 h-40 flex items-center justify-center mb-4">
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#F2F2F2" strokeWidth="8" />
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#6C5DD3" strokeWidth="8" strokeDasharray="251.2" strokeDashoffset="200" strokeLinecap="round" />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 bg-white shadow-sm rounded-full flex items-center justify-center text-[#6C5DD3]">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <p className="text-sm font-bold text-[#1A1D1F]">Daily Goal: 6/30 learning</p>
-            </div>
-
-            <div className="mt-6 text-center">
-              <p className="text-xs font-semibold text-gray-500">Your longest streak: <span className="text-[#1A1D1F]">1 day</span></p>
-              <p className="text-[10px] text-gray-400 mt-1">(25 Feb 2025 - 5 May 2025)</p>
-              <a href="#" className="text-xs font-bold text-[#6C5DD3] mt-2 inline-block hover:underline">See Detail</a>
-            </div>
-          </div>
+          {/* Job Feed & CV Builder */}
+          <JobFeed />
 
         </div>
-      </main >
+      </main>
     </div >
   );
 }
