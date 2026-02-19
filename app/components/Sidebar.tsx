@@ -1,7 +1,26 @@
+"use client";
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Sidebar: React.FC = () => {
+    const pathname = usePathname();
+
+    const isActive = (path: string) => {
+        if (path === '/dashboard' && pathname === '/dashboard') return true;
+        if (path !== '/dashboard' && pathname?.startsWith(path)) return true;
+        return false;
+    };
+
+    const getLinkClasses = (path: string) => {
+        const active = isActive(path);
+        const baseClasses = "flex items-center gap-3 px-4 py-3 rounded-xl transition-all group";
+        const activeClasses = "bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20";
+        const inactiveClasses = "text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]";
+
+        return `${baseClasses} ${active ? activeClasses : inactiveClasses}`;
+    };
+
     return (
         <aside className="fixed left-0 top-0 h-screen w-[280px] bg-white border-r border-gray-100 flex flex-col z-50">
             {/* Logo area */}
@@ -16,17 +35,17 @@ const Sidebar: React.FC = () => {
             <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
                 <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">Main Menu</div>
 
-                <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20 group transition-all">
+                <Link href="/dashboard" className={getLinkClasses('/dashboard')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                     <span className="text-sm font-bold">Dashboard</span>
                 </Link>
 
-                <Link href="/dashboard/students" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
+                <Link href="/dashboard/students" className={getLinkClasses('/dashboard/students')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     <span className="text-sm font-bold">Students</span>
                 </Link>
 
-                <Link href="/dashboard/courses" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
+                <Link href="/dashboard/courses" className={getLinkClasses('/dashboard/courses')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
                     <span className="text-sm font-bold">Courses</span>
                 </Link>
@@ -44,7 +63,7 @@ const Sidebar: React.FC = () => {
                 <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-4 mb-2 mt-6">Settings</div>
 
                 <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.86a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.86a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                     <span className="text-sm font-bold">Settings</span>
                 </Link>
             </nav>

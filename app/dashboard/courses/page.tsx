@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import Link from 'next/link';
 
 const courses = [
     {
@@ -76,19 +77,97 @@ const courses = [
         color: "from-[#6C5DD3] to-[#8E8AFF]",
         lessons: 50,
         duration: "30h 00m"
+    },
+    {
+        id: 6,
+        title: "Advanced React Patterns",
+        instructor: "Cody Fisher",
+        category: "Development",
+        type: "Online",
+        students: 150,
+        rating: 4.9,
+        price: "$95.00",
+        status: "Active",
+        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
+        color: "from-[#FF9AD5] to-[#FFC2E8]",
+        lessons: 28,
+        duration: "14h 20m"
+    },
+    {
+        id: 7,
+        title: "Motion Design Fundamentals",
+        instructor: "Syed Roni",
+        category: "Design",
+        type: "Offline",
+        students: 95,
+        rating: 4.7,
+        price: "$75.00",
+        status: "Active",
+        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
+        color: "from-[#4BD37B] to-[#80F2AA]",
+        lessons: 35,
+        duration: "18h 45m"
+    },
+    {
+        id: 8,
+        title: "Data Visualization with D3.js",
+        instructor: "Jenny Wilson",
+        category: "Data Science",
+        type: "Online",
+        students: 70,
+        rating: 4.5,
+        price: "$85.00",
+        status: "Draft",
+        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
+        color: "from-[#8E8AFF] to-[#B4B1FF]",
+        lessons: 22,
+        duration: "11h 10m"
+    },
+    {
+        id: 9,
+        title: "SEO Strategy 2026",
+        instructor: "Esther Howard",
+        category: "Marketing",
+        type: "Online",
+        students: 210,
+        rating: 4.8,
+        price: "$60.00",
+        status: "Active",
+        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
+        color: "from-[#FFAB7B] to-[#FFCF9D]",
+        lessons: 15,
+        duration: "8h 30m"
     }
 ];
 
+const ITEMS_PER_PAGE = 6;
+
 export default function CoursesPage() {
     const [filterType, setFilterType] = React.useState('All');
+    const [currentPage, setCurrentPage] = React.useState(1);
 
     const filteredCourses = courses.filter(course => {
         if (filterType === 'All') return true;
         return course.type === filterType;
     });
 
+    const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginatedCourses = filteredCourses.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    // Reset to page 1 when filter changes
+    React.useEffect(() => {
+        setCurrentPage(1);
+    }, [filterType]);
+
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 pb-8">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -114,16 +193,16 @@ export default function CoursesPage() {
                         <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
                         <input type="text" placeholder="Search courses..." className="pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 w-[240px]" />
                     </div>
-                    <button className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2">
+                    <Link href="/dashboard/courses/add" className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         Create New Course
-                    </button>
+                    </Link>
                 </div>
             </div>
 
             {/* Course Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                {filteredCourses.map((course) => (
+                {paginatedCourses.map((course) => (
                     <div key={course.id} className="bg-white rounded-[24px] p-4 shadow-sm border border-gray-100 group hover:shadow-md transition-all cursor-pointer">
                         {/* Thumbnail Area */}
                         <div className={`h-[160px] rounded-[20px] bg-gradient-to-br ${course.color} relative p-5 flex flex-col justify-between overflow-hidden mb-4`}>
@@ -191,6 +270,49 @@ export default function CoursesPage() {
                     <p className="text-xs text-gray-500 text-center">Create a new course and start earning</p>
                 </div>
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="p-6 bg-white rounded-[24px] border border-gray-100 flex items-center justify-between shadow-sm">
+                    <p className="text-xs text-gray-500 font-medium">
+                        Showing <span className="text-[#1A1D1F] font-bold">{filteredCourses.length > 0 ? startIndex + 1 : 0}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, filteredCourses.length)}</span> of <span className="text-[#1A1D1F] font-bold">{filteredCourses.length}</span> courses
+                    </p>
+
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            className={`p-2 rounded-xl transition-all ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-[#1A1D1F]'}`}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                        </button>
+
+                        {Array.from({ length: totalPages }).map((_, idx) => {
+                            const page = idx + 1;
+                            return (
+                                <button
+                                    key={page}
+                                    onClick={() => handlePageChange(page)}
+                                    className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${currentPage === page
+                                        ? 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20'
+                                        : 'text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]'
+                                        }`}
+                                >
+                                    {page}
+                                </button>
+                            );
+                        })}
+
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            className={`p-2 rounded-xl transition-all ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-[#1A1D1F]'}`}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
