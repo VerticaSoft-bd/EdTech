@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Mona Sans';
+  src: url('/fonts/Mona-Sans.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal italic;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -8,8 +16,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Mona Sans", sans-serif;
+  --font-mono: monospace;
 }
 
 @media (prefers-color-scheme: dark) {
