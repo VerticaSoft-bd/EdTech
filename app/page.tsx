@@ -340,8 +340,18 @@ export default function Dashboard() {
                   className="bg-[#F6F8FA] p-2 rounded-[32px] shadow-sm hover:shadow-md transition-shadow group cursor-pointer"
                 >
                   <div
-                    className={`h-[180px] rounded-[24px] bg-gradient-to-r ${course.color} relative p-6 flex flex-col justify-between`}
+                    className={`h-[180px] rounded-[24px] bg-gradient-to-r ${course.color} relative p-6 flex flex-col justify-between overflow-hidden`}
                   >
+                    {/* Noise Background & Decorative Stars */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-40"></div>
+
+                    {/* Distributed Stars/Sparkles */}
+                    <div className="absolute top-4 left-6 text-white/60 text-lg animate-pulse">✦</div>
+                    <div className="absolute top-8 right-20 text-white/40 text-xs">✦</div>
+                    <div className="absolute bottom-16 left-8 text-white/30 text-sm">✦</div>
+                    <div className="absolute bottom-6 right-8 text-white/50 text-xl">✦</div>
+                    <div className="absolute top-1/2 left-1/2 text-white/20 text-[10px]">✦</div>
+                    <div className="absolute top-16 right-4 text-white/30 text-base">✦</div>
                     <div className="flex justify-end">
                       <div className="bg-white/30 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs font-medium">
                         {course.materials}
