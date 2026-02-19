@@ -442,32 +442,48 @@ export default function Dashboard() {
               {[
                 {
                   title: "Mastering UI/UX Design: A Guide...",
+                  subtitle: "Course",
+                  thumbTitle: "Instgram Marketing Hacks",
+                  thumbTag: "A-Z Guideline",
+                  thumbGradient: "from-[#8E8AFF] to-[#B4B1FF]",
                   materials: "5 Material",
                   completion: 56,
                   deadline: "1 Day",
+                  deadlineColor: "text-[#1A1D1F]",
                   action: "Start",
-                  thumbGradient: "from-[#8E8AFF] to-[#B4B1FF]",
                 },
                 {
                   title: "Mastering UI/UX Design: A Guide...",
+                  subtitle: "Course",
+                  thumbTitle: "Hit A Backhand Like Pro",
+                  thumbTag: "A-Z Guideline",
+                  thumbGradient: "from-[#FF9AD5] to-[#FFC2E8]",
                   materials: "5 Material",
                   completion: 64,
                   deadline: "12 Hours",
+                  deadlineColor: "text-[#FF4C4C]",
                   action: "Continue",
-                  deadlineColor: "text-red-500",
-                  thumbGradient: "from-[#FF9AD5] to-[#FFC2E8]",
                 },
               ].map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow group"
+                  className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow group"
                 >
+                  {/* Thumbnail */}
                   <div
-                    className={`w-[120px] h-[70px] rounded-xl bg-gradient-to-br ${item.thumbGradient} flex items-center justify-center shrink-0`}
+                    className={`w-[120px] h-[70px] rounded-[20px] bg-gradient-to-br ${item.thumbGradient} relative p-4 flex flex-col justify-center shrink-0 overflow-hidden`}
                   >
-                    <div className="px-2 py-1 bg-white/30 backdrop-blur-sm rounded-lg text-white text-[9px] font-medium leading-tight text-center">
-                      <span className="block opacity-60">Course</span>
-                      Marketing...
+                    {/* Noise & Sparkles for Thumbnail */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30"></div>
+                    <div className="absolute top-2 left-2 text-white/50 text-[8px]">✦</div>
+
+                    <div className="relative z-10">
+                      <h4 className="text-[11px] font-bold text-white leading-[1.3] mb-1.5">
+                        {item.thumbTitle}
+                      </h4>
+                      <div className="inline-block px-2 py-0.5 bg-white/20 backdrop-blur-md rounded-lg text-white text-[8px] font-medium border border-white/20">
+                        {item.thumbTag}
+                      </div>
                     </div>
                   </div>
                   <div className="flex-1 grid grid-cols-12 gap-4 items-center">
@@ -801,7 +817,7 @@ export default function Dashboard() {
           </div>
 
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   );
 }
