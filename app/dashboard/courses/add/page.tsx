@@ -33,14 +33,14 @@ export default function AddCoursePage() {
                 <div className="lg:col-span-2 space-y-6">
 
                     {/* Tabs */}
-                    <div className="bg-white p-1 rounded-xl border border-gray-100 inline-flex">
-                        {['basic', 'curriculum', 'media', 'pricing'].map((tab) => (
+                    <div className="bg-white p-1 rounded-xl border border-gray-100 inline-flex flex-wrap gap-1">
+                        {['basic', 'details', 'curriculum', 'media', 'pricing', 'teacher', 'career', 'features'].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-all ${activeTab === tab ? 'bg-[#6C5DD3] text-white shadow-md' : 'text-gray-500 hover:text-[#1A1D1F]'}`}
                             >
-                                {tab} Info
+                                {tab}
                             </button>
                         ))}
                     </div>
@@ -53,6 +53,11 @@ export default function AddCoursePage() {
                                     <div>
                                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Course Title</label>
                                         <input type="text" placeholder="e.g. Advanced UI/UX Design Masterclass" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Short Description / Subtitle</label>
+                                        <input type="text" placeholder="e.g. Master design tools and build a professional portfolio" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
@@ -75,24 +80,94 @@ export default function AddCoursePage() {
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Description</label>
-                                        <textarea rows={6} placeholder="Describe your course content..." className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] resize-none"></textarea>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Course Mode</label>
+                                            <select className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] appearance-none cursor-pointer">
+                                                <option>Offline Class</option>
+                                                <option>Online Class</option>
+                                                <option>Hybrid</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Course Duration (e.g. 6 Months)</label>
+                                            <input type="text" placeholder="e.g. 6 Months" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                        </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">What you'll learn</label>
-                                        <div className="space-y-2">
-                                            <input type="text" placeholder="Key learning outcome 1" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                            <input type="text" placeholder="Key learning outcome 2" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                            <button className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
-                                                Add Outcome
+                                        <div className="flex items-center justify-between mb-2">
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Batches & Schedules</label>
+                                            <button className="text-xs font-bold text-[#6C5DD3] hover:underline flex items-center gap-1">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                Add Batch
                                             </button>
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl">
+                                                <div className="flex-1 grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Start Date</label>
+                                                        <input type="date" className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Class Time</label>
+                                                        <input type="text" placeholder="e.g. 02:00 PM TO 04:00 PM" className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                    </div>
+                                                </div>
+                                                <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-5">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Students</label>
+                                            <input type="number" placeholder="500" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Lectures</label>
+                                            <input type="number" placeholder="52" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Projects</label>
+                                            <input type="number" placeholder="20" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
                                         </div>
                                     </div>
                                 </div>
                             </>
+                        )}
+
+                        {activeTab === 'details' && (
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Course Details</label>
+                                    <textarea rows={6} placeholder="Describe the full course details..." className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] resize-none"></textarea>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Who is this course for?</label>
+                                    <textarea rows={4} placeholder="Describe the target audience..." className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] resize-none"></textarea>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Key Deliverables</label>
+                                    <div className="space-y-2">
+                                        <div className="flex gap-2">
+                                            <input type="text" placeholder="e.g. Completion Certification" className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                            <button className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                            </button>
+                                        </div>
+                                        <button className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                            Add Deliverable
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         )}
 
                         {activeTab === 'curriculum' && (
@@ -101,10 +176,36 @@ export default function AddCoursePage() {
                                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
                                 </div>
                                 <h3 className="font-bold text-[#1A1D1F]">Curriculum Builder</h3>
-                                <p className="text-sm text-gray-500 mb-6">Start adding sections and lessons to your course.</p>
+                                <p className="text-sm text-gray-500 mb-6">Start adding modules and topics to your course syllabus.</p>
                                 <button className="px-5 py-2.5 bg-[#6C5DD3]/10 text-[#6C5DD3] rounded-xl text-sm font-bold hover:bg-[#6C5DD3]/20 transition-colors">
-                                    + Add First Section
+                                    + Add Module
                                 </button>
+
+                                <div className="mt-8 text-left space-y-4 max-w-lg mx-auto">
+                                    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+                                        <div className="flex items-center justify-between mb-3 border-b border-gray-100 pb-3">
+                                            <h4 className="font-bold text-[#1A1D1F] flex items-center gap-2">
+                                                <svg className="text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                                                Module 1: Foundations of Design
+                                            </h4>
+                                            <div className="flex gap-2">
+                                                <button className="text-gray-400 hover:text-[#6C5DD3]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                                                <button className="text-gray-400 hover:text-red-500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
+                                            </div>
+                                        </div>
+                                        <div className="pl-6 space-y-2">
+                                            <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border border-gray-100">
+                                                <svg className="text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" /><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" /></svg>
+                                                <span className="text-sm text-gray-600">Design principles (balance, contrast, alignment)</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border border-gray-100">
+                                                <svg className="text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z" /><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" /></svg>
+                                                <span className="text-sm text-gray-600">Color theory & typography basics</span>
+                                            </div>
+                                            <button className="text-xs font-bold text-gray-500 hover:text-[#6C5DD3] mt-2">+ Add Topic</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
@@ -124,6 +225,17 @@ export default function AddCoursePage() {
                                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Intro Video (Optional)</label>
                                     <input type="text" placeholder="Paste video URL (YouTube, Vimeo)" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
                                 </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Student Projects Gallery (Creative Work)</label>
+                                    <div className="border-2 border-dashed border-gray-200 rounded-2xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#6C5DD3] hover:bg-[#6C5DD3]/5 transition-all">
+                                        <div className="w-12 h-12 rounded-full bg-[#6C5DD3]/10 flex items-center justify-center text-[#6C5DD3] mb-3">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                        </div>
+                                        <p className="text-sm font-bold text-[#1A1D1F]">Upload multiple project images</p>
+                                        <p className="text-xs text-gray-500 mt-1">Showcase creativity</p>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
@@ -131,17 +243,133 @@ export default function AddCoursePage() {
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Course Price ($)</label>
-                                        <input type="number" placeholder="0.00" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Regular Course Fee (৳)</label>
+                                        <input type="number" placeholder="30000" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Discounted Price ($)</label>
-                                        <input type="number" placeholder="0.00" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Discount Percentage (%)</label>
+                                        <input type="number" placeholder="40" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Admission/Enrollment URL</label>
+                                        <input type="text" placeholder="e.g. https://forms.gle/..." className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Free Seminar Booking URL</label>
+                                        <input type="text" placeholder="e.g. https://forms.gle/..." className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer">
                                     <input type="checkbox" className="w-5 h-5 rounded text-[#6C5DD3] focus:ring-[#6C5DD3]" />
                                     <span className="text-sm font-medium text-[#1A1D1F]">This is a free course</span>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'teacher' && (
+                            <div className="space-y-6">
+                                <div>
+                                    <div className="flex items-center justify-between mb-1">
+                                        <h3 className="font-bold text-[#1A1D1F]">Assign Teachers</h3>
+                                        <button className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                            Add Teacher
+                                        </button>
+                                    </div>
+                                    <p className="text-sm text-gray-500 mb-6">Select the instructors for this course. They will have access to manage students and lessons.</p>
+
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl">
+                                            <div className="flex-1 relative">
+                                                <select className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 appearance-none cursor-pointer">
+                                                    <option value="">Select a Teacher</option>
+                                                    <option value="1">Syed Roni (Design)</option>
+                                                    <option value="2">Cody Fisher (Development)</option>
+                                                    <option value="3">Jenny Wilson (Data Science)</option>
+                                                    <option value="4">Esther Howard (Marketing)</option>
+                                                </select>
+                                                <svg className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="px-2.5 py-1 bg-[#6C5DD3]/10 text-[#6C5DD3] rounded-lg text-xs font-bold border border-[#6C5DD3]/20">Primary</span>
+                                                <button className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'career' && (
+                            <div className="space-y-6">
+                                <div>
+                                    <h3 className="font-bold text-[#1A1D1F] mb-1">Career Opportunities</h3>
+                                    <p className="text-sm text-gray-500 mb-6">List the job roles and opportunities available after completing this course.</p>
+
+                                    <div className="space-y-4">
+                                        <div className="p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <input type="text" placeholder="Opportunity Title (e.g. Freelancing)" defaultValue="Freelancing" className="font-bold bg-white px-3 py-2 border border-gray-200 rounded-lg text-sm w-1/2 focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                <button className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                </button>
+                                            </div>
+                                            <textarea rows={3} placeholder="Describe this opportunity..." defaultValue="Research shows over half of designers now work as freelancers. With freelancing, you set your schedule and rates..." className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 resize-none"></textarea>
+                                        </div>
+
+                                        <div className="p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <input type="text" placeholder="Opportunity Title (e.g. Remote Job)" defaultValue="Remote Job" className="font-bold bg-white px-3 py-2 border border-gray-200 rounded-lg text-sm w-1/2 focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                <button className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                </button>
+                                            </div>
+                                            <textarea rows={3} placeholder="Describe this opportunity..." defaultValue="Graphic designers help brands with logos and posters. With more companies worldwide, businesses need remote designers..." className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 resize-none"></textarea>
+                                        </div>
+
+                                        <button className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:text-[#6C5DD3] hover:border-[#6C5DD3] hover:bg-[#6C5DD3]/5 transition-all text-center">
+                                            + Add New Opportunity
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'features' && (
+                            <div className="space-y-6">
+                                <div>
+                                    <h3 className="font-bold text-[#1A1D1F] mb-1">Unique Benefits & Features</h3>
+                                    <p className="text-sm text-gray-500 mb-6">Highlight what makes this course stand out from the rest.</p>
+
+                                    <div className="space-y-4">
+                                        <div className="p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <input type="text" placeholder="Feature Title (e.g. AI idea generation)" defaultValue="AI idea generation" className="font-bold bg-white px-3 py-2 border border-gray-200 rounded-lg text-sm w-1/2 focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                <button className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                </button>
+                                            </div>
+                                            <textarea rows={2} placeholder="Describe this feature..." defaultValue="Learn to use AI tools for quick design ideas. You create prompts and refine results easily..." className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 resize-none"></textarea>
+                                        </div>
+
+                                        <div className="p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <input type="text" placeholder="Feature Title (e.g. Virtual Internship Program)" defaultValue="Virtual Internship Program" className="font-bold bg-white px-3 py-2 border border-gray-200 rounded-lg text-sm w-1/2 focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                <button className="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                </button>
+                                            </div>
+                                            <textarea rows={2} placeholder="Describe this feature..." defaultValue="Gain real-world experience with partner companies. You complete real projects under expert mentors..." className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 resize-none"></textarea>
+                                        </div>
+
+                                        <button className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:text-[#6C5DD3] hover:border-[#6C5DD3] hover:bg-[#6C5DD3]/5 transition-all text-center">
+                                            + Add New Feature/Benefit
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
