@@ -35,7 +35,11 @@ const CategorySchema: Schema<ICategory> = new Schema({
     }
 }, { timestamps: true });
 
-// Check if the model already exists before creating a new one
-const Category: Model<ICategory> = mongoose.models.Category || mongoose.model<ICategory>('Category', CategorySchema);
+// Delete the model if it exists to break the Next.js cache during development
+if (mongoose.models.Category) {
+    delete mongoose.models.Category;
+}
+
+const Category: Model<ICategory> = mongoose.model<ICategory>('Category', CategorySchema);
 
 export default Category;

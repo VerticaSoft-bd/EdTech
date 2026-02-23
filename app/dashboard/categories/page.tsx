@@ -60,11 +60,40 @@ export default function CategoriesPage() {
         }
     };
 
+    const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+
     const handleCreateCategory = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
         try {
+            let thumbnailUrl = '';
+
+            // 1. Upload image if it exists
+            if (thumbnailFile) {
+                console.log("Uploading thumbnail file to S3...", thumbnailFile.name);
+                const uploadFormData = new FormData();
+                uploadFormData.append('file', thumbnailFile);
+
+                const uploadRes = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: uploadFormData
+                });
+
+                if (uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    console.log("S3 Upload Successful. URL received:", uploadData.url);
+                    thumbnailUrl = uploadData.url;
+                } else {
+                    const errorData = await uploadRes.json();
+                    console.error("S3 Upload Error:", errorData);
+                    alert(`Image Upload Error: ${errorData.message}`);
+                    setIsSubmitting(false);
+                    return; // Stop category creation if image upload fails
+                }
+            }
+
+            // 2. Create category
             const colors = [
                 'from-[#8E8AFF] to-[#B4B1FF]',
                 'from-[#FFAB7B] to-[#FFCF9D]',
@@ -77,8 +106,10 @@ export default function CategoriesPage() {
             const payload = {
                 ...formData,
                 color: randomColor,
-                courseCount: 0 // Default to 0 initially
+                thumbnail: thumbnailUrl
             };
+
+            console.log("Final payload being sent to /api/categories:", payload);
 
             const res = await fetch('/api/categories', {
                 method: 'POST',
@@ -89,13 +120,21 @@ export default function CategoriesPage() {
             });
 
             if (res.ok) {
+                const responseData = await res.json();
+                console.log("Category creation successful. Database saved:", responseData);
                 // Refresh list and close modal
                 await fetchCategories();
                 setIsModalOpen(false);
                 setFormData({ name: '', description: '', status: 'Active', color: '' });
+                setThumbnailFile(null);
+            } else {
+                const errorData = await res.json();
+                console.error("Category Creation API Error:", errorData);
+                alert(`Error: ${errorData.message}`);
             }
         } catch (error) {
             console.error("Failed to create category", error);
+            alert("An unexpected error occurred.");
         } finally {
             setIsSubmitting(false);
         }
@@ -165,9 +204,13 @@ export default function CategoriesPage() {
                                     <tr key={category._id || category.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-4">
-                                                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white font-bold text-lg shadow-sm`}>
-                                                    {category.name?.charAt(0) || '?'}
-                                                </div>
+                                                {category.thumbnail ? (
+                                                    <img src={category.thumbnail} alt={category.name} className="w-10 h-10 rounded-xl object-cover shadow-sm" />
+                                                ) : (
+                                                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white font-bold text-lg shadow-sm`}>
+                                                        {category.name?.charAt(0) || '?'}
+                                                    </div>
+                                                )}
                                                 <div>
                                                     <div className="font-bold text-[#1A1D1F]">{category.name}</div>
                                                     <div className="text-[10px] text-gray-400 font-mono mt-1">ID: {category._id?.slice(-6) || category.id}</div>
@@ -185,8 +228,8 @@ export default function CategoriesPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${category.status === 'Active' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' :
-                                                    category.status === 'Draft' ? 'bg-gray-100 text-gray-500' :
-                                                        'bg-[#FF4C4C]/10 text-[#FF4C4C]'
+                                                category.status === 'Draft' ? 'bg-gray-100 text-gray-500' :
+                                                    'bg-[#FF4C4C]/10 text-[#FF4C4C]'
                                                 }`}>
                                                 {category.status}
                                             </span>
@@ -320,6 +363,44 @@ export default function CategoriesPage() {
                                             <option value="Inactive">Inactive</option>
                                         </select>
                                         <svg className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Category Image (Optional)</label>
+                                    <div className={`relative border-2 border-dashed ${thumbnailFile ? 'border-transparent' : 'border-gray-200'} rounded-xl hover:border-[#6C5DD3] transition-colors bg-gray-50 text-center overflow-hidden min-h-[140px] flex items-center justify-center`}>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={e => {
+                                                if (e.target.files && e.target.files.length > 0) {
+                                                    setThumbnailFile(e.target.files[0]);
+                                                }
+                                            }}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                        />
+
+                                        {thumbnailFile ? (
+                                            <div className="absolute inset-0 w-full h-full pointer-events-none group-thumbnail">
+                                                <img
+                                                    src={URL.createObjectURL(thumbnailFile)}
+                                                    alt="Preview"
+                                                    className="object-cover w-full h-full"
+                                                />
+                                                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 pointer-events-auto">
+                                                    <span className="text-white text-sm font-bold mb-1">Click to change</span>
+                                                    <span className="text-white/80 text-xs truncate max-w-[200px] px-4">{thumbnailFile.name}</span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10">
+                                                <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 text-gray-400">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                                </div>
+                                                <span className="text-sm font-bold text-gray-700 mb-1">Click to upload</span>
+                                                <span className="text-xs font-medium text-gray-400">or drag and drop</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

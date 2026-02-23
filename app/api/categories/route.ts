@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Category from '@/models/Category';
+import AWS from 'aws-sdk';
+
+// Configure AWS S3
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+});
 
 // GET all categories
 export async function GET() {
@@ -20,14 +28,20 @@ export async function POST(request: Request) {
         const body = await request.json();
         await connectToDatabase();
 
-        // Add default color if not provided
-        if (!body.color) {
-            body.color = "from-[#8E8AFF] to-[#B4B1FF]";
-        }
+        const { name, description, status, color, thumbnail } = body;
 
-        const category = await Category.create(body);
+        const payload = {
+            name,
+            description,
+            status,
+            color: color || "from-[#8E8AFF] to-[#B4B1FF]",
+            thumbnail: thumbnail || ''
+        };
+
+        const category = await Category.create(payload);
         return NextResponse.json({ success: true, data: category }, { status: 201 });
     } catch (error: any) {
+        console.error("Category Creation Error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
