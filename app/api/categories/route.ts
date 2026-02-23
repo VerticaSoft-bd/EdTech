@@ -3,6 +3,10 @@ import connectToDatabase from '@/lib/db';
 import Category from '@/models/Category';
 import AWS from 'aws-sdk';
 
+// Next.js 15: Force this API to never cache GET responses
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // Configure AWS S3
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
