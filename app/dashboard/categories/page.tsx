@@ -61,17 +61,19 @@ export default function CategoriesPage() {
     };
 
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [originalThumbnail, setOriginalThumbnail] = useState<string | null>(null);
 
-    const handleCreateCategory = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
 
         try {
-            let thumbnailUrl = '';
+            let thumbnailUrl = originalThumbnail || '';
 
-            // 1. Upload image if it exists
+            // 1. Upload new image if it exists and differs from original
             if (thumbnailFile) {
-                console.log("Uploading thumbnail file to S3...", thumbnailFile.name);
+                console.log("Uploading new thumbnail file to S3...", thumbnailFile.name);
                 const uploadFormData = new FormData();
                 uploadFormData.append('file', thumbnailFile);
 
@@ -89,11 +91,11 @@ export default function CategoriesPage() {
                     console.error("S3 Upload Error:", errorData);
                     alert(`Image Upload Error: ${errorData.message}`);
                     setIsSubmitting(false);
-                    return; // Stop category creation if image upload fails
+                    return; // Stop submission if image upload fails
                 }
             }
 
-            // 2. Create category
+            // 2. Create or Update category
             const colors = [
                 'from-[#8E8AFF] to-[#B4B1FF]',
                 'from-[#FFAB7B] to-[#FFCF9D]',
@@ -109,10 +111,13 @@ export default function CategoriesPage() {
                 thumbnail: thumbnailUrl
             };
 
-            console.log("Final payload being sent to /api/categories:", payload);
+            const url = editingId ? `/api/categories/${editingId}` : '/api/categories';
+            const method = editingId ? 'PUT' : 'POST';
 
-            const res = await fetch('/api/categories', {
-                method: 'POST',
+            console.log(`Final payload being sent to ${url}:`, payload);
+
+            const res = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -121,23 +126,69 @@ export default function CategoriesPage() {
 
             if (res.ok) {
                 const responseData = await res.json();
-                console.log("Category creation successful. Database saved:", responseData);
+                console.log(`Category ${editingId ? 'update' : 'creation'} successful.`, responseData);
                 // Refresh list and close modal
                 await fetchCategories();
-                setIsModalOpen(false);
-                setFormData({ name: '', description: '', status: 'Active', color: '' });
-                setThumbnailFile(null);
+                closeModal();
             } else {
                 const errorData = await res.json();
-                console.error("Category Creation API Error:", errorData);
+                console.error("Category API Error:", errorData);
                 alert(`Error: ${errorData.message}`);
             }
         } catch (error) {
-            console.error("Failed to create category", error);
+            console.error("Failed to save category", error);
             alert("An unexpected error occurred.");
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleEdit = (category: any) => {
+        setEditingId(category._id || category.id);
+        setFormData({
+            name: category.name,
+            description: category.description || '',
+            status: category.status,
+            color: category.color
+        });
+        setOriginalThumbnail(category.thumbnail || null);
+        setThumbnailFile(null); // Reset any pending local uploads
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!window.confirm("Are you sure you want to delete this category? Its image will also be permanently deleted from S3.")) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/categories/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                console.log("Category deleted successfully.");
+                await fetchCategories();
+                // If deleting last item on page, jump back
+                if (paginatedCategories.length === 1 && currentPage > 1) {
+                    setCurrentPage(prev => prev - 1);
+                }
+            } else {
+                const errorData = await res.json();
+                alert(`Error deleting category: ${errorData.message}`);
+            }
+        } catch (error) {
+            console.error("Failed to delete category", error);
+            alert("An unexpected error occurred during deletion.");
+        }
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setEditingId(null);
+        setFormData({ name: '', description: '', status: 'Active', color: '' });
+        setThumbnailFile(null);
+        setOriginalThumbnail(null);
     };
 
     return (
@@ -169,7 +220,7 @@ export default function CategoriesPage() {
                     </div>
                     {/* Create Category Button */}
                     <button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => { closeModal(); setIsModalOpen(true); }}
                         className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2"
                     >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -236,10 +287,18 @@ export default function CategoriesPage() {
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button className="p-2 text-gray-400 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/10 rounded-lg transition-colors" title="Edit Category">
+                                                <button
+                                                    onClick={() => handleEdit(category)}
+                                                    className="p-2 text-gray-400 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/10 rounded-lg transition-colors"
+                                                    title="Edit Category"
+                                                >
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                                 </button>
-                                                <button className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Delete Category">
+                                                <button
+                                                    onClick={() => handleDelete(category._id || category.id)}
+                                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete Category"
+                                                >
                                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                                                 </button>
                                             </div>
@@ -305,28 +364,28 @@ export default function CategoriesPage() {
                 </div>
             )}
 
-            {/* Create Category Modal */}
+            {/* Create Component Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center">
                     {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-                        onClick={() => setIsModalOpen(false)}
+                        onClick={closeModal}
                     ></div>
 
                     {/* Modal Content */}
                     <div className="relative bg-white rounded-[24px] shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                         <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-[#1A1D1F]">Create New Category</h3>
+                            <h3 className="text-lg font-bold text-[#1A1D1F]">{editingId ? 'Edit Category' : 'Create New Category'}</h3>
                             <button
-                                onClick={() => setIsModalOpen(false)}
+                                onClick={closeModal}
                                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
                             >
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>
                         </div>
 
-                        <form onSubmit={handleCreateCategory} className="p-6">
+                        <form onSubmit={handleSubmit} className="p-6">
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Category Name <span className="text-red-500">*</span></label>
@@ -368,7 +427,7 @@ export default function CategoriesPage() {
 
                                 <div>
                                     <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Category Image (Optional)</label>
-                                    <div className={`relative border-2 border-dashed ${thumbnailFile ? 'border-transparent' : 'border-gray-200'} rounded-xl hover:border-[#6C5DD3] transition-colors bg-gray-50 text-center overflow-hidden min-h-[140px] flex items-center justify-center`}>
+                                    <div className={`relative border-2 border-dashed ${(thumbnailFile || originalThumbnail) ? 'border-transparent' : 'border-gray-200'} rounded-xl hover:border-[#6C5DD3] transition-colors bg-gray-50 text-center overflow-hidden min-h-[140px] flex items-center justify-center`}>
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -380,16 +439,16 @@ export default function CategoriesPage() {
                                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
                                         />
 
-                                        {thumbnailFile ? (
+                                        {(thumbnailFile || originalThumbnail) ? (
                                             <div className="absolute inset-0 w-full h-full pointer-events-none group-thumbnail">
                                                 <img
-                                                    src={URL.createObjectURL(thumbnailFile)}
+                                                    src={thumbnailFile ? URL.createObjectURL(thumbnailFile) : originalThumbnail!}
                                                     alt="Preview"
                                                     className="object-cover w-full h-full"
                                                 />
                                                 <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 pointer-events-auto">
                                                     <span className="text-white text-sm font-bold mb-1">Click to change</span>
-                                                    <span className="text-white/80 text-xs truncate max-w-[200px] px-4">{thumbnailFile.name}</span>
+                                                    <span className="text-white/80 text-xs truncate max-w-[200px] px-4">{thumbnailFile ? thumbnailFile.name : "Current Image"}</span>
                                                 </div>
                                             </div>
                                         ) : (
@@ -408,7 +467,7 @@ export default function CategoriesPage() {
                             <div className="mt-8 flex items-center justify-end gap-3">
                                 <button
                                     type="button"
-                                    onClick={() => setIsModalOpen(false)}
+                                    onClick={closeModal}
                                     className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-colors"
                                 >
                                     Cancel
@@ -422,10 +481,10 @@ export default function CategoriesPage() {
                                     {isSubmitting ? (
                                         <>
                                             <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                            Creating...
+                                            {editingId ? 'Saving...' : 'Creating...'}
                                         </>
                                     ) : (
-                                        'Create Category'
+                                        editingId ? 'Save Changes' : 'Create Category'
                                     )}
                                 </button>
                             </div>
