@@ -1,164 +1,68 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-const courses = [
-    {
-        id: 1,
-        title: "Mastering UI/UX Design",
-        instructor: "Syed Roni",
-        category: "Design",
-        type: "Online",
-        students: 120,
-        rating: 4.8,
-        price: "$89.00",
-        status: "Active",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg", // Using a placeholder pattern
-        color: "from-[#8E8AFF] to-[#B4B1FF]",
-        lessons: 24,
-        duration: "12h 30m"
-    },
-    {
-        id: 2,
-        title: "Full Stack Development with Next.js",
-        instructor: "Cody Fisher",
-        category: "Development",
-        type: "Offline",
-        students: 85,
-        rating: 4.9,
-        price: "$120.00",
-        status: "Active",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
-        color: "from-[#FFAB7B] to-[#FFCF9D]",
-        lessons: 45,
-        duration: "28h 15m"
-    },
-    {
-        id: 3,
-        title: "Python for Data Science",
-        instructor: "Jenny Wilson",
-        category: "Data Science",
-        type: "Online",
-        students: 200,
-        rating: 4.7,
-        price: "$95.00",
-        status: "Draft",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
-        color: "from-[#FF9AD5] to-[#FFC2E8]",
-        lessons: 18,
-        duration: "10h 45m"
-    },
-    {
-        id: 4,
-        title: "Digital Marketing Masterclass",
-        instructor: "Esther Howard",
-        category: "Marketing",
-        type: "Offline",
-        students: 340,
-        rating: 4.6,
-        price: "$50.00",
-        status: "Active",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
-        color: "from-[#4BD37B] to-[#80F2AA]",
-        lessons: 32,
-        duration: "15h 20m"
-    },
-    {
-        id: 5,
-        title: "Flutter Mobile App Development",
-        instructor: "Guy Hawkins",
-        category: "Mobile Dev",
-        type: "Online",
-        students: 60,
-        rating: 4.8,
-        price: "$110.00",
-        status: "Archived",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
-        color: "from-[#6C5DD3] to-[#8E8AFF]",
-        lessons: 50,
-        duration: "30h 00m"
-    },
-    {
-        id: 6,
-        title: "Advanced React Patterns",
-        instructor: "Cody Fisher",
-        category: "Development",
-        type: "Online",
-        students: 150,
-        rating: 4.9,
-        price: "$95.00",
-        status: "Active",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
-        color: "from-[#FF9AD5] to-[#FFC2E8]",
-        lessons: 28,
-        duration: "14h 20m"
-    },
-    {
-        id: 7,
-        title: "Motion Design Fundamentals",
-        instructor: "Syed Roni",
-        category: "Design",
-        type: "Offline",
-        students: 95,
-        rating: 4.7,
-        price: "$75.00",
-        status: "Active",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
-        color: "from-[#4BD37B] to-[#80F2AA]",
-        lessons: 35,
-        duration: "18h 45m"
-    },
-    {
-        id: 8,
-        title: "Data Visualization with D3.js",
-        instructor: "Jenny Wilson",
-        category: "Data Science",
-        type: "Online",
-        students: 70,
-        rating: 4.5,
-        price: "$85.00",
-        status: "Draft",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
-        color: "from-[#8E8AFF] to-[#B4B1FF]",
-        lessons: 22,
-        duration: "11h 10m"
-    },
-    {
-        id: 9,
-        title: "SEO Strategy 2026",
-        instructor: "Esther Howard",
-        category: "Marketing",
-        type: "Online",
-        students: 210,
-        rating: 4.8,
-        price: "$60.00",
-        status: "Active",
-        thumbnail: "https://grainy-gradients.vercel.app/noise.svg",
-        color: "from-[#FFAB7B] to-[#FFCF9D]",
-        lessons: 15,
-        duration: "8h 30m"
-    }
-];
 
 const ITEMS_PER_PAGE = 6;
 
+// Function to deterministically map an index to a gradient for dynamic courses
+const getGradientProps = (index: number) => {
+    const gradients = [
+        "from-[#8E8AFF] to-[#B4B1FF]", // Purple
+        "from-[#FFAB7B] to-[#FFCF9D]", // Orange
+        "from-[#FF9AD5] to-[#FFC2E8]", // Pink
+        "from-[#4BD37B] to-[#80F2AA]", // Green
+        "from-[#6C5DD3] to-[#8E8AFF]", // Dark Purple
+    ];
+    return gradients[index % gradients.length];
+};
+
 export default function CoursesPage() {
-    const [filterType, setFilterType] = React.useState('All');
-    const [currentPage, setCurrentPage] = React.useState(1);
+    const [filterType, setFilterType] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [courses, setCourses] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await fetch('/api/courses');
+                if (!res.ok) throw new Error("Failed to fetch courses");
+                const data = await res.json();
+                if (data.success && data.data) {
+                    setCourses(data.data);
+                }
+            } catch (err: any) {
+                setError(err.message || "An error occurred fetching courses.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
 
     const filteredCourses = courses.filter(course => {
-        if (filterType === 'All') return true;
-        return course.type === filterType;
+        const matchesFilter = filterType === 'All' ||
+            (filterType === 'Online' && course.courseMode === 'Online Class') ||
+            (filterType === 'Offline' && course.courseMode === 'Offline Class') ||
+            (course.courseMode === filterType);
+
+        const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            course.category.toLowerCase().includes(searchQuery.toLowerCase());
+
+        return matchesFilter && matchesSearch;
     });
 
     const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const paginatedCourses = filteredCourses.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-    // Reset to page 1 when filter changes
-    React.useEffect(() => {
+    // Reset to page 1 when filters change
+    useEffect(() => {
         setCurrentPage(1);
-    }, [filterType]);
+    }, [filterType, searchQuery]);
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
@@ -191,7 +95,13 @@ export default function CoursesPage() {
 
                     <div className="relative">
                         <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-                        <input type="text" placeholder="Search courses..." className="pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 w-[240px]" />
+                        <input
+                            type="text"
+                            placeholder="Search courses..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 w-[240px]"
+                        />
                     </div>
                     <Link href="/dashboard/courses/add" className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -200,79 +110,108 @@ export default function CoursesPage() {
                 </div>
             </div>
 
+            {error && (
+                <div className="p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 text-sm font-medium">
+                    {error}
+                </div>
+            )}
+
             {/* Course Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                {paginatedCourses.map((course) => (
-                    <div key={course.id} className="bg-white rounded-[24px] p-4 shadow-sm border border-gray-100 group hover:shadow-md transition-all cursor-pointer">
-                        {/* Thumbnail Area */}
-                        <div className={`h-[160px] rounded-[20px] bg-gradient-to-br ${course.color} relative p-5 flex flex-col justify-between overflow-hidden mb-4`}>
-                            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30"></div>
+            {loading ? (
+                <div className="flex justify-center items-center py-20">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6C5DD3]"></div>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+                    {paginatedCourses.map((course, index) => {
+                        const gradientColor = getGradientProps(index);
+                        const displayType = course.courseMode === 'Online Class' ? 'Online' : course.courseMode === 'Offline Class' ? 'Offline' : course.courseMode;
+                        const instructors = course.assignedTeachers && course.assignedTeachers.length > 0
+                            ? course.assignedTeachers.map((t: any) => t.name).join(', ')
+                            : 'No Instructor Assigned';
 
-                            <div className="flex justify-between items-start relative z-10">
-                                <div className="flex gap-2">
-                                    <span className="px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20">
-                                        {course.category}
-                                    </span>
-                                    <span className={`px-2.5 py-1 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 ${course.type === 'Online' ? 'bg-[#8E8AFF]/40' : 'bg-[#FF754C]/40'}`}>
-                                        {course.type}
-                                    </span>
-                                </div>
-                                <button className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/30 transition-colors">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                </button>
-                            </div>
+                        return (
+                            <div key={course._id} className="bg-white rounded-[24px] p-4 shadow-sm border border-gray-100 group hover:shadow-md transition-all cursor-pointer">
+                                {/* Thumbnail Area */}
+                                <div className={`h-[160px] rounded-[20px] bg-gradient-to-br ${gradientColor} relative p-5 flex flex-col justify-between overflow-hidden mb-4`}>
+                                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 z-0"></div>
 
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-1 text-white/90 text-[11px] font-medium mb-1">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                    {course.duration} • {course.lessons} Lessons
-                                </div>
-                            </div>
-                        </div>
+                                    {course.thumbnail && (
+                                        <img
+                                            src={course.thumbnail}
+                                            alt={course.title}
+                                            className="absolute top-0 left-0 w-full h-full object-cover z-0"
+                                        />
+                                    )}
 
-                        {/* Content */}
-                        <div className="px-2 pb-2">
-                            <h3 className="font-bold text-[#1A1D1F] text-lg leading-tight mb-2 group-hover:text-[#6C5DD3] transition-colors">{course.title}</h3>
+                                    <div className="flex justify-between items-start relative z-10">
+                                        <div className="flex gap-2">
+                                            <span className="px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 shadow-sm">
+                                                {course.category}
+                                            </span>
+                                            <span className={`px-2.5 py-1 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 shadow-sm ${displayType === 'Online' ? 'bg-[#8E8AFF]/40' : 'bg-[#FF754C]/40'}`}>
+                                                {displayType}
+                                            </span>
+                                        </div>
+                                    </div>
 
-                            <div className="flex items-center gap-2 mb-4">
-                                <div className="w-6 h-6 rounded-full bg-gray-200 overflow-hidden">
-                                    <img src={`https://i.pravatar.cc/150?u=${course.instructor}`} alt={course.instructor} />
-                                </div>
-                                <span className="text-xs text-gray-500 font-medium">by {course.instructor}</span>
-                            </div>
-
-                            <div className="border-t border-gray-50 pt-3 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-lg font-bold text-[#1A1D1F]">{course.price}</span>
-                                    <div className="flex items-center gap-1 text-yellow-500">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                        <span className="text-xs font-bold text-[#1A1D1F]">{course.rating}</span>
+                                    <div className="relative z-10">
+                                        <div className="flex items-center gap-1 text-white/90 text-[11px] font-medium mb-1 drop-shadow-md">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                            {course.duration || "N/A"} • {course.totalLectures || 0} Lessons
+                                        </div>
                                     </div>
                                 </div>
 
-                                <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${course.status === 'Active' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' :
-                                    course.status === 'Draft' ? 'bg-gray-100 text-gray-500' :
-                                        'bg-[#FF4C4C]/10 text-[#FF4C4C]'
-                                    }`}>
-                                    {course.status}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                                {/* Content */}
+                                <div className="px-2 pb-2">
+                                    <h3 className="font-bold text-[#1A1D1F] text-lg leading-tight mb-2 group-hover:text-[#6C5DD3] transition-colors line-clamp-2 min-h-[50px]">{course.title}</h3>
 
-                {/* Add New Placeholder Card */}
-                <div className="bg-gray-50 rounded-[24px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 cursor-pointer hover:border-[#6C5DD3] hover:bg-[#6C5DD3]/5 transition-all min-h-[350px] group">
-                    <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-[#6C5DD3] group-hover:scale-110 transition-all mb-4">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <div className="w-6 h-6 rounded-full bg-gray-200 overflow-hidden flex items-center justify-center text-[10px] font-bold text-gray-400">
+                                            {course.assignedTeachers && course.assignedTeachers.length > 0 ? (
+                                                <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(course.assignedTeachers[0].name)}&background=random`} alt="Instructor" />
+                                            ) : (
+                                                "NA"
+                                            )}
+                                        </div>
+                                        <span className="text-xs text-gray-500 font-medium truncate max-w-[200px]">by {instructors}</span>
+                                    </div>
+
+                                    <div className="border-t border-gray-50 pt-3 flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-lg font-bold text-[#1A1D1F]">
+                                                {course.isFree ? "Free" : `৳${course.regularFee || 0}`}
+                                            </span>
+                                        </div>
+
+                                        <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${course.status === 'Active' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' :
+                                                course.status === 'Draft' ? 'bg-gray-100 text-gray-500' :
+                                                    'bg-[#FF4C4C]/10 text-[#FF4C4C]'
+                                            }`}>
+                                            {course.status}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    {/* Add New Placeholder Card */}
+                    <div className="bg-gray-50 rounded-[24px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 cursor-pointer hover:border-[#6C5DD3] hover:bg-[#6C5DD3]/5 transition-all min-h-[350px] group">
+                        <Link href="/dashboard/courses/add" className="flex flex-col items-center justify-center w-full h-full">
+                            <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-[#6C5DD3] group-hover:scale-110 transition-all mb-4">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </div>
+                            <h3 className="font-bold text-gray-900 mb-1">Add New Course</h3>
+                            <p className="text-xs text-gray-500 text-center">Create a new course and start earning</p>
+                        </Link>
                     </div>
-                    <h3 className="font-bold text-gray-900 mb-1">Add New Course</h3>
-                    <p className="text-xs text-gray-500 text-center">Create a new course and start earning</p>
                 </div>
-            </div>
+            )}
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
+            {totalPages > 1 && !loading && (
                 <div className="p-6 bg-white rounded-[24px] border border-gray-100 flex items-center justify-between shadow-sm">
                     <p className="text-xs text-gray-500 font-medium">
                         Showing <span className="text-[#1A1D1F] font-bold">{filteredCourses.length > 0 ? startIndex + 1 : 0}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, filteredCourses.length)}</span> of <span className="text-[#1A1D1F] font-bold">{filteredCourses.length}</span> courses
