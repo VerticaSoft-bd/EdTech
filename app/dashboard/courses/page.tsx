@@ -153,6 +153,20 @@ export default function CoursesPage() {
                                                 {displayType}
                                             </span>
                                         </div>
+                                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-[#6C5DD3] transition-colors shadow-sm"
+                                                title="Edit Course"
+                                            >
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                            </button>
+                                            <button
+                                                className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-red-500 hover:text-white transition-colors shadow-sm"
+                                                title="Delete Course"
+                                            >
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            </button>
+                                        </div>
                                     </div>
 
                                     <div className="relative z-10">
@@ -186,8 +200,8 @@ export default function CoursesPage() {
                                         </div>
 
                                         <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${course.status === 'Active' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' :
-                                                course.status === 'Draft' ? 'bg-gray-100 text-gray-500' :
-                                                    'bg-[#FF4C4C]/10 text-[#FF4C4C]'
+                                            course.status === 'Draft' ? 'bg-gray-100 text-gray-500' :
+                                                'bg-[#FF4C4C]/10 text-[#FF4C4C]'
                                             }`}>
                                             {course.status}
                                         </span>

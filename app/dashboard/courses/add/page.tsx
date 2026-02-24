@@ -125,6 +125,7 @@ export default function AddCoursePage() {
                 ...courseData,
                 thumbnail: thumbnailUrl,
                 studentProjects: uploadedProjectUrls,
+                assignedTeachers: courseData.assignedTeachers.filter(id => id.trim() !== ""),
                 status
             };
 
