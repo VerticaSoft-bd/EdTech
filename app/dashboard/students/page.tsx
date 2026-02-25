@@ -1,12 +1,22 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import CreateStudentModal from "@/app/components/CreateStudentModal";
+import EditStudentModal from "@/app/components/EditStudentModal";
+import ViewStudentModal from "@/app/components/ViewStudentModal";
+import TransactionHistoryModal from "@/app/components/TransactionHistoryModal";
+import CoursePurchaseHistoryModal from "@/app/components/CoursePurchaseHistoryModal";
 
 const ITEMS_PER_PAGE = 5;
 
 export default function StudentsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+    const [isCourseHistoryModalOpen, setIsCourseHistoryModalOpen] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState<any>(null);
+    const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
     const [students, setStudents] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -131,9 +141,51 @@ export default function StudentsPage() {
                                         <span className="text-[10px] text-gray-400 mt-1 block">{progress}%</span>
                                     </td>
                                     <td className="p-6 text-right">
-                                        <button className="p-2 hover:bg-gray-200 rounded-lg text-gray-400 hover:text-[#1A1D1F] transition-colors">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                                        </button>
+                                        <div className="relative inline-block text-left">
+                                            <button
+                                                onClick={() => setOpenActionMenuId(openActionMenuId === (student._id || student.id) ? null : (student._id || student.id))}
+                                                className="p-2 hover:bg-gray-200 rounded-lg text-gray-400 hover:text-[#1A1D1F] transition-colors"
+                                            >
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                            </button>
+
+                                            {openActionMenuId === (student._id || student.id) && (
+                                                <>
+                                                    <div className="fixed inset-0 z-10" onClick={() => setOpenActionMenuId(null)}></div>
+                                                    <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100 p-2 z-20">
+                                                        <button
+                                                            onClick={() => { setSelectedStudent(student); setIsViewModalOpen(true); setOpenActionMenuId(null); }}
+                                                            className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-[#1A1D1F] rounded-lg transition-colors"
+                                                        >
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                                            View Details
+                                                        </button>
+                                                        <button
+                                                            onClick={() => { setSelectedStudent(student); setIsEditModalOpen(true); setOpenActionMenuId(null); }}
+                                                            className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-[#1A1D1F] rounded-lg transition-colors"
+                                                        >
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                                            Edit
+                                                        </button>
+                                                        <div className="h-px bg-gray-100 my-1 mx-2"></div>
+                                                        <button
+                                                            onClick={() => { setSelectedStudent(student); setIsTransactionModalOpen(true); setOpenActionMenuId(null); }}
+                                                            className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-[#1A1D1F] rounded-lg transition-colors"
+                                                        >
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                                            Transactions
+                                                        </button>
+                                                        <button
+                                                            onClick={() => { setSelectedStudent(student); setIsCourseHistoryModalOpen(true); setOpenActionMenuId(null); }}
+                                                            className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-[#1A1D1F] rounded-lg transition-colors"
+                                                        >
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                                                            Course History
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             );
@@ -191,6 +243,43 @@ export default function StudentsPage() {
                     setIsModalOpen(false);
                 }}
             />
+
+            {selectedStudent && (
+                <EditStudentModal
+                    isOpen={isEditModalOpen}
+                    onClose={() => { setIsEditModalOpen(false); setSelectedStudent(null); }}
+                    onSuccess={() => {
+                        fetchStudents();
+                        setIsEditModalOpen(false);
+                        setSelectedStudent(null);
+                    }}
+                    student={selectedStudent}
+                />
+            )}
+
+            {selectedStudent && (
+                <ViewStudentModal
+                    isOpen={isViewModalOpen}
+                    onClose={() => { setIsViewModalOpen(false); setSelectedStudent(null); }}
+                    student={selectedStudent}
+                />
+            )}
+
+            {selectedStudent && (
+                <TransactionHistoryModal
+                    isOpen={isTransactionModalOpen}
+                    onClose={() => { setIsTransactionModalOpen(false); setSelectedStudent(null); }}
+                    student={selectedStudent}
+                />
+            )}
+
+            {selectedStudent && (
+                <CoursePurchaseHistoryModal
+                    isOpen={isCourseHistoryModalOpen}
+                    onClose={() => { setIsCourseHistoryModalOpen(false); setSelectedStudent(null); }}
+                    student={selectedStudent}
+                />
+            )}
         </div>
     );
 }
