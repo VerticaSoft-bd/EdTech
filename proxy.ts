@@ -1,25 +1,59 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { jwtVerify } from 'jose';
 
 // This function can be marked `async` if using `await` inside
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const authCookie = request.cookies.get('auth_token');
     const { pathname } = request.nextUrl;
 
-    // 1. Protect all /dashboard routes
-    if (pathname.startsWith('/dashboard')) {
+    // 1. Unauthenticated users trying to access dashboard routes
+    if (pathname.startsWith('/dashboard') || pathname.startsWith('/student-dashboard')) {
         if (!authCookie) {
-            // Redirect unauthenticated users to the login page
             const loginUrl = new URL('/login', request.url);
-            // Optionally pass the original URL as a 'callbackUrl' query param if you want them to return after logging in
+            return NextResponse.redirect(loginUrl);
+        }
+
+        // 2. Role-Based Access Control (RBAC)
+        try {
+            // Decode the token using `jose` which is Edge-compatible
+            const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+            const { payload } = await jwtVerify(authCookie.value, secret);
+            const userRole = payload.role as string;
+
+            // If a 'student' tries to access the main Admin dashboard or any other admin pages
+            if (userRole === 'student' && pathname.startsWith('/dashboard')) {
+                // Force them to only see their student dashboard
+                return NextResponse.redirect(new URL('/student-dashboard', request.url));
+            }
+
+            // If an Admin tries to access the student-dashboard, redirect them to the main admin dashboard
+            if (userRole !== 'student' && pathname.startsWith('/student-dashboard')) {
+                return NextResponse.redirect(new URL('/dashboard', request.url));
+            }
+
+        } catch (error) {
+            // Token is invalid or expired
+            const loginUrl = new URL('/login', request.url);
             return NextResponse.redirect(loginUrl);
         }
     }
 
-    // 2. Prevent authenticated users from visiting the login page
-    if (pathname === '/login' || pathname === '/') {
+    // 3. Prevent authenticated users from visiting the login/signup pages
+    if (pathname === '/login' || pathname === '/' || pathname === '/signup') {
         if (authCookie) {
-            return NextResponse.redirect(new URL('/dashboard', request.url));
+            try {
+                const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+                const { payload } = await jwtVerify(authCookie.value, secret);
+
+                if (payload.role === 'student') {
+                    return NextResponse.redirect(new URL('/student-dashboard', request.url));
+                } else {
+                    return NextResponse.redirect(new URL('/dashboard', request.url));
+                }
+            } catch (error) {
+                // If token verify fails, just let them go to the login page to re-authenticate
+            }
         }
     }
 

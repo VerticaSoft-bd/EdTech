@@ -31,9 +31,15 @@ export default function LoginPage() {
             if (!res.ok) {
                 toast.error(data.message || "Invalid credentials. Please try again.");
             } else {
-                // Success! Token is set in cookies. Redirect to dashboard
+                // Success! Token is set in cookies
                 toast.success("Welcome back!");
-                router.push('/dashboard');
+
+                // Check role and redirect accordingly
+                if (data.data?.role === 'student') {
+                    router.push('/student-dashboard');
+                } else {
+                    router.push('/dashboard');
+                }
             }
         } catch (err) {
             toast.error("Failed to connect to the server. Please try again.");
