@@ -40,7 +40,7 @@ export async function proxy(request: NextRequest) {
     }
 
     // 3. Prevent authenticated users from visiting the login/signup pages
-    if (pathname === '/login' || pathname === '/' || pathname === '/signup') {
+    if (pathname === '/login' || pathname === '/signup') {
         if (authCookie) {
             try {
                 const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');

@@ -1,0 +1,98 @@
+import React from 'react';
+
+export default function Footer() {
+    return (
+        <footer className="bg-[#1A1D1F] text-white pt-16 pb-8 border-t border-[#2A2E33]">
+            <div className="max-w-[1600px] mx-auto px-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+
+                    {/* Brand Section */}
+                    <div className="col-span-1 md:col-span-1">
+                        <div className="flex items-center gap-2 mb-6">
+                            <div className="w-8 h-8 bg-[#6C5DD3] rounded-lg flex items-center justify-center transform -rotate-12">
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="3"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                                </svg>
+                            </div>
+                            <span className="text-xl font-bold tracking-tight">Streva</span>
+                        </div>
+                        <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                            Empowering the next generation of digital creators and software engineers through smart, engaging learning journeys.
+                        </p>
+                        <div className="flex items-center gap-4">
+                            <a href="#" className="w-10 h-10 rounded-full bg-[#2A2E33] flex items-center justify-center hover:bg-[#6C5DD3] transition-colors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                            </a>
+                            <a href="#" className="w-10 h-10 rounded-full bg-[#2A2E33] flex items-center justify-center hover:bg-[#6C5DD3] transition-colors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                            </a>
+                            <a href="#" className="w-10 h-10 rounded-full bg-[#2A2E33] flex items-center justify-center hover:bg-[#6C5DD3] transition-colors">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Links Section 1 */}
+                    <div>
+                        <h4 className="text-white font-bold mb-6">Platform</h4>
+                        <ul className="space-y-4">
+                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Browse Courses</a></li>
+                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Career Paths</a></li>
+                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Smart Tutoring</a></li>
+                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Certificates</a></li>
+                        </ul>
+                    </div>
+
+                    {/* Links Section 2 */}
+                    <div>
+                        <h4 className="text-white font-bold mb-6">Company</h4>
+                        <ul className="space-y-4">
+                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">About Us</a></li>
+                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Careers</a></li>
+                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Contact</a></li>
+                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Partners</a></li>
+                        </ul>
+                    </div>
+
+                    {/* Newsletter Section */}
+                    <div>
+                        <h4 className="text-white font-bold mb-6">Subscribe</h4>
+                        <p className="text-gray-400 text-sm mb-4">Get the latest course updates and educational insights.</p>
+                        <div className="flex bg-[#2A2E33] rounded-xl p-1 relative overflow-hidden">
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                className="bg-transparent border-none text-sm text-white px-4 py-2 w-full focus:outline-none focus:ring-0"
+                            />
+                            <button className="bg-[#6C5DD3] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#5b4eb3] transition-colors shrink-0">
+                                Subscribe
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* Bottom Footer */}
+                <div className="pt-8 border-t border-[#2A2E33] flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p className="text-gray-500 text-sm">
+                        © {new Date().getFullYear()} Streva Education. All rights reserved.
+                    </p>
+                    <div className="flex items-center gap-6">
+                        <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy Policy</a>
+                        <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Terms of Service</a>
+                        <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Cookies</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+}
