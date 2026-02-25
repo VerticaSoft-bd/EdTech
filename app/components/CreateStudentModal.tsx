@@ -55,6 +55,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
         education: '',
         mobileNo: '',
         guardianMobileNo: '',
+        avatar: '',
         privacyPolicyAccepted: false,
     });
 
@@ -68,6 +69,17 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
             setFormData(prev => ({ ...prev, [name]: target.checked }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
+        }
+    };
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData(prev => ({ ...prev, avatar: reader.result as string }));
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -112,7 +124,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
 
                 // Reset form
                 setFormData({
-                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', zipCode: '', city: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', privacyPolicyAccepted: false,
+                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', zipCode: '', city: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', privacyPolicyAccepted: false,
                 });
 
                 if (onSuccess) onSuccess();
@@ -182,6 +194,29 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                         <div>
                             <h3 className="text-lg font-bold text-[#1A1D1F] mb-4 pb-2 border-b border-gray-100">Personal Information</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Avatar Upload */}
+                                <div className="space-y-2 md:col-span-2 flex flex-col items-center justify-center py-4">
+                                    <div className="relative group cursor-pointer w-24 h-24 rounded-full border-2 border-dashed border-gray-300 hover:border-[#6C5DD3] transition-colors overflow-hidden">
+                                        {formData.avatar ? (
+                                            <img src={formData.avatar} alt="Avatar preview" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center w-full h-full text-gray-400 group-hover:text-[#6C5DD3] transition-colors bg-gray-50">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                                    <circle cx="12" cy="13" r="4"></circle>
+                                                </svg>
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-2 font-medium">Upload Profile Photo (Optional)</p>
+                                </div>
+
                                 <div className="space-y-2 md:col-span-2">
                                     <label className="text-sm font-bold text-gray-700">Full Name <span className="text-red-500">*</span></label>
                                     <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Enter full name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
