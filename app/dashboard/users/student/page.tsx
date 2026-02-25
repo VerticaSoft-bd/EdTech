@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import CreateUserModal from "@/app/components/CreateUserModal";
+import CreateStudentModal from "@/app/components/CreateStudentModal";
 import UsersTable from "@/app/components/UsersTable";
 
 export default function StudentUsersPage() {
@@ -47,8 +47,7 @@ export default function StudentUsersPage() {
 
             <UsersTable users={users} loading={loading} role="student" />
 
-            <CreateUserModal
-                role="student"
+            <CreateStudentModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSuccess={() => {

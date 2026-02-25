@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import CreateStudentModal from "@/app/components/CreateStudentModal";
 
 const students = [
     {
@@ -138,6 +139,7 @@ const ITEMS_PER_PAGE = 5;
 
 export default function StudentsPage() {
     const [currentPage, setCurrentPage] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const totalPages = Math.ceil(students.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -153,7 +155,10 @@ export default function StudentsPage() {
         <div className="space-y-6 pb-8">
             <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-[#1A1D1F]">Student Management</h2>
-                <button className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2">
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2"
+                >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     Add Student
                 </button>
@@ -251,8 +256,8 @@ export default function StudentsPage() {
                                     key={page}
                                     onClick={() => handlePageChange(page)}
                                     className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${currentPage === page
-                                            ? 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20'
-                                            : 'text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]'
+                                        ? 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20'
+                                        : 'text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]'
                                         }`}
                                 >
                                     {page}
@@ -270,6 +275,11 @@ export default function StudentsPage() {
                     </div>
                 </div>
             </div>
+
+            <CreateStudentModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }
