@@ -10,7 +10,9 @@ export interface IStudent extends Document {
     gender: 'Male' | 'Female';
     dateOfBirth: string; // or Date Native
     presentAddress: string;
-    depositCourseFee: number;
+    totalCourseFee: number;
+    paidAmount: number;
+    dueAmount: number;
     country: string;
     email: string;
     nidNo: string;
@@ -46,7 +48,9 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
         },
         dateOfBirth: { type: String, required: true },
         presentAddress: { type: String, required: true },
-        depositCourseFee: { type: Number, required: true },
+        totalCourseFee: { type: Number, required: true },
+        paidAmount: { type: Number, required: true },
+        dueAmount: { type: Number, required: true },
         country: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         nidNo: { type: String, required: true },
@@ -61,8 +65,11 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
     }
 );
 
-// Prevent mongoose from compiling the model multiple times
-const Student: Model<IStudent> =
-    mongoose.models.Student || mongoose.model<IStudent>('Student', StudentSchema);
+// Clear Mongoose schema cache for hot-reloading in Next.js
+if (mongoose.models.Student) {
+    delete mongoose.models.Student;
+}
+
+const Student: Model<IStudent> = mongoose.model<IStudent>('Student', StudentSchema);
 
 export default Student;

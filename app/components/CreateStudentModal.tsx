@@ -99,13 +99,29 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
         }
 
         setIsLoading(true);
+
+        const selectedCourse = courses.find((c: any) => c.title === formData.courseName);
+        const totalFee = selectedCourse?.regularFee || 0;
+        const paidAmount = Number(formData.depositCourseFee) || 0;
+        const dueAmount = Math.max(0, totalFee - paidAmount);
+
+        // Build submission payload matching the updated Student schema for accounts
+        const submissionPayload = {
+            ...formData,
+            totalCourseFee: totalFee,
+            paidAmount: paidAmount,
+            dueAmount: dueAmount,
+        };
+        // Remove the frontend-only state key
+        delete (submissionPayload as any).depositCourseFee;
+
         try {
             const response = await fetch('/api/students', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(submissionPayload),
             });
 
             const data = await response.json();
