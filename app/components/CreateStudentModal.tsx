@@ -47,8 +47,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
         gender: 'Male',
         dateOfBirth: '',
         presentAddress: '',
-        zipCode: '',
-        city: '',
+        depositCourseFee: '',
         country: '',
         email: '',
         nidNo: '',
@@ -69,6 +68,14 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
             setFormData(prev => ({ ...prev, [name]: target.checked }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
+
+            // Auto-fill depositCourseFee if courseName is changed
+            if (name === 'courseName') {
+                const selectedCourse = courses.find((c: any) => c.title === value);
+                if (selectedCourse && selectedCourse.regularFee !== undefined) {
+                    setFormData(prev => ({ ...prev, depositCourseFee: selectedCourse.regularFee.toString() }));
+                }
+            }
         }
     };
 
@@ -124,7 +131,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
 
                 // Reset form
                 setFormData({
-                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', zipCode: '', city: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', privacyPolicyAccepted: false,
+                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', privacyPolicyAccepted: false,
                 });
 
                 if (onSuccess) onSuccess();
@@ -139,6 +146,11 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
             setIsLoading(false);
         }
     };
+
+    const selectedCourse = courses.find((c: any) => c.title === formData.courseName);
+    const totalFee = selectedCourse?.regularFee || 0;
+    const paidAmount = Number(formData.depositCourseFee) || 0;
+    const dueAmount = Math.max(0, totalFee - paidAmount);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-6">
@@ -176,7 +188,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                             <option value="" disabled>{isLoadingCourses ? 'Loading courses...' : 'Select a course'}</option>
                                             {courses.map((course: any) => (
                                                 <option key={course._id} value={course.title}>
-                                                    {course.title} {course.batch ? `(${course.batch})` : ''} - {course.courseMode}
+                                                    {course.title} - ৳{course.regularFee || 0}
                                                 </option>
                                             ))}
                                         </select>
@@ -329,19 +341,37 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                     <input type="text" name="presentAddress" value={formData.presentAddress} onChange={handleChange} required placeholder="Street address, apartment, suite, etc." className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">City <span className="text-red-500">*</span></label>
-                                    <input type="text" name="city" value={formData.city} onChange={handleChange} required placeholder="City name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Zip Code <span className="text-red-500">*</span></label>
-                                    <input type="text" name="zipCode" value={formData.zipCode} onChange={handleChange} required placeholder="Zip or postal code" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
-                                </div>
-
-                                <div className="space-y-2">
+                                <div className="space-y-2 md:col-span-2">
                                     <label className="text-sm font-bold text-gray-700">Country <span className="text-red-500">*</span></label>
                                     <input type="text" name="country" value={formData.country} onChange={handleChange} required placeholder="Country name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Course Fee Payment */}
+                        <div>
+                            <h3 className="text-lg font-bold text-[#1A1D1F] mb-4 pb-2 border-b border-gray-100">Payment Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2 col-span-1 md:col-span-2">
+                                    <label className="text-sm font-bold text-gray-700">Course Fee Deposit <span className="text-red-500">*</span></label>
+                                    <input type="number" name="depositCourseFee" value={formData.depositCourseFee} onChange={handleChange} required placeholder="Enter deposit amount" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    {formData.courseName && (
+                                        <div className="mt-3 p-4 bg-white rounded-[16px] border border-gray-200">
+                                            <div className="flex justify-between items-center mb-2 pb-2 border-b border-gray-100">
+                                                <span className="text-sm font-medium text-gray-600">Total Course Fee</span>
+                                                <span className="text-sm font-bold text-[#1A1D1F]">৳{totalFee}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="text-sm font-medium text-gray-600">Paid Amount</span>
+                                                <span className="text-sm font-bold text-green-600">৳{paidAmount}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span className="text-sm font-medium text-gray-600">Due Amount</span>
+                                                <span className="text-sm font-bold text-red-500">৳{dueAmount}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <p className="text-xs text-gray-500 mt-2">* This field auto-fills with the selected course's regular fee, but you can adjust the deposit amount.</p>
                                 </div>
                             </div>
                         </div>

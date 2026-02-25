@@ -10,8 +10,7 @@ export interface IStudent extends Document {
     gender: 'Male' | 'Female';
     dateOfBirth: string; // or Date Native
     presentAddress: string;
-    zipCode: string;
-    city: string;
+    depositCourseFee: number;
     country: string;
     email: string;
     nidNo: string;
@@ -47,8 +46,7 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
         },
         dateOfBirth: { type: String, required: true },
         presentAddress: { type: String, required: true },
-        zipCode: { type: String, required: true },
-        city: { type: String, required: true },
+        depositCourseFee: { type: Number, required: true },
         country: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         nidNo: { type: String, required: true },
