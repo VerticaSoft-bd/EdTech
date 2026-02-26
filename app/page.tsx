@@ -51,45 +51,43 @@ export default function RootPage() {
 
                 {/* Category Flow Tabs - Centered Below Hero */}
                 <div className="flex justify-center w-full relative z-20 mt-8 lg:mt-12 px-4 pb-8">
-                    <div className="bg-white rounded-[24px] p-2 shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-wrap items-center justify-center gap-2 max-w-fit mx-auto backdrop-blur-sm">
+                    <div className="bg-white rounded-[24px] p-2 shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-wrap items-center justify-center gap-1 max-w-fit mx-auto backdrop-blur-sm">
 
-                        {/* Live Courses - Active Style (Strict Ask AI Design) */}
-                        <button className="relative group overflow-hidden p-[1px] rounded-[18px] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 bg-gradient-to-br from-[#8E8AFF] via-[#F1F5F9] via-60% to-[#6C5DD3] shrink-0">
-                            <div className="relative bg-white rounded-[17px] pl-6 pr-7 py-3 flex items-center gap-3 bg-[radial-gradient(circle_at_top_left,rgba(142,138,255,0.15),transparent_50%),radial-gradient(circle_at_bottom_right,rgba(108,93,211,0.15),transparent_50%)]">
-                                <div className="absolute inset-0 bg-gradient-to-r from-[#6C5DD3]/0 via-[#6C5DD3]/10 to-[#6C5DD3]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer rounded-[17px]"></div>
-                                <div className="text-[#1A1D1F]">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                                        <line x1="8" y1="21" x2="16" y2="21" />
-                                        <line x1="12" y1="17" x2="12" y2="21" />
-                                    </svg>
+                        {["Live Courses", "Recorded Classes", "Offline Campus"].map((item, idx) => (
+                            <button
+                                key={item}
+                                className={`px-6 py-3 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-3 overflow-hidden ${idx === 0
+                                        ? "text-[#6C5DD3]"
+                                        : "text-gray-500 hover:text-[#1A1D1F]"
+                                    }`}
+                            >
+                                {/* Magnetic Glow Background */}
+                                <div className="absolute inset-0 bg-[#6C5DD3]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div className="absolute -inset-1 bg-gradient-to-r from-transparent via-[#6C5DD3]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"></div>
+
+                                {/* Icon based on index */}
+                                <div className="relative z-10 transition-transform group-hover:scale-110 duration-300">
+                                    {idx === 0 && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>}
+                                    {idx === 1 && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>}
+                                    {idx === 2 && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>}
                                 </div>
-                                <span className="font-black text-[14px] text-[#1A1D1F] tracking-tight relative z-10">
-                                    Live Courses
-                                </span>
-                                <div className="relative z-10 w-1.5 h-1.5 rounded-full bg-[#6C5DD3] shadow-[0_0_8px_rgba(108,93,211,0.8)] animate-pulse"></div>
-                            </div>
-                        </button>
 
-                        {/* Recorded Classes */}
-                        <button className="relative group px-7 py-3 bg-transparent text-gray-500 rounded-[18px] text-[14px] font-bold hover:text-[#1A1D1F] transition-all flex items-center gap-3 overflow-hidden">
-                            <div className="absolute inset-0 bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-[18px]"></div>
-                            <svg className="relative z-10 text-gray-400 group-hover:text-[#6C5DD3] transition-colors" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polygon points="23 7 16 12 23 17 23 7" />
-                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-                            </svg>
-                            <span className="relative z-10 tracking-tight">Recorded Classes</span>
-                        </button>
+                                <span className="relative z-10 uppercase tracking-widest">{item}</span>
 
-                        {/* Offline Campus */}
-                        <button className="relative group px-7 py-3 bg-transparent text-gray-500 rounded-[18px] text-[14px] font-bold hover:text-[#1A1D1F] transition-all flex items-center gap-3 overflow-hidden">
-                            <div className="absolute inset-0 bg-gray-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-[18px]"></div>
-                            <svg className="relative z-10 text-gray-400 group-hover:text-[#6C5DD3] transition-colors" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                                <path d="M6 12v5c3 3 9 3 12 0v-5" />
-                            </svg>
-                            <span className="relative z-10 tracking-tight">Offline Campus</span>
-                        </button>
+                                {/* AI Indicator */}
+                                {idx === 0 ? (
+                                    <div className="relative z-10 flex gap-0.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#6C5DD3] animate-pulse"></span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#6C5DD3]/40"></span>
+                                    </div>
+                                ) : (
+                                    <div className="relative z-10 w-1.5 h-1.5 rounded-full bg-transparent group-hover:bg-[#6C5DD3]/30 transition-colors"></div>
+                                )}
+
+                                {/* Bottom Energy Bar */}
+                                <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[3px] bg-[#6C5DD3] rounded-full transition-all duration-300 ${idx === 0 ? 'w-6' : 'w-0 group-hover:w-4 opacity-50'}`}></span>
+                            </button>
+                        ))}
                     </div>
                 </div>
 
