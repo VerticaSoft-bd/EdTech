@@ -1,6 +1,10 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
+import HeroCarousel from "@/app/components/HeroCarousel";
+import SeminarModal from "@/app/components/SeminarModal";
 
 // Mock Data
 const UPCOMING_BATCHES = [
@@ -29,6 +33,8 @@ const TESTIMONIALS = [
 ];
 
 export default function RootPage() {
+    const [isSeminarModalOpen, setIsSeminarModalOpen] = useState(false);
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] font-sans text-[#1A1D1F] flex flex-col">
             <Header />
@@ -36,75 +42,12 @@ export default function RootPage() {
             <main className="flex-1 flex flex-col items-center w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-8 md:py-12 gap-16">
 
                 {/* Hero Section */}
-                <section className="w-full flex justify-center mb-8 lg:mb-12">
-                    <div className="bg-[#EEF2F6] rounded-[2rem] w-full relative">
-                        {/* Main Container */}
-                        <div className="flex flex-col lg:flex-row items-stretch justify-between h-full">
+                <HeroCarousel onOpenModal={() => setIsSeminarModalOpen(true)} />
 
-                            {/* Left Content */}
-                            <div className="flex-1 p-8 md:p-14 lg:pr-0 z-10 w-full lg:w-[45%] flex flex-col justify-center my-auto">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D4F]"></span>
-                                    <span className="text-[#FF4D4F] text-[11px] font-extrabold tracking-[0.1em] uppercase">LIVE LEARNING PLATFORM</span>
-                                </div>
-                                <h1 className="text-[44px] md:text-[56px] lg:text-[60px] font-extrabold leading-[1.1] text-[#1A1D2D] tracking-tight mb-6">
-                                    Skill up with <span className="text-[#3972CA]">Live<br />Courses</span>
-                                </h1>
-                                <p className="text-[17px] text-[#5A6B80] font-medium max-w-[420px] leading-[1.6] mb-10">
-                                    Join thousands of learners mastering new skills with industry experts in real-time.
-                                </p>
-                                <div className="flex flex-wrap items-center gap-4 mb-16 lg:mb-20">
-                                    <button className="px-7 py-3.5 bg-[#3972CA] text-white font-bold rounded-xl hover:bg-[#2d5da8] transition text-[15px] flex items-center gap-2">
-                                        Browse Courses
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-                                    </button>
-                                    <button className="px-8 py-3.5 bg-white text-gray-800 font-bold rounded-xl hover:bg-gray-50 transition text-[15px]">
-                                        Free Seminar
-                                    </button>
-                                </div>
-
-                                {/* Very subtle logos at bottom */}
-                                <div className="flex items-center gap-6 opacity-30 grayscale">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5h-2v-4H6v-2h3v-4h2v10zM17 12h-3v-2h3v2zm0-4h-3V6h3v2zm0 8h-3v-2h3v2z" /></svg>
-                                    <svg width="30" height="24" viewBox="0 0 44 24" fill="currentColor"><path d="M10 4v16H4V4h6zm14 0v16h-6V4h6zm14 0v16h-6V4h6z" /></svg>
-                                </div>
-                            </div>
-
-                            {/* Right Image Container */}
-                            <div className="w-full lg:w-[55%] relative h-[350px] md:h-[450px] lg:h-auto min-h-[400px]">
-                                {/* The angled image wrapper */}
-                                <div
-                                    className="absolute inset-0 overflow-hidden"
-                                    style={{
-                                        clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0% 100%)',
-                                        borderTopRightRadius: '2rem',
-                                        borderBottomRightRadius: '2rem'
-                                    }}
-                                >
-                                    <img
-                                        src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop"
-                                        alt="Students learning"
-                                        className="w-[120%] h-full object-cover object-center -ml-[10%]"
-                                    />
-                                    <div className="absolute inset-0 bg-[#2C4550]/10 mix-blend-multiply"></div>
-                                </div>
-
-                                {/* 10k+ Active Learners Floating Box */}
-                                <div className="absolute -bottom-[33px] left-6 sm:left-[12%] bg-white rounded-2xl p-3.5 sm:p-4 shadow-[0_10px_40px_rgba(0,0,0,0.1)] flex items-center gap-3.5 z-20">
-                                    <div className="flex -space-x-3">
-                                        <div className="w-[38px] h-[38px] rounded-full border-[2.5px] border-white overflow-hidden bg-gradient-to-br from-[#8CA89A] to-[#577969] shadow-sm z-30"></div>
-                                        <div className="w-[38px] h-[38px] rounded-full border-[2.5px] border-white overflow-hidden bg-gradient-to-br from-[#C1D382] to-[#8FA559] shadow-sm z-20"></div>
-                                        <div className="w-[38px] h-[38px] rounded-full border-[2.5px] border-white overflow-hidden bg-gradient-to-br from-[#8CA89A] to-[#577969] shadow-sm z-10"></div>
-                                    </div>
-                                    <div className="flex flex-col pr-3">
-                                        <span className="text-[14px] font-extrabold text-[#1A1D2D] leading-[1.2]">10k+</span>
-                                        <span className="text-[11px] text-[#6B7280] font-semibold">Active Learners</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                <SeminarModal
+                    isOpen={isSeminarModalOpen}
+                    onClose={() => setIsSeminarModalOpen(false)}
+                />
 
                 {/* Category Flow Tabs - Centered Below Hero */}
                 <div className="flex justify-center w-full relative z-20 mt-8 lg:mt-12 px-4 pb-8">
