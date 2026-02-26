@@ -8,21 +8,11 @@ export default function Header() {
                     {/* Left: Logo & Search */}
                     <div className="flex items-center gap-8 shrink-0">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-[#6C5DD3] rounded-lg flex items-center justify-center transform -rotate-12">
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="3"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                                </svg>
-                            </div>
-                            <span className="text-xl font-bold tracking-tight text-[#1A1D1F]">Streva</span>
+                            <img
+                                src="/images/logo.png"
+                                alt="Youth Ins Logo"
+                                className="h-10 w-auto object-contain transition-transform hover:scale-105"
+                            />
                         </div>
 
                         <div className="flex items-center gap-4">
@@ -89,8 +79,8 @@ export default function Header() {
                             <button
                                 key={item}
                                 className={`px-5 py-2.5 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 overflow-hidden ${idx === 0
-                                        ? "text-[#6C5DD3]"
-                                        : "text-gray-500 hover:text-[#1A1D1F]"
+                                    ? "text-[#6C5DD3]"
+                                    : "text-gray-500 hover:text-[#1A1D1F]"
                                     }`}
                             >
                                 {/* Magnetic Glow Background */}
