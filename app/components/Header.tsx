@@ -84,16 +84,33 @@ export default function Header() {
                     </div>
 
                     {/* Middle: Navigation Tabs (Moved Between Search and Icons) */}
-                    <nav className="flex items-center gap-1 shrink-0">
+                    <nav className="flex items-center gap-2 shrink-0">
                         {["Home", "My Courses", "Assesment", "Settings"].map((item, idx) => (
                             <button
                                 key={item}
-                                className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${idx === 0
-                                        ? "bg-gray-100 text-[#1A1D1F]"
-                                        : "text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50"
+                                className={`px-5 py-2.5 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 overflow-hidden ${idx === 0
+                                        ? "text-[#6C5DD3]"
+                                        : "text-gray-500 hover:text-[#1A1D1F]"
                                     }`}
                             >
-                                {item}
+                                {/* Magnetic Glow Background */}
+                                <div className="absolute inset-0 bg-[#6C5DD3]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div className="absolute -inset-1 bg-gradient-to-r from-transparent via-[#6C5DD3]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"></div>
+
+                                <span className="relative z-10 uppercase tracking-widest">{item}</span>
+
+                                {/* AI Indicator Dots */}
+                                {idx === 0 ? (
+                                    <div className="relative z-10 flex gap-0.5">
+                                        <span className="w-1 h-1 rounded-full bg-[#6C5DD3] animate-pulse"></span>
+                                        <span className="w-1 h-1 rounded-full bg-[#6C5DD3]/40"></span>
+                                    </div>
+                                ) : (
+                                    <div className="relative z-10 w-1 h-1 rounded-full bg-transparent group-hover:bg-[#6C5DD3]/30 transition-colors"></div>
+                                )}
+
+                                {/* Bottom Energy Bar */}
+                                <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-[#6C5DD3] rounded-full transition-all duration-300 ${idx === 0 ? 'w-4' : 'w-0 group-hover:w-3 opacity-50'}`}></span>
                             </button>
                         ))}
                     </nav>
