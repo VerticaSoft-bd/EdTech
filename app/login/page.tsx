@@ -34,6 +34,10 @@ export default function LoginPage() {
                 // Success! Token is set in cookies
                 toast.success("Welcome back!");
 
+                if (data.data) {
+                    localStorage.setItem('user', JSON.stringify(data.data));
+                }
+
                 // Check role and redirect accordingly
                 if (data.data?.role === 'student') {
                     router.push('/student-dashboard');

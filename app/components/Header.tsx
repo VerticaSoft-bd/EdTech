@@ -1,6 +1,21 @@
-import React from 'react';
+"use client";
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Header() {
+    const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (error) {
+                console.error("Error parsing user from localStorage:", error);
+            }
+        }
+    }, []);
+
     return (
         <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
             <div className="max-w-[1600px] mx-auto px-6">
@@ -107,67 +122,76 @@ export default function Header() {
 
                     {/* Right: Actions & Profile */}
                     <div className="flex items-center gap-3 shrink-0">
-                        <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-xl">
-                            <button className="relative p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500 hover:text-[#1A1D1F]">
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                </svg>
-                                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF754C] rounded-full ring-2 ring-gray-50"></span>
-                            </button>
-                            <button className="relative p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500 hover:text-[#1A1D1F]">
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                                </svg>
-                            </button>
-                        </div>
+                        {user ? (
+                            <>
+                                <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-xl">
+                                    <button className="relative p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500 hover:text-[#1A1D1F]">
+                                        <svg
+                                            width="20"
+                                            height="20"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                        </svg>
+                                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF754C] rounded-full ring-2 ring-gray-50"></span>
+                                    </button>
+                                    <button className="relative p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500 hover:text-[#1A1D1F]">
+                                        <svg
+                                            width="20"
+                                            height="20"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                                            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                                        </svg>
+                                    </button>
+                                </div>
 
-                        <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
+                                <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
 
-                        <div className="flex items-center gap-3 pl-1 group cursor-pointer">
-                            <div className="w-10 h-10 bg-[#FFAB7B] rounded-xl flex items-center justify-center text-white font-bold shadow-sm transition-transform group-hover:scale-105">
-                                SR
-                            </div>
-                            <div className="flex flex-col hidden sm:flex">
-                                <span className="text-sm font-bold leading-tight text-[#1A1D1F]">
-                                    Syed Roni
-                                </span>
-                                <span className="text-[11px] text-gray-500 font-medium">
-                                    Product Designer
-                                </span>
-                            </div>
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="text-gray-400 group-hover:text-[#1A1D1F] transition-colors"
-                            >
-                                <path d="m6 9 6 6 6-6" />
-                            </svg>
-                        </div>
+                                <Link href={user.role === 'student' ? '/student-dashboard' : '/dashboard'} className="flex items-center gap-3 pl-1 group cursor-pointer block">
+                                    <div className="w-10 h-10 bg-[#FFAB7B] rounded-xl flex items-center justify-center text-white font-bold shadow-sm transition-transform group-hover:scale-105">
+                                        {user.name ? user.name.substring(0, 2).toUpperCase() : 'SR'}
+                                    </div>
+                                    <div className="flex flex-col hidden sm:flex">
+                                        <span className="text-sm font-bold leading-tight text-[#1A1D1F]">
+                                            {user.name || 'Syed Roni'}
+                                        </span>
+                                        <span className="text-[11px] text-gray-500 font-medium capitalize">
+                                            {user.role || 'Product Designer'}
+                                        </span>
+                                    </div>
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="text-gray-400 group-hover:text-[#1A1D1F] transition-colors"
+                                    >
+                                        <path d="m6 9 6 6 6-6" />
+                                    </svg>
+                                </Link>
+                            </>
+                        ) : (
+                            <Link href="/login" className="px-5 py-2.5 bg-[#6C5DD3] text-white text-[14px] font-bold rounded-xl hover:bg-[#5a4cb5] transition-colors shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2">
+                                Login
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" /></svg>
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>
