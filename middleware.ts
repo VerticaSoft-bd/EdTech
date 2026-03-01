@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 
 // This function can be marked `async` if using `await` inside
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const authCookie = request.cookies.get('auth_token');
     const { pathname } = request.nextUrl;
 
