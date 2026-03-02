@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
+import slugify from 'slugify';
 
 export interface ITopic {
     title: string;
@@ -26,6 +27,7 @@ export interface IFeature {
 
 export interface ICourse extends Document {
     title: string;
+    slug: string;
     subtitle: string;
     category: string;
     level: string;
@@ -79,6 +81,7 @@ const FeatureSchema = new Schema<IFeature>({
 
 const CourseSchema: Schema<ICourse> = new Schema({
     title: { type: String, required: true },
+    slug: { type: String, unique: true },
     subtitle: { type: String, required: true },
     category: { type: String, required: true },
     level: { type: String, required: true },
@@ -114,11 +117,13 @@ const CourseSchema: Schema<ICourse> = new Schema({
     }
 }, { timestamps: true });
 
-// Break the cache during hot-reloads in Next.js
-if (mongoose.models.Course) {
-    delete mongoose.models.Course;
-}
+CourseSchema.pre('save', function (next) {
+    if (this.isModified('title')) {
+        this.slug = slugify(this.title, { lower: true, strict: true }) + '-' + Math.floor(Math.random() * 1000);
+    }
+    next();
+});
 
-const Course: Model<ICourse> = mongoose.model<ICourse>('Course', CourseSchema);
+const Course: Model<ICourse> = mongoose.models.Course || mongoose.model<ICourse>('Course', CourseSchema);
 
 export default Course;

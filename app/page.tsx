@@ -1,18 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Link from 'next/link';
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import HeroCarousel from "@/app/components/HeroCarousel";
 import SeminarModal from "@/app/components/SeminarModal";
-
-// Mock Data
-const UPCOMING_BATCHES = [
-    { title: "Full Stack Web Development with MERN", instructor: "Jhankar Mahbub", tag: "Batch 10", img: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=400&auto=format&fit=crop" },
-    { title: "UI/UX Design Career Track Program", instructor: "Hasin Hayder", tag: "Batch 8", img: "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=400&auto=format&fit=crop" },
-    { title: "Digital Marketing & SEO Masterclass", instructor: "Rabbil Hasan", tag: "Batch 12", img: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=400&auto=format&fit=crop" },
-    { title: "Data Analytics with Python & SQL", instructor: "Anisul Islam", tag: "Batch 5", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=400&auto=format&fit=crop" }
-];
 
 const FREE_CLASSES = [
     { title: "AI Automation with Python", subtitle: "Workshop", color: "from-blue-500 to-indigo-500" },
@@ -34,6 +27,26 @@ const TESTIMONIALS = [
 
 export default function RootPage() {
     const [isSeminarModalOpen, setIsSeminarModalOpen] = useState(false);
+    const [upcomingCourses, setUpcomingCourses] = useState<any[]>([]);
+    const [loadingCourses, setLoadingCourses] = useState(true);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await fetch("/api/courses");
+                if (res.ok) {
+                    const data = await res.json();
+                    setUpcomingCourses(data.data.slice(0, 4)); // Get first 4 courses
+                }
+            } catch (err) {
+                console.error("Error fetching courses", err);
+            } finally {
+                setLoadingCourses(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] font-sans text-[#1A1D1F] flex flex-col">
@@ -57,8 +70,8 @@ export default function RootPage() {
                             <button
                                 key={item}
                                 className={`px-6 py-3 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-3 overflow-hidden ${idx === 0
-                                        ? "text-[#6C5DD3]"
-                                        : "text-gray-500 hover:text-[#1A1D1F]"
+                                    ? "text-[#6C5DD3]"
+                                    : "text-gray-500 hover:text-[#1A1D1F]"
                                     }`}
                             >
                                 {/* Magnetic Glow Background */}
@@ -107,35 +120,69 @@ export default function RootPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {UPCOMING_BATCHES.map((course, i) => (
-                            <div key={i} className="border border-gray-200 rounded-[20px] overflow-hidden bg-white flex flex-col group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300">
-                                <div className="relative h-[180px] bg-gray-100 overflow-hidden">
-                                    <img src={course.img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    <div className="absolute top-3 left-3 bg-[#EF4444] flex items-center gap-1.5 text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider shadow-sm">
-                                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-                                        Live
-                                    </div>
-                                    <span className="absolute top-3 right-3 bg-black/60 text-white text-[11px] px-2.5 py-1 rounded-md backdrop-blur-md font-medium">
-                                        {course.tag}
-                                    </span>
-                                </div>
-                                <div className="p-5 flex flex-col flex-1">
-                                    <h3 className="font-bold text-gray-900 text-[17px] leading-[1.3] mb-5 group-hover:text-[#1A62FF] transition-colors">{course.title}</h3>
-                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-                                        <div className="flex items-center gap-2.5">
-                                            <img src={`https://i.pravatar.cc/100?img=${i + 10}`} className="w-9 h-9 rounded-full bg-gray-200 object-cover border border-gray-200" alt={course.instructor} />
-                                            <div className="flex flex-col">
-                                                <span className="text-[11px] text-gray-500 font-medium tracking-wide uppercase">Instructor</span>
-                                                <span className="text-[13px] font-bold text-gray-900">{course.instructor}</span>
+                        {loadingCourses ? (
+                            [...Array(4)].map((_, i) => (
+                                <div key={i} className="animate-pulse bg-white border border-gray-200 rounded-[20px] overflow-hidden flex flex-col h-[340px]">
+                                    <div className="bg-gray-200 h-[180px] w-full"></div>
+                                    <div className="p-5 flex-1 flex flex-col">
+                                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+                                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-auto"></div>
+                                        <div className="pt-4 border-t border-gray-100 flex items-center gap-2">
+                                            <div className="w-9 h-9 bg-gray-200 rounded-full"></div>
+                                            <div className="flex-1">
+                                                <div className="h-2 bg-gray-200 rounded w-1/3 mb-1"></div>
+                                                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                                             </div>
                                         </div>
-                                        <button className="w-9 h-9 flex items-center justify-center bg-blue-50 text-[#1A62FF] rounded-xl hover:bg-blue-100 transition group-hover:translate-x-1">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-                                        </button>
                                     </div>
                                 </div>
+                            ))
+                        ) : upcomingCourses.length > 0 ? (
+                            upcomingCourses.map((course, i) => (
+                                <Link href={`/courses/${course.slug || course._id}`} key={course._id || i} className="border border-gray-200 rounded-[20px] overflow-hidden bg-white flex flex-col group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300">
+                                    <div className="relative h-[180px] bg-gray-100 overflow-hidden">
+                                        <img src={course.thumbnail || "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=400&auto=format&fit=crop"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={course.title} />
+                                        <div className="absolute top-3 left-3 bg-[#EF4444] flex items-center gap-1.5 text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider shadow-sm">
+                                            <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                                            Live
+                                        </div>
+                                        <span className="absolute top-3 right-3 bg-black/60 text-white text-[11px] px-2.5 py-1 rounded-md backdrop-blur-md font-medium">
+                                            {course.category}
+                                        </span>
+                                    </div>
+                                    <div className="p-5 flex flex-col flex-1">
+                                        <h3 className="font-bold text-gray-900 text-[17px] leading-[1.3] mb-5 group-hover:text-[#1A62FF] transition-colors line-clamp-2">{course.title}</h3>
+                                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
+                                            {course.assignedTeachers && course.assignedTeachers.length > 0 ? (
+                                                <div className="flex items-center gap-2.5">
+                                                    <img src={course.assignedTeachers[0].profileImage || `https://ui-avatars.com/api/?name=${course.assignedTeachers[0].name}&background=random`} className="w-9 h-9 rounded-full bg-gray-200 object-cover border border-gray-200" alt={course.assignedTeachers[0].name} />
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[11px] text-gray-500 font-medium tracking-wide uppercase">Instructor</span>
+                                                        <span className="text-[13px] font-bold text-gray-900 truncate max-w-[100px]">{course.assignedTeachers[0].name}</span>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center gap-2.5">
+                                                    <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">🏫</div>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[11px] text-gray-500 font-medium tracking-wide uppercase">Team</span>
+                                                        <span className="text-[13px] font-bold text-gray-900 truncate">V-Soft Ed</span>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <button className="w-9 h-9 flex items-center justify-center bg-blue-50 text-[#1A62FF] rounded-xl hover:bg-blue-100 transition group-hover:translate-x-1 shrink-0">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))
+                        ) : (
+                            <div className="col-span-full py-12 text-center text-gray-500 font-medium bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                                No upcoming live batches found at the moment.
                             </div>
-                        ))}
+                        )}
                     </div>
 
                     <div className="flex justify-center mt-10">

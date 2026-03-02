@@ -58,11 +58,6 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
     return await bcrypt.compare(candidatePassword, this.password as string);
 };
 
-// Break the cache during hot-reloads in Next.js
-if (mongoose.models.User) {
-    delete mongoose.models.User;
-}
-
-const User: Model<IUser> = mongoose.model<IUser>('User', UserSchema);
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 
 export default User;

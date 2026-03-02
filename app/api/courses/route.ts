@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connectToDatabase from '@/lib/db';
 import Course from '@/models/Course';
+import User from '@/models/User';
 
 export async function POST(request: Request) {
     try {
@@ -37,9 +39,11 @@ export async function GET(request: Request) {
     try {
         await connectToDatabase();
 
-        // Fetch courses, populated with teacher info and sorted by newest first
-        const courses = await Course.find()
-            .populate('assignedTeachers', 'name email')
+        // Ensure User model is registered for population
+        User.modelName;
+
+        const courses = await Course.find({ status: 'Active' })
+            .populate('assignedTeachers', 'name email profileImage role')
             .sort({ createdAt: -1 });
 
         return NextResponse.json({
