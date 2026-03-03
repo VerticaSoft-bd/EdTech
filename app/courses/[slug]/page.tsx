@@ -978,6 +978,208 @@ export default function CourseDetails() {
                     </div>
                 </section>
 
+                {/* Certificate Section */}
+                <section className="mt-20 mb-20 bg-gray-50 py-16">
+                    <div className="container mx-auto px-4 max-w-6xl">
+                        <div className="flex flex-col items-center justify-center mb-12 text-center">
+                            <h2 className="text-4xl md:text-5xl font-extrabold text-[#F59E0B] mb-4 font-bengali">
+                                সার্টিফিকেট
+                            </h2>
+                            <p className="text-xl md:text-2xl text-[#475569] font-semibold font-bengali">
+                                কোর্স শেষে পেয়ে যান শেয়ারেবল কোর্স কমপ্লিশন এবং এসেসমেন্ট সার্টিফিকেট
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
+                            {/* Certificate 1: Completion */}
+                            <div className="relative w-full max-w-[600px] bg-white shadow-xl overflow-hidden border border-gray-200 p-2">
+                                <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                                {/* Top Left Corner Accent */}
+                                <div className="absolute top-0 left-0 w-32 h-32 bg-[#F59E0B] opacity-20 rounded-br-full -translate-x-1/2 -translate-y-1/2"></div>
+                                {/* Bottom Left Decorative Shapes */}
+                                <div className="absolute bottom-0 left-0 w-48 h-full bg-[#1A1D1F] transform -skew-x-[25deg] -translate-x-24 origin-bottom-left"></div>
+                                <div className="absolute bottom-0 left-12 w-16 h-48 bg-[#F59E0B] transform -skew-x-[25deg] origin-bottom-left z-10"></div>
+                                {/* Right Side Decorative Shapes */}
+                                <div className="absolute top-0 right-0 w-32 h-full bg-[#1A1D1F] transform skew-x-[20deg] translate-x-16 origin-top-right"></div>
+                                <div className="absolute top-1/2 right-12 w-12 h-32 bg-[#F59E0B] transform skew-x-[20deg] -translate-y-1/2 z-10"></div>
+
+                                <div className="relative z-20 h-full p-8 md:p-12 flex flex-col items-center text-center">
+                                    <div className="w-full text-left mb-6">
+                                        <p className="text-[10px] md:text-xs text-slate-500">Certificate ID: C6796</p>
+                                    </div>
+
+                                    <h3 className="text-3xl md:text-5xl font-black text-[#1A1D1F] tracking-tight leading-none mb-1">
+                                        CERTIFICATE
+                                    </h3>
+                                    <p className="text-xl md:text-2xl text-slate-600 tracking-widest font-light mb-10">
+                                        OF COMPLETION
+                                    </p>
+
+                                    <p className="text-slate-500 mb-8 font-medium">This is to certify that</p>
+
+                                    <div className="w-full h-px bg-slate-200 mb-8 relative">
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#F59E0B] to-transparent opacity-30"></div>
+                                    </div>
+
+                                    <p className="text-slate-600 font-medium mb-4">has successfully completed the course of</p>
+
+                                    <h4 className="text-xl md:text-2xl font-bold text-[#1A1D1F] mb-16">
+                                        Full Stack Web Development with Python,<br />Django & React
+                                    </h4>
+
+                                    <div className="w-full flex justify-between items-end mt-auto pt-8 border-t border-slate-100">
+                                        <div className="text-center">
+                                            <div className="w-24 border-b border-black mb-2 mx-auto"></div>
+                                            <p className="text-xs text-slate-600 font-medium">Ostad The Coach</p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-8 h-8 md:w-10 md:h-10 bg-[#F59E0B] rounded-full flex items-center justify-center text-white font-bold text-xl">O</div>
+                                            <span className="font-bold text-xl md:text-2xl tracking-tight text-[#1A1D1F]">Ostad</span>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="w-32 border-b border-black mb-2 mx-auto"></div>
+                                            <p className="text-xs text-slate-800 font-bold mb-0.5">Abdullah Al Musabbir</p>
+                                            <p className="text-[10px] text-slate-500">CEO, Ostad</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Certificate 2: Assessment */}
+                            <div className="relative w-full max-w-[400px] bg-white shadow-xl border-[12px] border-[#1A1D1F] p-1 flex flex-col h-full">
+                                <div className="border border-[#F59E0B] p-6 lg:p-8 h-full relative">
+                                    {/* Gold inner border */}
+                                    <div className="absolute inset-1 border border-black/10"></div>
+
+                                    {/* Top section */}
+                                    <div className="flex justify-between items-start mb-8 relative z-10">
+                                        <div className="flex items-center gap-1.5">
+                                            <div className="w-5 h-5 bg-[#F59E0B] rounded-full flex items-center justify-center text-white font-bold text-xs">O</div>
+                                            <span className="font-bold text-sm tracking-tight text-[#1A1D1F]">Ostad</span>
+                                        </div>
+                                        <div className="w-16 h-16 rounded-full bg-[#F59E0B] flex items-center justify-center -mt-2 -mr-2 shadow-lg z-20 relative">
+                                            <div className="w-14 h-14 rounded-full border border-dashed border-white/50 flex flex-col items-center justify-center text-center">
+                                                <span className="text-[8px] text-white font-bold leading-none uppercase">VETTED</span>
+                                            </div>
+                                            {/* Ribbon tails */}
+                                            <div className="absolute -bottom-2 left-2 w-4 h-6 bg-[#D97706] -z-10 clip-path-[polygon(0_0,100%_0,100%_100%,50%_75%,0_100%)]"></div>
+                                            <div className="absolute -bottom-2 right-2 w-4 h-6 bg-[#D97706] -z-10 clip-path-[polygon(0_0,100%_0,100%_100%,50%_75%,0_100%)]"></div>
+                                        </div>
+                                    </div>
+
+                                    <h3 className="text-2xl font-black text-[#1A1D1F] tracking-tight leading-none mb-1">
+                                        CERTIFICATE
+                                    </h3>
+                                    <p className="text-[10px] tracking-[0.2em] text-slate-500 font-medium mb-6 uppercase">
+                                        Of Assessment
+                                    </p>
+
+                                    <h4 className="text-3xl font-[cursive] text-slate-800 mb-4 px-2 italic">
+                                        Md. Najmus Sakib
+                                    </h4>
+
+                                    <p className="text-[10px] text-slate-600 mb-2">has successfully completed the online live course on</p>
+
+                                    <h5 className="font-bold text-sm text-[#1A1D1F] mb-6 leading-tight">
+                                        Full Stack Web Development with Python,<br />Django & React
+                                    </h5>
+
+                                    <div className="bg-slate-50 p-3 rounded text-[9px] text-slate-600 mb-8 border border-slate-100">
+                                        <strong className="text-slate-800">Congratulations!</strong> You have successfully completed<br />
+                                        Full Stack Web Development with Python, Django & React<br />
+                                        and achieved the following result.
+                                    </div>
+
+                                    <div className="mb-10 text-[10px]">
+                                        <div className="flex justify-between font-bold text-slate-800 pb-2 border-b border-slate-200 mb-2">
+                                            <span>Exam Type</span>
+                                            <span>Result (%)</span>
+                                        </div>
+                                        <div className="flex justify-between py-1.5 text-slate-600 border-b border-slate-50">
+                                            <span>Assignment</span>
+                                            <span className="font-semibold text-slate-800">100%</span>
+                                        </div>
+                                        <div className="flex justify-between py-1.5 text-slate-600 border-b border-slate-50">
+                                            <span>Quiz</span>
+                                            <span className="font-semibold text-slate-800">99.4%</span>
+                                        </div>
+                                        <div className="flex justify-between py-1.5 text-slate-600">
+                                            <span>Live Test</span>
+                                            <span className="font-semibold text-slate-800">100%</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-between items-end mt-auto pt-6 border-t border-slate-100 relative">
+                                        <div className="absolute top-0 right-0 w-24 h-1 bg-[#F59E0B] opacity-50"></div>
+                                        <div className="absolute top-0 right-24 w-12 h-1 bg-[#1A1D1F] opacity-20"></div>
+
+                                        <div className="text-center w-1/3">
+                                            <div className="w-16 border-b border-slate-400 mb-1 mx-auto"></div>
+                                            <p className="text-[8px] text-slate-500">Ostad The Coach</p>
+                                        </div>
+                                        <div className="text-center w-1/3">
+                                            <div className="w-20 border-b border-slate-400 mb-1 mx-auto"></div>
+                                            <p className="text-[9px] text-slate-800 font-bold mb-0.5 whitespace-nowrap">Abdullah Al Musabbir</p>
+                                            <p className="text-[7px] text-slate-500">CEO, Ostad</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="absolute bottom-2 left-6">
+                                        <p className="text-[6px] text-slate-400">ID: A6796</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* FAQ Section */}
+                <section className="mt-20 mb-20">
+                    <div className="container mx-auto px-4 max-w-4xl">
+                        <div className="flex flex-col items-center justify-center mb-12 text-center">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
+                                প্রায়ই জিজ্ঞেস করা <span className="text-[#FBBF24] relative inline-block">
+                                    প্রশ্ন
+                                    <div className="absolute left-0 w-full h-[6px] bg-[#FBBF24] rounded-full" style={{ bottom: '-2px' }}></div>
+                                </span>
+                            </h2>
+                        </div>
+
+                        <div className="space-y-4">
+                            {[
+                                { q: "1. আমি কি ভিডিওগুলো ডাউনলোড করতে পারবো?", a: "না, ভিডিওগুলো ডাউনলোড করার কোনো অপশন নেই। তবে আপনি আমাদের প্ল্যাটফর্ম থেকে যেকোনো সময় ভিডিওগুলো দেখতে পারবেন।" },
+                                { q: "2. আমি কি মোবাইল দিয়ে জয়েন করতে পারবো?", a: "হ্যাঁ, আপনি মোবাইল, ল্যাপটপ বা ডেস্কটপ যেকোনো ডিভাইস থেকে কোর্সে জয়েন করতে পারবেন।" },
+                                { q: "3. আমার কি ভিডিওগুলোর লাইফটাইম এক্সেস থাকবে?", a: "হ্যাঁ, কোর্স সম্পন্ন করার পর আপনি কোর্সের সমস্ত ভিডিওর লাইফটাইম এক্সেস পাবেন।" },
+                                { q: "4. লাইভ ক্লাস কোথায় হবে ?", a: "লাইভ ক্লাসগুলো গুগল মিট বা জুমের মাধ্যমে হবে এবং ক্লাসের লিংক আমাদের প্ল্যাটফর্মে দেওয়া থাকবে।" },
+                                { q: "5. এসেসমেন্ট কিভাবে হবে?", a: "প্রতিটি মডিউলের পর কুইজ এবং অ্যাসাইনমেন্ট থাকবে। কোর্স শেষে একটি ফাইনাল লাইভ টেস্ট বা প্রজেক্ট জমা দিতে হবে।" },
+                                { q: "6. ওস্তাদ প্রো ব্যাচে কাদেরকে নেয়া হবে?", a: "কোর্সের পারফরমেন্স, অ্যাসাইনমেন্ট এবং ফাইনাল টেস্টের ওপর ভিত্তি করে সেরা লার্নারদের ওস্তাদ প্রো ব্যাচে সুযোগ দেওয়া হবে।" },
+                                { q: "7. দেশের বাইরে থেকে কিভাবে পেমেন্ট করবো?", a: "দেশের বাইরে থেকে পেমেন্ট করার জন্য আপনি ডেবিট/ক্রেডিট কার্ড অথবা পেপ্যাল ব্যবহার করতে পারেন।" },
+                                { q: "8. লাইভ ক্লাসের রেকর্ডিং থাকবে?", a: "হ্যাঁ, প্রতিটি লাইভ ক্লাসের রেকর্ডিং ক্লাসের পর প্ল্যাটফর্মে আপলোড করা হবে।" },
+                                { q: "9. প্র্যাকটিস করতে গিয়ে সমস্যায় পড়লে সাপোর্ট পাবো কোথায়?", a: "আমাদের ডেডিকেটেড সাপোর্ট গ্রুপ এবং লাইভ সাপোর্ট ক্লাস রয়েছে যেখানে আপনি আপনার যেকোনো সমস্যার সমাধান পাবেন।" }
+                            ].map((faq, index) => (
+                                <details key={index} className="group border border-gray-100 bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&_summary::-webkit-details-marker]:hidden">
+                                    <summary className="flex cursor-pointer items-center justify-between gap-1.5 rounded-xl p-5 md:p-6 text-[#1A1D1F] font-bold md:text-[17px] focus:outline-none">
+                                        {faq.q}
+                                        <svg
+                                            className="h-5 w-5 shrink-0 transition duration-300 group-open:-rotate-180 text-gray-500"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </summary>
+
+                                    <div className="px-5 pb-5 md:px-6 md:pb-6 text-[#475569] font-medium leading-relaxed">
+                                        <p>{faq.a}</p>
+                                    </div>
+                                </details>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
             </main>
 
             <Footer />
