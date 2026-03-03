@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 interface IModule {
     _id: string;
@@ -89,10 +90,10 @@ export default function CourseDetails() {
 
                         {/* CTA and Price Section */}
                         <div className="flex flex-wrap items-center gap-6">
-                            <button className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-yellow-200">
+                            <Link href={`/checkout/${course.slug}`} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-yellow-200">
                                 ব্যাচে ভর্তি হোন
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                            </button>
+                            </Link>
 
                             <div className="flex items-center gap-3">
                                 <span className="text-3xl font-extrabold text-[#1A1D1F]">
