@@ -81,6 +81,7 @@ export default function CheckoutPage() {
         };
 
         try {
+            // Step 1: Save student enrollment details
             const res = await fetch('/api/enroll', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -89,16 +90,33 @@ export default function CheckoutPage() {
 
             const data = await res.json();
 
-            if (res.ok) {
-                toast.success("Successfully enrolled in the course!");
-                setTimeout(() => {
-                    router.push(`/student-dashboard`);
-                }, 2000);
+            if (res.ok || (data.message && data.message.includes('already registered'))) {
+                // Step 2: Initialize Payment via PayStation
+                const payRes = await fetch('/api/payment/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: discountedPrice })
+                });
+
+                if (payRes.status === 401) {
+                    toast.error("Please login to proceed with payment");
+                    router.push('/login?redirect=' + encodeURIComponent(window.location.pathname));
+                    return;
+                }
+
+                const payData = await payRes.json();
+
+                if (payRes.ok && payData.payment_url) {
+                    toast.success("Redirecting to secure payment gateway...");
+                    window.location.href = payData.payment_url;
+                } else {
+                    toast.error(payData.error || "Payment gateway initialization failed");
+                }
             } else {
-                toast.error(data.message || "Failed to enroll");
+                toast.error(data.message || "Failed to save enrollment details");
             }
         } catch (error) {
-            console.error(error);
+            console.error("Checkout Error:", error);
             toast.error("An error occurred during checkout");
         } finally {
             setSubmitting(false);

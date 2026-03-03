@@ -69,7 +69,7 @@ export default function RootPage() {
                         {["Live Courses", "Recorded Classes", "Offline Campus"].map((item, idx) => (
                             <button
                                 key={item}
-                                className={`px-6 py-3 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-3 overflow-hidden ${idx === 0
+                                className={`px-4 py-2.5 md:px-6 md:py-3 text-[11px] md:text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 md:gap-3 overflow-hidden ${idx === 0
                                     ? "text-[#6C5DD3]"
                                     : "text-gray-500 hover:text-[#1A1D1F]"
                                     }`}
@@ -107,15 +107,17 @@ export default function RootPage() {
                 {/* Upcoming Live Batches */}
                 <section className="w-full pt-4">
                     <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                        <h2 className="text-[28px] font-bold flex items-center gap-3 text-gray-900">
-                            <span className="w-5 h-2 bg-[#EF4444] rounded-full inline-block"></span>
-                            Upcoming Live Batches
+                        <h2 className="text-[24px] md:text-[28px] text-center md:text-left font-bold flex flex-col md:flex-row items-center gap-3 text-gray-900">
+                            <div className="flex items-center gap-3">
+                                <span className="w-5 h-2 bg-[#EF4444] rounded-full inline-block"></span>
+                                Upcoming Live Batches
+                            </div>
                         </h2>
-                        <div className="flex flex-wrap items-center gap-2">
-                            <button className="px-5 py-2 bg-[#4A72FF] text-white text-sm font-semibold rounded-full shadow-sm">All</button>
-                            <button className="px-5 py-2 bg-white text-gray-600 text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Data & AI</button>
-                            <button className="px-5 py-2 bg-white text-gray-600 text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Design</button>
-                            <button className="px-5 py-2 bg-white text-gray-600 text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Marketing</button>
+                        <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
+                            <button className="px-5 py-2 bg-[#4A72FF] text-white text-[13px] md:text-sm font-semibold rounded-full shadow-sm">All</button>
+                            <button className="px-5 py-2 bg-white text-gray-600 text-[13px] md:text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Data & AI</button>
+                            <button className="px-5 py-2 bg-white text-gray-600 text-[13px] md:text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Design</button>
+                            <button className="px-5 py-2 bg-white text-gray-600 text-[13px] md:text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Marketing</button>
                         </div>
                     </div>
 
@@ -209,12 +211,12 @@ export default function RootPage() {
                             </h2>
                         </div>
 
-                        <div className="flex flex-wrap justify-center items-center gap-3 mb-10 w-full max-w-4xl mx-auto border-b border-gray-800 pb-8">
-                            <button className="px-6 py-2.5 bg-white text-[#181C25] rounded-full text-[14px] font-extrabold shadow-lg">All Types</button>
-                            <button className="px-6 py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Data & AI</button>
-                            <button className="px-6 py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Web Development</button>
-                            <button className="px-6 py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Design & Multimedia</button>
-                            <button className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-lg hover:bg-gray-100 transition ml-2 shrink-0">
+                        <div className="flex flex-wrap justify-center items-center gap-2 md:gap-3 mb-10 w-full max-w-4xl mx-auto border-b border-gray-800 pb-8">
+                            <button className="px-4 py-2 md:px-6 md:py-2.5 bg-white text-[#181C25] rounded-full text-[12px] md:text-[14px] font-extrabold shadow-lg">All Types</button>
+                            <button className="px-4 py-2 md:px-6 md:py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[12px] md:text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Data & AI</button>
+                            <button className="px-4 py-2 md:px-6 md:py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[12px] md:text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Web Development</button>
+                            <button className="px-4 py-2 md:px-6 md:py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[12px] md:text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Design & Multimedia</button>
+                            <button className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-lg hover:bg-gray-100 transition md:ml-2 shrink-0">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                             </button>
                         </div>

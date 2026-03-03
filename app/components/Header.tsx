@@ -31,7 +31,7 @@ export default function Header() {
                         </div>
 
                         <div className="flex items-center gap-4">
-                            <button className="relative group overflow-hidden p-[1px] rounded-[16px] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 bg-gradient-to-br from-[#8E8AFF] via-[#F1F5F9] via-60% to-[#6C5DD3] shrink-0">
+                            <button className="hidden sm:block relative group overflow-hidden p-[1px] rounded-[16px] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 bg-gradient-to-br from-[#8E8AFF] via-[#F1F5F9] via-60% to-[#6C5DD3] shrink-0">
                                 <div className="relative bg-white rounded-[15px] pl-4 pr-5 py-2.5 flex items-center gap-2.5 bg-[radial-gradient(circle_at_top_left,rgba(142,138,255,0.15),transparent_50%),radial-gradient(circle_at_bottom_right,rgba(108,93,211,0.15),transparent_50%)] bg-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-[#6C5DD3]/0 via-[#6C5DD3]/10 to-[#6C5DD3]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer rounded-[15px]"></div>
                                     <div className="text-[#1A1D1F]">
@@ -88,8 +88,8 @@ export default function Header() {
                         </div>
                     </div>
 
-                    {/* Middle: Navigation Tabs (Moved Between Search and Icons) */}
-                    <nav className="flex items-center gap-2 shrink-0">
+                    {/* Middle: Navigation Tabs (Hidden on mobile) */}
+                    <nav className="hidden lg:flex items-center gap-2 shrink-0">
                         {["Home", "My Courses", "Assesment", "Settings"].map((item, idx) => (
                             <button
                                 key={item}
@@ -124,7 +124,7 @@ export default function Header() {
                     <div className="flex items-center gap-3 shrink-0">
                         {user ? (
                             <>
-                                <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-xl">
+                                <div className="hidden md:flex items-center gap-1 bg-gray-50 p-1 rounded-xl">
                                     <button className="relative p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500 hover:text-[#1A1D1F]">
                                         <svg
                                             width="20"
@@ -192,6 +192,14 @@ export default function Header() {
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" /></svg>
                             </Link>
                         )}
+                        {/* Mobile Menu Toggle (Hamburger) */}
+                        <button className="flex lg:hidden p-2 ml-2 text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50 rounded-lg">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="4" y1="12" x2="20" y2="12" />
+                                <line x1="4" y1="6" x2="20" y2="6" />
+                                <line x1="4" y1="18" x2="20" y2="18" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
