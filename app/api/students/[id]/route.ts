@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         await connectToDatabase();
-        const student = await Student.findById(params.id);
+        const student = await Student.findById(id);
 
         if (!student) {
             return NextResponse.json({ success: false, message: 'Student not found' }, { status: 404 });
@@ -18,13 +19,14 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const { id } = await params;
         const body = await request.json();
         await connectToDatabase();
 
         const updatedStudent = await Student.findByIdAndUpdate(
-            params.id,
+            id,
             body,
             { new: true, runValidators: true }
         );

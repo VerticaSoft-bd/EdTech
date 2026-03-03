@@ -117,7 +117,7 @@ const CourseSchema: Schema<ICourse> = new Schema({
     }
 }, { timestamps: true });
 
-CourseSchema.pre('save', function (next) {
+CourseSchema.pre<ICourse>('save', function (next: any) {
     if (this.isModified('title')) {
         this.slug = slugify(this.title, { lower: true, strict: true }) + '-' + Math.floor(Math.random() * 1000);
     }
