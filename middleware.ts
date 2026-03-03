@@ -4,7 +4,7 @@ import { jwtVerify } from 'jose';
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
-    const authCookie = request.cookies.get('auth_token');
+    const authCookie = request.cookies.get('token');
     const { pathname } = request.nextUrl;
 
     // 1. Unauthenticated users trying to access dashboard routes
@@ -21,14 +21,14 @@ export async function middleware(request: NextRequest) {
             const { payload } = await jwtVerify(authCookie.value, secret);
             const userRole = payload.role as string;
 
-            // If a 'student' tries to access the main Admin dashboard or any other admin pages
-            if (userRole === 'student' && pathname.startsWith('/dashboard')) {
+            // If a 'student' or 'teacher' tries to access the main Admin dashboard or any other admin pages
+            if ((userRole === 'student' || userRole === 'teacher') && pathname.startsWith('/dashboard')) {
                 // Force them to only see their student dashboard
                 return NextResponse.redirect(new URL('/student-dashboard', request.url));
             }
 
             // If an Admin tries to access the student-dashboard, redirect them to the main admin dashboard
-            if (userRole !== 'student' && pathname.startsWith('/student-dashboard')) {
+            if (userRole !== 'student' && userRole !== 'teacher' && pathname.startsWith('/student-dashboard')) {
                 return NextResponse.redirect(new URL('/dashboard', request.url));
             }
 
@@ -46,7 +46,7 @@ export async function middleware(request: NextRequest) {
                 const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
                 const { payload } = await jwtVerify(authCookie.value, secret);
 
-                if (payload.role === 'student') {
+                if (payload.role === 'student' || payload.role === 'teacher') {
                     return NextResponse.redirect(new URL('/student-dashboard', request.url));
                 } else {
                     return NextResponse.redirect(new URL('/dashboard', request.url));

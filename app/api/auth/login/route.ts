@@ -60,7 +60,7 @@ export async function POST(request: Request) {
         // 4. Set HTTP-Only Cookie to automatically attach to future browser requests
         const cookieStore = await cookies();
         cookieStore.set({
-            name: 'auth_token',
+            name: 'token',
             value: token,
             httpOnly: true, // Prevents Javascript from reading it (XSS protection)
             secure: process.env.NODE_ENV === 'production', // Use secure cookies via HTTPS in production
@@ -80,7 +80,8 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             message: 'Login successful.',
-            data: userPayload
+            data: userPayload,
+            token: token
         }, { status: 200 });
 
     } catch (error: any) {

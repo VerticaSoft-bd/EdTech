@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import User from '@/models/User';
+import { signToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
     try {
@@ -42,11 +43,30 @@ export async function POST(request: Request) {
             role: user.role,
         };
 
-        return NextResponse.json({
+        // Generate JWT token for auto-login
+        const token = await signToken({
+            userId: user._id.toString(),
+            email: user.email,
+            role: user.role,
+        });
+
+        // Set token in HTTP-only cookie
+        const response = NextResponse.json({
             success: true,
-            message: 'User registered successfully. Please login.',
-            data: userWithoutPassword
+            message: 'User registered and logged in successfully',
+            data: userWithoutPassword,
+            token
         }, { status: 201 });
+
+        response.cookies.set('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 7 * 24 * 60 * 60, // 7 days
+            path: '/',
+        });
+
+        return response;
 
     } catch (error: any) {
         console.error("Signup Error:", error);

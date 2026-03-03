@@ -46,9 +46,23 @@ export default function SignupPage() {
             if (!res.ok) {
                 toast.error(data.message || "An error occurred during signup");
             } else {
-                // Success! Redirect to login page
-                toast.success("Account created successfully! Please log in.");
-                router.push('/login');
+                // Save user and token to local storage
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.data));
+
+                // Success! Redirect based on role
+                toast.success("Account created successfully! Welcome aboard.");
+
+                // Trigger auth event for components listening to login state
+                window.dispatchEvent(new Event('auth-change'));
+
+                if (data.data.role === 'admin') {
+                    router.push('/dashboard/admin');
+                } else if (data.data.role === 'staff') {
+                    router.push('/dashboard/staff');
+                } else {
+                    router.push('/student-dashboard');
+                }
             }
         } catch (err) {
             toast.error("Failed to connect to the server. Please try again.");

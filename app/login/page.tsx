@@ -37,9 +37,15 @@ export default function LoginPage() {
                 if (data.data) {
                     localStorage.setItem('user', JSON.stringify(data.data));
                 }
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                }
+
+                // Trigger auth event for components listening to login state
+                window.dispatchEvent(new Event('auth-change'));
 
                 // Check role and redirect accordingly
-                if (data.data?.role === 'student') {
+                if (data.data?.role === 'student' || data.data?.role === 'teacher') {
                     router.push('/student-dashboard');
                 } else {
                     router.push('/dashboard');
