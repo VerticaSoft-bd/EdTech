@@ -102,7 +102,7 @@ export default function CheckoutPage() {
                 const payRes = await fetch('/api/payment/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ amount: discountedPrice })
+                    body: JSON.stringify({ amount: discountedPrice, courseName: course.title, email: formData.email })
                 });
 
                 if (payRes.status === 401) {

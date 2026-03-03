@@ -8,10 +8,10 @@ export async function POST(req: NextRequest) {
         const user = await getAuthenticatedUser(req);
         if (!user) return unauthorizedResponse();
 
-        const { amount } = await req.json();
+        const { amount, courseName, email } = await req.json();
 
         if (!amount || amount < 10) {
-            return NextResponse.json({ error: 'Minimum deposit is 10 BDT' }, { status: 400 });
+            return NextResponse.json({ error: 'Invalid amount' }, { status: 400 });
         }
 
         await dbConnect();
@@ -22,12 +22,13 @@ export async function POST(req: NextRequest) {
 
         const newTransaction = await Transaction.create({
             user: user._id,
-            type: 'deposit',
+            type: courseName ? 'course_purchase' : 'deposit',
             amount: amount,
             status: 'pending',
             transactionId: invoiceNumber, // Used as Invoice Number
-            description: 'Deposit via PayStation',
+            description: courseName ? `Payment for ${courseName}` : 'Deposit via PayStation',
             method: 'PayStation',
+            metadata: courseName ? { courseName, email: email || user.email } : {}
         });
 
         // 2. Prepare PayStation Payload

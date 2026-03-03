@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
 import Transaction from '@/models/Transaction';
 import User from '@/models/User';
+import Student from '@/models/Student';
+import mongoose from 'mongoose';
 
 export async function GET(req: NextRequest) {
     return handleCallback(req);
@@ -71,10 +73,21 @@ async function handleCallback(req: NextRequest) {
             transaction.gateway_ref = verifyData.data.trx_id || JSON.stringify(verifyData.data);
             await transaction.save();
 
-            // Update User Balance
-            await User.findByIdAndUpdate(transaction.user, {
-                $inc: { depositBalance: transaction.amount }
-            });
+            if (transaction.type === 'course_purchase') {
+                const { courseName, email } = transaction.metadata;
+                // Update Student Enrollment
+                if (courseName && email) {
+                    await mongoose.model('Student').findOneAndUpdate(
+                        { email, courseName },
+                        { dueAmount: 0 }
+                    );
+                }
+            } else {
+                // Update User Balance (Deposit)
+                await User.findByIdAndUpdate(transaction.user, {
+                    $inc: { depositBalance: transaction.amount }
+                });
+            }
 
             return NextResponse.redirect(new URL('/dashboard/wallet?status=success', req.url));
         } else {

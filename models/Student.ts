@@ -52,7 +52,7 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
         paidAmount: { type: Number, required: true },
         dueAmount: { type: Number, required: true },
         country: { type: String, required: true },
-        email: { type: String, required: true, unique: true },
+        email: { type: String, required: true },
         nidNo: { type: String, required: true },
         education: { type: String, required: true },
         mobileNo: { type: String, required: true },
@@ -64,6 +64,9 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
         timestamps: true,
     }
 );
+
+// Prevent duplicate enrollment in the same course
+StudentSchema.index({ email: 1, courseName: 1 }, { unique: true });
 
 // Clear Mongoose schema cache for hot-reloading in Next.js
 if (mongoose.models.Student) {

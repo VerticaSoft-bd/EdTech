@@ -7,12 +7,12 @@ export async function POST(request: Request) {
         const body = await request.json();
         await connectToDatabase();
 
-        // Check if student with this email already exists
-        const existingStudent = await Student.findOne({ email: body.email });
+        // Check if student with this email already exists for THIS course
+        const existingStudent = await Student.findOne({ email: body.email, courseName: body.courseName });
         if (existingStudent) {
             return NextResponse.json({
                 success: false,
-                message: 'A student with this email is already registered.'
+                message: 'You are already registered for this course.'
             }, { status: 400 });
         }
 
