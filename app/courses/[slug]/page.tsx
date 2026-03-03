@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface IModule {
@@ -14,10 +14,22 @@ interface IModule {
 
 export default function CourseDetails() {
     const { slug } = useParams();
+    const router = useRouter();
     const [course, setCourse] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("curriculum");
     const [openModule, setOpenModule] = useState<number>(0);
+
+    const handleEnrollment = (e: React.MouseEvent) => {
+        e.preventDefault();
+        const user = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+        if (!user || !token) {
+            window.location.href = `/login?redirect=/checkout/${course?.slug}`;
+        } else {
+            router.push(`/checkout/${course?.slug}`);
+        }
+    };
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -90,10 +102,10 @@ export default function CourseDetails() {
 
                         {/* CTA and Price Section */}
                         <div className="flex flex-wrap items-center gap-6">
-                            <Link href={`/checkout/${course.slug}`} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-yellow-200">
+                            <button onClick={handleEnrollment} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-yellow-200">
                                 ব্যাচে ভর্তি হোন
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                            </Link>
+                            </button>
 
                             <div className="flex items-center gap-3">
                                 <span className="text-3xl font-extrabold text-[#1A1D1F]">
@@ -550,7 +562,7 @@ export default function CourseDetails() {
                                     </li>
                                 </ul>
 
-                                <button className="w-full py-4 bg-[#6C5DD3] text-white font-extrabold text-lg rounded-2xl hover:bg-[#5A4CB5] transition-all shadow-lg shadow-[#6C5DD3]/20">
+                                <button onClick={handleEnrollment} className="w-full py-4 bg-[#6C5DD3] text-white font-extrabold text-lg rounded-2xl hover:bg-[#5A4CB5] transition-all shadow-lg shadow-[#6C5DD3]/20">
                                     Enroll Now
                                 </button>
                             </div>

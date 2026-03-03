@@ -32,6 +32,13 @@ export default function CheckoutPage() {
     });
 
     useEffect(() => {
+        const user = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+        if (!user || !token) {
+            window.location.href = `/login?redirect=/checkout/${slug}`;
+            return;
+        }
+
         const fetchCourse = async () => {
             try {
                 const res = await fetch(`/api/courses/${slug}`);
