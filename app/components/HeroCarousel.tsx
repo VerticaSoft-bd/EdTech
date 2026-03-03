@@ -52,7 +52,7 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
     }, [nextSlide]);
 
     return (
-        <section className="w-full relative overflow-hidden rounded-[2.5rem] bg-[#0F1117] min-h-[500px] lg:h-[600px] group shadow-2xl border border-white/5">
+        <section className="w-full relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#0F1117] h-[650px] md:min-h-[500px] lg:h-[600px] group shadow-2xl border border-white/5">
             {/* Ambient Background Glows */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -z-0"></div>
             <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none -z-0"></div>
@@ -64,23 +64,23 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
                         }`}
                 >
                     {/* Left Content */}
-                    <div className="flex-1 p-8 md:p-14 lg:pr-0 z-10 w-full lg:w-[45%] flex flex-col justify-center my-auto transition-all duration-700 delay-300"
+                    <div className="flex-1 p-6 md:p-8 lg:p-14 lg:pr-0 z-10 w-full lg:w-[45%] flex flex-col justify-center my-auto transition-all duration-700 delay-300"
                         style={{ transform: index === current ? 'translateY(0)' : 'translateY(20px)', opacity: index === current ? 1 : 0 }}
                     >
-                        <div className="flex items-center gap-2 mb-6 animate-fade-in">
+                        <div className="flex items-center gap-2 mb-4 md:mb-6 animate-fade-in relative z-20">
                             <span className="w-2 h-2 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" style={{ backgroundColor: slide.color }}></span>
-                            <span className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-white/50">{slide.tag}</span>
+                            <span className="text-[10px] md:text-[11px] font-extrabold tracking-[0.2em] uppercase text-white/50">{slide.tag}</span>
                         </div>
-                        <h1 className="text-[40px] md:text-[52px] lg:text-[60px] font-black leading-[1.05] text-white tracking-tighter mb-6 italic">
+                        <h1 className="text-[32px] md:text-[40px] lg:text-[52px] xl:text-[60px] font-black leading-[1.05] text-white tracking-tighter mb-4 md:mb-6 italic relative z-20">
                             {slide.title.split(slide.highlight)[0]}
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40" style={{ WebkitTextStroke: `1px ${slide.color}` }}>{slide.highlight}</span>
                             {slide.title.split(slide.highlight)[1]}
                         </h1>
-                        <p className="text-[17px] text-gray-400 font-medium max-w-[460px] leading-[1.6] mb-10">
+                        <p className="text-[15px] md:text-[17px] text-gray-400 font-medium max-w-[460px] leading-[1.6] mb-6 md:mb-10 relative z-20">
                             {slide.description}
                         </p>
-                        <div className="flex flex-wrap items-center gap-4 mb-8">
-                            <button className="px-8 py-4 text-white font-bold rounded-xl transition-all text-[15px] flex items-center gap-2 hover:scale-105 active:scale-95 duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)] relative group/btn overflow-hidden"
+                        <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6 md:mb-8 relative z-20">
+                            <button className="px-6 py-3 md:px-8 md:py-4 text-white font-bold rounded-xl transition-all text-[14px] md:text-[15px] flex items-center gap-2 hover:scale-105 active:scale-95 duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)] relative group/btn overflow-hidden"
                                 style={{ backgroundColor: slide.color }}>
                                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
                                 <span className="relative z-10">{slide.primaryBtn}</span>
@@ -110,7 +110,7 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
                     </div>
 
                     {/* Right Image Container */}
-                    <div className="w-full lg:w-[55%] relative h-[350px] lg:h-auto overflow-hidden">
+                    <div className="absolute inset-0 md:relative md:inset-auto w-full lg:w-[55%] h-full lg:h-auto overflow-hidden opacity-30 md:opacity-100 z-0 md:z-10 blur-sm md:blur-none">
                         {/* Decorative elements */}
                         <div className="absolute top-10 right-10 w-24 h-24 border border-white/10 rounded-full animate-pulse"></div>
                         <div className="absolute bottom-20 left-10 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl"></div>
@@ -143,7 +143,7 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
                         </div>
 
                         {/* Floating elements */}
-                        <div className={`absolute bottom-12 right-12 bg-white/[0.05] backdrop-blur-2xl p-6 rounded-[2rem] shadow-2xl border border-white/10 transition-all duration-1000 delay-500 max-w-[280px] ${index === current ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+                        <div className={`hidden md:block absolute bottom-12 right-12 bg-white/[0.05] backdrop-blur-2xl p-6 rounded-[2rem] shadow-2xl border border-white/10 transition-all duration-1000 delay-500 max-w-[280px] ${index === current ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
                                     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
@@ -176,7 +176,7 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
             </div>
 
             {/* Navigation Arrows */}
-            <div className="absolute right-12 bottom-12 z-20 flex gap-4">
+            <div className="hidden md:flex absolute right-12 bottom-12 z-20 gap-4">
                 <button
                     onClick={() => setCurrent(prev => (prev === 0 ? SLIDES.length - 1 : prev - 1))}
                     className="w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all hover:scale-110 shadow-lg">
