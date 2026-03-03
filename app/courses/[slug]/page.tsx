@@ -671,6 +671,313 @@ export default function CourseDetails() {
                     </div>
                 </div>
 
+                {/* Requirements Section */}
+                <section className="mt-20 mb-16">
+                    <div className="flex flex-col items-center justify-center mb-12">
+                        <div className="relative inline-block">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
+                                কী কী <span className="text-[#FBBF24]">থাকতে</span> হবে
+                            </h2>
+                            <svg className="absolute -bottom-3 right-0 w-36 text-[#FBBF24]" viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 15Q50 5 95 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Card 1 */}
+                        <div className="bg-[#EEF2F6] rounded-2xl p-8 flex flex-col items-start gap-6">
+                            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <span className="text-3xl">💻</span>
+                            </div>
+                            <h3 className="text-[#1A1D1F] font-bold text-lg leading-relaxed">
+                                ন্যূনতম ৪ জিবি র‍্যাম
+                            </h3>
+                        </div>
+
+                        {/* Card 2 */}
+                        <div className="bg-[#EEF2F6] rounded-2xl p-8 flex flex-col items-start gap-6">
+                            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <span className="text-3xl">👨‍💻</span>
+                            </div>
+                            <h3 className="text-[#1A1D1F] font-bold text-lg leading-relaxed">
+                                ৬৪ বিটের প্রসেসর আছে এমন ডেস্কটপ বা ল্যাপটপ ও ভালো ইন্টারনেট কানেকশন
+                            </h3>
+                        </div>
+
+                        {/* Card 3 */}
+                        <div className="bg-[#EEF2F6] rounded-2xl p-8 flex flex-col items-start gap-6">
+                            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <span className="text-3xl">🧗</span>
+                            </div>
+                            <h3 className="text-[#1A1D1F] font-bold text-lg leading-relaxed">
+                                লেগে থাকার মানসিকতা
+                            </h3>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Course Benefits Detailed Grid */}
+                <section className="mt-20 mb-16">
+                    <div className="flex flex-col items-center justify-center mb-12">
+                        <div className="relative inline-block px-4">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
+                                কোর্সে আপনি পাচ্ছেন
+                            </h2>
+                            <svg className="absolute -bottom-4 left-0 w-full text-[#FBBF24]" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 8 Q 100 2 195 8" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div className="rounded-[24px] overflow-hidden border border-gray-100 bg-gray-100 shadow-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px]">
+                            {[
+                                { icon: "🗓️", title: "৮ মাসের গাইডেড জার্নি", subtitle: "একদম বিগিনার ফ্রেন্ডলি ওয়েতে আপডেটেড কারিকুলাম" },
+                                { icon: "LIVE", title: "৭৩টি লাইভ ক্লাস এবং ৩০৭টি প্রি রেকর্ডড ভিডিও", subtitle: "ইন্ডাস্ট্রি এক্সপার্টদের কাছে শিখুন লাইভে" },
+                                { icon: "PROJECT", title: "২ টি ইন্ডাস্ট্রি স্ট্যান্ডার্ড প্রজেক্ট ও ১২টি কম্প্রিহেন্সিভ প্রজেক্ট", subtitle: "ইন্ডাস্ট্রি স্ট্যান্ডার্ড প্রজেক্ট এড করুন সিভিতে, থাকুন সবার চেয়ে এগিয়ে" },
+                                { icon: "📈", title: "প্রোগ্রেস ট্র্যাকিং", subtitle: "লিডার বোর্ডে দেখুন নিজের পজিশন উইথ প্রগ্রেস" },
+                                { icon: "🎧", title: "সপ্তাহে ৬ দিন সাপোর্ট ক্লাস", subtitle: "প্র্যাক্টিস করতে গিয়ে প্রব্লেমে পড়লে লাইভ সাপোর্ট নিন সকাল ১১ টায় এবং রাত ৮ টায়" },
+                                { icon: "🤝", title: "কমিউনিটি সাপোর্ট", subtitle: "থাকুন প্রোগ্রেসিভ কমিউনিটির সাথে অলওয়েজ" },
+                                { icon: "⏳", title: "লাইফটাইম এক্সেস", subtitle: "প্রিরেকর্ডেড ভিডিও, রিসোর্স এবং ক্লাস রেকর্ডিং এ থাকবে লাইফ টাইম এক্সেস" },
+                                { icon: "🎯", title: "জব মার্কেট গাইডলাইন", subtitle: "ইন্ডাস্ট্রি এক্সপার্টদের কাছে পান জব মার্কেটে প্রবেশ করার পূর্ণাঙ্গ নির্দেশনা" },
+                                { icon: "💼", title: "মার্কেটপ্লেস গাইডলাইন", subtitle: "কোড ক্যানিয়নের মত মার্কেটপ্লেসে কিভাবে প্রজেক্ট সেল করবেন, পাবেন গাইডলাইন" },
+                            ].map((item, i) => (
+                                <div key={i} className="bg-white p-8 md:p-10 flex flex-col items-center text-center justify-center hover:bg-gray-50 transition-colors">
+                                    <div className="text-4xl mb-6 flex items-center justify-center min-h-[50px]">
+                                        {item.icon === "LIVE" ? (
+                                            <div className="flex flex-col items-center">
+                                                <span className="px-2.5 py-0.5 bg-red-100 text-[#EF4444] text-[11px] font-black rounded uppercase tracking-widest border border-red-200">Live</span>
+                                            </div>
+                                        ) : item.icon === "PROJECT" ? (
+                                            <div className="flex flex-col items-center">
+                                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Project</span>
+                                                <span className="text-3xl">⚙️</span>
+                                            </div>
+                                        ) : item.icon}
+                                    </div>
+                                    <h3 className="text-[#1A1D1F] font-extrabold text-[17px] md:text-lg mb-3 leading-snug">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-sm md:text-[15px] text-gray-500 font-medium leading-relaxed">
+                                        {item.subtitle}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* What you will learn Section */}
+                <section className="mt-20 mb-16">
+                    <div className="flex flex-col items-center justify-center mb-12">
+                        <div className="relative inline-block px-4">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
+                                কোর্সে কি কি শেখানো হবে
+                            </h2>
+                            <svg className="absolute -bottom-4 left-0 w-full text-[#FBBF24]" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 8 Q 100 2 195 8" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            "প্রোগ্রামিং ল্যাংগুয়েজ হিসেবে শেখানো হবে পাইথন",
+                            "ব্যাকএন্ডের জন্য আমরা শিখবো Django, Django Rest Framework, Flask",
+                            "ফ্রন্টেন্ডের জন্য শেখানো হবে React",
+                            "পাইথন এর এডভান্স কনসেপ্ট",
+                            "Django রেস্ট ফ্রেমওয়ার্ক এর এডভান্স কনসেপ্ট",
+                            "Authentication, Permissions, Throttling, Filtering",
+                            "Pagination, Automated API testing, Searching and Ordering"
+                        ].map((item, i) => (
+                            <div key={i} className="bg-white border border-gray-100 rounded-[20px] p-6 flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:border-gray-200">
+                                <div className="mt-1 flex-shrink-0">
+                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="10" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path d="M8 12.5L10.5 15L16 9" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                                <p className="text-[#1A1D1F] font-bold text-[15px] leading-relaxed">
+                                    {item}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Target Audience Section */}
+                <section className="mt-20 mb-16">
+                    <div className="flex flex-col items-center justify-center mb-12">
+                        <div className="relative inline-block">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
+                                কোর্সটি আপনারই জন্য
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            "যারা একদম শূন্য থেকে ওয়েব ডেভেলপমেন্ট শিখে ক্যারিয়ার স্টার্ট করতে চান",
+                            "ইউনিভার্সিটি কিংবা কলেজের শিক্ষার্থী যিনি ডেভেলপার হতে চান",
+                            "যিনি ওয়েব ডেভেলপমেন্ট শেখার বিগিনার স্টেজে আছেন",
+                            "যারা প্রজেক্ট করে ওয়েব ডেভেলপমেন্ট শিখতে চাচ্ছেন"
+                        ].map((item, i) => (
+                            <div key={i} className="bg-white border border-gray-100 rounded-xl p-6 flex items-start gap-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow">
+                                <div className="mt-0.5 flex-shrink-0">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="10" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path d="M8 12.5L10.5 15L16 9" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                </div>
+                                <p className="text-[#1A1D1F] font-extrabold text-[15px] leading-relaxed flex-1">
+                                    {item}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Success Stories Section */}
+                <section className="mt-20 mb-16">
+                    <div className="flex flex-col items-center justify-center mb-12">
+                        <div className="relative inline-block">
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
+                                সাকসেসফুল হয়েছেন যারা
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                        {[
+                            { name: "Shahriya Naeem (Batch 1)", role: "Jr. Django Developer, Softvence Agency", initial: "SN" },
+                            { name: "Md. Main (Batch 1)", role: "Jr. Python Developer, Softvence Agency", initial: "MM" },
+                            { name: "Nasir Uddin (Batch 2)", role: "Python Django developer, Softvence Agency", initial: "NU" },
+                            { name: "Rezanul Haque Raz (Batch 2)", role: "Python developer, Softvence Agency", initial: "RH" },
+                            { name: "MD IMDADUL HOSSAIN (Batch 3)", role: "Python Django developer, Softvence Agency", initial: "MI" },
+                            { name: "Md. Sifat Hossen (Batch 3)", role: "Python Django developer, Softvence Agency", initial: "MS" },
+                            { name: "Joy Barmon", role: "Python Developer at Universe IT Institute", initial: "JB" },
+                            { name: "MD AFZALUL HAQUE", role: "Software Developer at echologyx", initial: "MA" },
+                            { name: "Nadim Mahmud", role: "Junior Python Developer at Join Venture AI", initial: "NM" },
+                            { name: "Asif Faisal", role: "Full Stack Developer at Zerone BD", initial: "AF" },
+                            { name: "Nahid Hasan Ukil", role: "Software Developer at Opzo Technologies", initial: "NH" },
+                            { name: "Shiam Sharif", role: "Junior Software Developer at Exoveon Limited", initial: "SS" },
+                            { name: "Abir Hasan", role: "Junior Full Stack Developer at Exoveon Limited", initial: "AH" },
+                            { name: "MD. HASHANUL BANNA", role: "Backend Developer(Django) - Intern atRaktch Technology & Software", initial: "MH" },
+                            { name: "Rajon Ahmed", role: "Backend Developer at Bdcalling", initial: "RA" },
+                            { name: "Md. Munna", role: "Software Developer (python) at Intelligent Systems and Solutions Limited (ISSL)", initial: "MM" },
+                            { name: "MOHIAN UL ISLAM", role: "Intern at Star Computer System Limited", initial: "MU" },
+                            { name: "Md. Mominul Islam", role: "Jr. django developer at Softvence", initial: "MM" },
+                        ].map((student, i) => (
+                            <div key={i} className="bg-white border border-gray-100 rounded-xl p-5 flex items-start gap-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group">
+                                <div className="relative shrink-0">
+                                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-white shadow-sm font-bold text-gray-500 text-sm">
+                                        {/* Fallback avatar using initials since we don't have all photos */}
+                                        <img
+                                            src={`https://ui-avatars.com/api/?name=${student.name}&background=random&color=fff&size=48`}
+                                            alt={student.name}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                        />
+                                    </div>
+                                    {/* Small company icon badge */}
+                                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-100 p-0.5">
+                                        <img src={`https://ui-avatars.com/api/?name=${student.role.split(' ').pop()}&background=fff&color=6C5DD3&size=20&rounded=true`} alt="company" className="w-full h-full rounded-full" />
+                                    </div>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-[#1A1D1F] font-bold text-[14px] leading-snug mb-1 truncate whitespace-normal line-clamp-2">
+                                        {student.name}
+                                    </h3>
+                                    <p className="text-gray-500 text-[12px] font-medium leading-relaxed truncate whitespace-normal line-clamp-2">
+                                        {student.role}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Testimonials / Feedback Section */}
+                <section className="mt-20 mb-20">
+                    <div className="flex flex-col items-center justify-center mb-12">
+                        <span className="px-4 py-1.5 bg-[#D1FAE5] text-[#059669] text-sm font-bold rounded-full mb-4">
+                            ফিডব্যাক
+                        </span>
+                        <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
+                            আমাদের <span className="text-[#FBBF24]">লার্নারদের</span> কাছে শুনুন
+                        </h2>
+                    </div>
+
+                    {/* True Masonry-style Grid for Testimonials */}
+                    <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                        {[
+                            {
+                                text: "কোর্স করে অনেক ভালোকিছু আমি শিখতে পেরেছি। ইন্সট্রাক্টর ভাই খুব সুন্দর করে কোর্স করিয়েছেন। এবং আমার যে কোন প্রবলেমে আমি সাপোর্ট ক্লাসে জয়েন করে সাপোর্ট নিতে পেরেছি। ধন্যবাদ ওস্তাদ টিমকে। আমি খুবই খুশি কোর্স করে। আমি কোর্স রেটিং ১০ এ ৮ দিবো।",
+                                name: "Ashutosh Roy"
+                            },
+                            {
+                                text: "কোর্সের কারিকুলাম নিয়ে আমি সন্তুষ্ট। বিশেষ করে মেন্টর উনি অনেক অভিজ্ঞ এবং উনার ক্লাসে অনেক কিছু আমি শিখতে পেরেছি। বিশেষ করে আমাদের যেকোনো প্রবলেমের জন্য ওস্তাদ টিম খুব এফেক্টিভ ভাবে আমাদেরকে হেল্প করে। ধন্যবাদ ওস্তাদ টিমকে এরকম সুন্দর একটা প্ল্যাটফর্ম দেওয়ার জন্য।",
+                                name: "Shah Sayem Ahmad"
+                            },
+                            {
+                                text: "আলহামদুলিল্লাহ, আমার কাছে কোর্স খুব ভালো লাগতেছে। এবং আমি অনেক কিছু শিখতে পারতেছি কোর্সে করে। আমাদের মেন্টর যিনি আছেন উনি খুব সুন্দর ভাবে আমাদেরকে গাইডলাইন দিচ্ছেন। এবং আমার প্রবলেম হলে আমি সাপোর্টে জয়েন করে আমার প্রবলেম দেখাতে পারি। আমি কোর্স রেটিং এ দশে নয় দিব।",
+                                name: "Radoanul Arifen"
+                            },
+                            {
+                                text: "আমার নাম মুনতাসির বিন হাসিব। আমি ওস্তাদের Python Django কোর্সের ব্যাচ ২ এ আছি। আলহামদুলিল্লাহ কোর্স আমার কোনো সমস্যা হচ্ছে না। ভাইয়াদের ক্লাস অনেক ভালো লেগেছে। ক্লাসে খুব ভালো পড়ানো হয় তাই সাপোর্ট ক্লাস করার প্রয়োজন হয়নি। সব কিছু মিলিয়ে আমার কাছে ওস্তাদ প্ল্যাটফর্মটি খুব ভালো লেগেছে।",
+                                name: "Muntasir Bin Hasib"
+                            },
+                            {
+                                text: "কোর্সে এখনো লার্নিং অবস্থায় আছি। তবে যতটুকু কোর্স করেছি খুব ভালোই শিখেছি। তবে আরেকটু দ্রুত কোর্স আগালে আমার জন্য ভালো হতো। কোর্সের টিচার এবং ওস্তাদ টিম সাপোর্ট টিচার মিলিয়ে আমার কাছে খুব ভালো লাগতেছে। আশা করি সামনে আরো ভালো কিছু আমরা প্রজেক্ট অনুযায়ী করতে পারব।",
+                                name: "Santosh Barai"
+                            },
+                            {
+                                text: "এখন পর্যন্ত আমি যত ক্লাস করেছি আমার সেরকম কোন প্রবলেম আমি ফেস করিনি। এবং মোটামুটি ক্লাস আমার কাছে ভালই লাগছে এবং আমার আগে থেকে অনেক কিছু জানা আছে। এই কারণে কোন প্রবলেম হচ্ছে না। তো আশা করি সামনে আরো ভালো কিছু পাব। বিশেষ করে নাসিম ভাইয়া যদি আরো ডিটেলস ক্লাস নেন...",
+                                name: "Nadim Bhuiyan"
+                            },
+                            {
+                                text: "কোর্স এখনো শেষ হয় নাই তবে যতটুকু করেছি আমার কাছে খুব ভালোই লেগেছে। বিশেষ করে মেন্টরের ক্লাস গুলা আমার কাছে অসাধারণ লাগছে। এবং আমি এই কোর্স করে আমার স্কিল অনেক ডেভেলপ হয়েছে। সামনে আশা করি আরো ভালো কিছু শিখতে পারবো।",
+                                name: "Alinoor Sarker"
+                            },
+                            {
+                                text: "কোর্স যতটুকু করেছি আমার কাছে বেশ ভালই লেগেছে। আশা করি সামনে আরো ভালো কিছু আমরা শিখতে পারবো। আমি বলতে চাই আমাদের মেন্টর খুবই ভালো উনি যথেষ্ট হেল্পফুল। ক্লাসে সবকিছু উনি আমাদেরকে ইন ডিটেলস বুঝাচ্ছেন। আমাদের যে কোন প্রবলেমে সাপোর্ট ক্লাসে জয়েন করে আমরা প্রবলেম দেখাইতে পারি।",
+                                name: "Md. Sabbir Ahmed"
+                            },
+                            {
+                                text: "ওস্তাদের এই কোর্সটি শুরু থেকে এখন পর্যন্ত অনেক কিছু শিখতে পেরেছি। লাইভ ক্লাসের পাশাপাশি সাপোর্ট ক্লাসগুলো কোর্সের জিনিসগুলো বুঝতে আরো বেশি সহায়তা করেছে। আশা করছি কোর্সটি পুরোপুরি শেষ করে আরো অনেক কিছু শিখতে পারবো এবং কাজে লাগাতে পারব। ওস্তাদ টিমকে অসংখ্য ধন্যবাদ।",
+                                name: "Monir Hossain"
+                            },
+                            {
+                                text: "আসসালামু আলাইকুম। প্রথম থেকে এখন পর্যন্ত আলহামদুলিল্লাহ কোর্সটি অনেক ভালো যাচ্ছে। কোর্সের মেন্টর, লাইভ ক্লাস, সাপোর্ট ক্লাস সবকিছুই অনেক ভালো। ওস্তাদ টিমকে অনেক ধন্যবাদ কোর্সটি অফার করার জন্য এবং আমাদের এত ভাল করে শেখানোর জন্য। আশা রাখছি সামনেও ভালো কিছু শিখতে পারবো।",
+                                name: "MEHEDI HASSAN"
+                            },
+                            {
+                                text: "আমি মোহাম্মদ আনিস। ওস্তাদের Python Django কোর্সের ব্যাচ ২ এ আছি। কোর্সটি করে আমি খুব স্যাটিসফাইড। ক্লাসগুলোতে খুব ভালো পড়ানোর ফলে অনেক ইজিলি সব বিষয় সম্পর্কে বুঝতে পারি এবং প্রজেক্ট ক্লাসগুলাও বেশ হেল্পফুল। আমি আগেও ওস্তাদের অন্য কোর্স করেছি খুবই ভাল সার্ভিস উনাদের।",
+                                name: "Mohammad Anis"
+                            }
+                        ].map((review, i) => (
+                            <div key={i} className="break-inside-avoid bg-white border border-gray-100 rounded-xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col mb-6 hover:shadow-md transition-shadow">
+                                <p className="text-[#334155] text-[14px] leading-relaxed font-medium mb-6">
+                                    {review.text}
+                                </p>
+                                <div className="border-t border-gray-100 pt-4 flex items-center justify-between mt-auto">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-[#1A1D1F] text-white flex items-center justify-center text-xs font-bold uppercase shrink-0">
+                                            {review.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                                        </div>
+                                        <h4 className="font-extrabold text-[#1A1D1F] text-[15px]">
+                                            {review.name}
+                                        </h4>
+                                    </div>
+                                    <div className="text-[#FBBF24] opacity-50 text-2xl font-serif leading-none h-4">
+                                        &rdquo;
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
             </main>
 
             <Footer />
