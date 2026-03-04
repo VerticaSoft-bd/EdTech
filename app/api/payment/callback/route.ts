@@ -65,6 +65,9 @@ async function handleCallback(req: NextRequest) {
 
             // Allow idempotency: If already completed, just redirect success
             if (transaction.status === 'completed') {
+                if (transaction.type === 'course_purchase') {
+                    return NextResponse.redirect(new URL(`/checkout/success?transactionId=${invoice_number}`, req.url));
+                }
                 return NextResponse.redirect(new URL('/dashboard/wallet?status=success', req.url));
             }
 
@@ -82,14 +85,14 @@ async function handleCallback(req: NextRequest) {
                         { dueAmount: 0 }
                     );
                 }
+                return NextResponse.redirect(new URL(`/checkout/success?transactionId=${invoice_number}`, req.url));
             } else {
                 // Update User Balance (Deposit)
                 await User.findByIdAndUpdate(transaction.user, {
                     $inc: { depositBalance: transaction.amount }
                 });
+                return NextResponse.redirect(new URL('/dashboard/wallet?status=success', req.url));
             }
-
-            return NextResponse.redirect(new URL('/dashboard/wallet?status=success', req.url));
         } else {
             // Failed
             transaction.status = 'failed';
