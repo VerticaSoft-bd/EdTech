@@ -8,22 +8,8 @@ export default function Footer() {
 
                     {/* Brand Section */}
                     <div className="col-span-1 md:col-span-1">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="w-8 h-8 bg-[#6C5DD3] rounded-lg flex items-center justify-center transform -rotate-12">
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="white"
-                                    strokeWidth="3"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                                </svg>
-                            </div>
-                            <span className="text-xl font-bold tracking-tight">Streva</span>
+                        <div className="mb-6">
+                            <img src="/images/logo.png" alt="Logo" className="h-10 object-contain" />
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed mb-6">
                             Empowering the next generation of digital creators and software engineers through smart, engaging learning journeys.
