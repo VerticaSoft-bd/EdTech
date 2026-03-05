@@ -199,7 +199,12 @@ export default function Header() {
                                             </Link>
                                             <div className="h-[1px] bg-gray-100 my-1 mx-2"></div>
                                             <button
-                                                onClick={() => {
+                                                onClick={async () => {
+                                                    try {
+                                                        await fetch('/api/auth/logout', { method: 'POST' });
+                                                    } catch (error) {
+                                                        console.error("Logout failed:", error);
+                                                    }
                                                     localStorage.removeItem('token');
                                                     localStorage.removeItem('user');
                                                     window.location.href = '/login';
