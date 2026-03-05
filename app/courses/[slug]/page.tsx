@@ -133,7 +133,7 @@ export default function CourseDetails() {
                             <button
                                 onClick={handleEnrollment}
                                 disabled={isEnrolled}
-                                className={`px-8 py-4 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg ${isEnrolled ? "bg-gray-300 text-gray-600 cursor-not-allowed shadow-none" : "bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 shadow-yellow-200"
+                                className={`px-8 py-4 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg ${isEnrolled ? "bg-gray-300 text-gray-600 cursor-not-allowed shadow-none" : "bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 shadow-yellow-200 cursor-pointer"
                                     }`}
                             >
                                 {isEnrolled ? "ভর্তি সম্পন্ন" : "ব্যাচে ভর্তি হোন"}

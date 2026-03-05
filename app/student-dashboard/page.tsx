@@ -3,8 +3,31 @@ import FeeStatusCard from "@/app/components/FeeStatusCard";
 import AttendanceChart from "@/app/components/AttendanceChart";
 import JobFeed from "@/app/components/JobFeed";
 import Header from "@/app/components/Header";
+import { getAuthenticatedUser } from "@/lib/auth";
+import dbConnect from "@/lib/db";
+import Student from "@/models/Student";
+import Course from "@/models/Course";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function StudentDashboard() {
+export default async function StudentDashboard() {
+  const user = await getAuthenticatedUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
+  await dbConnect();
+
+  // Fetch student enrollments
+  const enrollments = await Student.find({ email: user.email }).lean();
+
+  // Extract course names to query rich course data
+  const enrolledCourseNames = enrollments.map(e => e.courseName);
+
+  // Fetch rich course data for the enrolled courses
+  const enrolledCourses = await Course.find({ title: { $in: enrolledCourseNames } }).lean();
+
   return (
     <div className="min-h-screen bg-white font-sans text-[#1A1D1F]">
       <Header />
@@ -15,7 +38,7 @@ export default function StudentDashboard() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
               <h1 className="text-3xl font-bold text-[#1A1D1F] flex items-center gap-2">
-                Good morning, Syed
+                Good morning, {user.name}
                 <span className="animate-wave origin-bottom-right inline-block">
                   👋🏻
                 </span>
@@ -139,119 +162,118 @@ export default function StudentDashboard() {
           <div>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-[#1A1D1F]">My Courses</h2>
-              <a
-                href="#"
+              <Link
+                href="/courses"
                 className="text-sm font-bold text-[#6C5DD3] hover:underline"
               >
-                View All
-              </a>
+                View All Courses
+              </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Instgram Marketing Hacks",
-                  subtitle: "Enhancing Learning Engagement through thoughtful UI/UX",
-                  color: "from-[#8E8AFF] to-[#B4B1FF]",
-                  materials: "10 Materials",
-                  tag: "A-Z Guideline",
-                  iconColor: "text-[#6C5DD3]",
-                  bgColor: "bg-[#6C5DD3]/10",
-                },
-                {
-                  title: "Google Adsense Hacks",
-                  subtitle: "Enhancing Learning Engagement through thoughtful UI/UX",
-                  color: "from-[#FFAB7B] to-[#FFCF9D]",
-                  materials: "5 Materials",
-                  tag: "A-Z Guideline",
-                  iconColor: "text-[#FFAB7B]",
-                  bgColor: "bg-[#FFAB7B]/10",
-                },
-                {
-                  title: "Hit A Backhand Like Pro",
-                  subtitle: "Enhancing Learning Engagement through thoughtful UI/UX",
-                  color: "from-[#FF9AD5] to-[#FFC2E8]",
-                  materials: "12 Materials",
-                  tag: "A-Z Guideline",
-                  iconColor: "text-[#FF9AD5]",
-                  bgColor: "bg-[#FF9AD5]/10",
-                },
-              ].map((course, idx) => (
-                <div
-                  key={idx}
-                  className="bg-[#F6F8FA] p-2 rounded-[32px] shadow-sm hover:shadow-md transition-shadow group cursor-pointer"
-                >
-                  <div
-                    className={`h-[180px] rounded-[24px] bg-gradient-to-r ${course.color} relative p-6 flex flex-col justify-between overflow-hidden`}
-                  >
-                    {/* Noise Background & Decorative Stars */}
-                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-40"></div>
 
-                    {/* Distributed Stars/Sparkles */}
-                    <div className="absolute top-4 left-6 text-white/60 text-lg animate-pulse">✦</div>
-                    <div className="absolute top-8 right-20 text-white/40 text-xs">✦</div>
-                    <div className="absolute bottom-16 left-8 text-white/30 text-sm">✦</div>
-                    <div className="absolute bottom-6 right-8 text-white/50 text-xl">✦</div>
-                    <div className="absolute top-1/2 left-1/2 text-white/20 text-[10px]">✦</div>
-                    <div className="absolute top-16 right-4 text-white/30 text-base">✦</div>
-                    <div className="flex justify-end">
-                      <div className="bg-white/30 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs font-medium">
-                        {course.materials}
+            {enrolledCourses.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {enrolledCourses.map((course: any, idx) => {
+                  const gradients = [
+                    "from-[#8E8AFF] to-[#B4B1FF]",
+                    "from-[#FFAB7B] to-[#FFCF9D]",
+                    "from-[#FF9AD5] to-[#FFC2E8]"
+                  ];
+                  const textColors = ["text-[#6C5DD3]", "text-[#FFAB7B]", "text-[#FF9AD5]"];
+                  const bgColors = ["bg-[#6C5DD3]/10", "bg-[#FFAB7B]/10", "bg-[#FF9AD5]/10"];
+
+                  const colorIdx = idx % gradients.length;
+
+                  return (
+                    <Link
+                      href={`/courses/${course.slug}`}
+                      key={course._id.toString()}
+                      className="bg-[#F6F8FA] p-2 rounded-[32px] shadow-sm hover:shadow-md transition-shadow group cursor-pointer block"
+                    >
+                      <div
+                        className={`h-[180px] rounded-[24px] bg-gradient-to-r ${gradients[colorIdx]} relative p-6 flex flex-col justify-between overflow-hidden`}
+                      >
+                        {/* Noise Background & Decorative Stars */}
+                        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-40"></div>
+
+                        {/* Distributed Stars/Sparkles */}
+                        <div className="absolute top-4 left-6 text-white/60 text-lg animate-pulse">✦</div>
+                        <div className="absolute top-8 right-20 text-white/40 text-xs">✦</div>
+                        <div className="absolute bottom-16 left-8 text-white/30 text-sm">✦</div>
+                        <div className="absolute bottom-6 right-8 text-white/50 text-xl">✦</div>
+                        <div className="absolute top-1/2 left-1/2 text-white/20 text-[10px]">✦</div>
+                        <div className="absolute top-16 right-4 text-white/30 text-base">✦</div>
+                        <div className="flex justify-end">
+                          <div className="bg-white/30 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-xs font-medium">
+                            {course.modules?.length || 0} Modules
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 className="text-xl font-bold text-white mb-4 leading-tight line-clamp-2">
+                            {course.title}
+                          </h3>
+                          <div className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-medium border border-white/20 uppercase">
+                            {course.level || "Beginner"}
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div>
-                      <h3 className="text-2xl font-bold text-white mb-4 leading-tight">
-                        {course.title}
-                      </h3>
-                      <div className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-white text-xs font-medium border border-white/20">
-                        {course.tag}
+                      <div className="p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className={`p-1.5 rounded-lg ${bgColors[colorIdx]}`}>
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              className={textColors[colorIdx]}
+                              strokeWidth="2.5"
+                            >
+                              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                            </svg>
+                          </span>
+                          <span className="text-sm font-semibold text-gray-500">
+                            {course.category || "Course"}
+                          </span>
+                        </div>
+
+                        <p className="text-sm font-bold text-[#1A1D1F] mb-4 leading-relaxed line-clamp-2 min-h-[40px]">
+                          {course.subtitle || "Enhancing Learning Engagement"}
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-2 mb-6">
+                          <span className="px-3 py-1.5 bg-gray-50 rounded-xl text-xs font-semibold text-gray-400">
+                            {course.courseMode || "Online"}
+                          </span>
+                          <span className="px-3 py-1.5 bg-gray-50 rounded-xl text-xs font-semibold text-gray-400">
+                            {course.duration || "Self-paced"}
+                          </span>
+                        </div>
+
+                        <div className="pt-2">
+                          <span className="text-xs font-bold text-[#6C5DD3]">
+                            Continue Learning &rarr;
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className={`p-1.5 rounded-lg ${course.bgColor}`}>
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          className={course.iconColor}
-                          strokeWidth="2.5"
-                        >
-                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                        </svg>
-                      </span>
-                      <span className="text-sm font-semibold text-gray-500">
-                        Course
-                      </span>
-                    </div>
-
-                    <p className="text-sm font-bold text-[#1A1D1F] mb-4 leading-relaxed">
-                      {course.subtitle}
-                    </p>
-
-                    <div className="flex items-center gap-3 mb-6">
-                      <span className="px-3 py-1.5 bg-gray-50 rounded-xl text-xs font-semibold text-gray-400">
-                        Prototyping
-                      </span>
-                      <span className="px-3 py-1.5 bg-gray-50 rounded-xl text-xs font-semibold text-gray-400">
-                        Not Urgent
-                      </span>
-                    </div>
-
-                    <div className="pt-2">
-                      <span className="text-xs font-bold text-[#1A1D1F]">
-                        Not Started
-                      </span>
-                    </div>
-                  </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-10 mt-4 text-center">
+                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-gray-500" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
                 </div>
-              ))}
-            </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">No Courses Yet</h3>
+                <p className="text-gray-500 mb-6 max-w-sm mx-auto">You haven't enrolled in any courses yet. Browse our catalog to start learning!</p>
+                <Link href="/courses" className="px-6 py-3 bg-[#6C5DD3] text-white rounded-xl font-bold shadow-lg hover:bg-[#5a4cb5] transition-colors inline-block">
+                  Explore Courses
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* In Progress */}
@@ -547,8 +569,8 @@ export default function StudentDashboard() {
 
           {/* Fee Status (Critical) */}
           <FeeStatusCard
-            totalFee={1200}
-            paidAmount={450}
+            totalFee={enrollments.reduce((sum, e) => sum + (e.totalCourseFee || 0), 0) || 1200}
+            paidAmount={enrollments.reduce((sum, e) => sum + (e.paidAmount || 0), 0) || 450}
             nextDueDate="Oct 15, 2026"
           />
 

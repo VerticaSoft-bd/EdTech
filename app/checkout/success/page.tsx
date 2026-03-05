@@ -9,9 +9,9 @@ import React from 'react';
 export default async function SuccessPage({
     searchParams
 }: {
-    searchParams: { transactionId?: string }
+    searchParams: Promise<{ transactionId?: string }>
 }) {
-    const transactionId = searchParams.transactionId;
+    const transactionId = (await searchParams).transactionId;
 
     if (!transactionId) {
         redirect('/dashboard');
@@ -135,8 +135,8 @@ export default async function SuccessPage({
                                 Go to Dashboard
                                 <ArrowRight className="ml-2 -mr-1 h-5 w-5" />
                             </Link>
-                            <Link href="/courses" className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all hover:bg-gray-50 hover:text-gray-900">
-                                Browse More Courses
+                            <Link href={`/invoice/${transaction.transactionId}`} target="_blank" className="flex-1 inline-flex items-center justify-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all hover:text-gray-900">
+                                Download Invoice
                             </Link>
                         </div>
                     </div>

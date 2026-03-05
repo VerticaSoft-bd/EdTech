@@ -25,8 +25,22 @@ export async function verifyToken(token: string) {
     }
 }
 
-export async function getAuthenticatedUser(req: NextRequest) {
-    const token = req.cookies.get('token')?.value || req.headers.get('authorization')?.split(' ')[1];
+import { cookies, headers } from 'next/headers';
+
+export async function getAuthenticatedUser(req?: NextRequest) {
+    let token: string | undefined;
+
+    if (req) {
+        token = req.cookies.get('token')?.value || req.headers.get('authorization')?.split(' ')[1];
+    } else {
+        const cookieStore = await cookies();
+        token = cookieStore.get('token')?.value;
+
+        if (!token) {
+            const headersList = await headers();
+            token = headersList.get('authorization')?.split(' ')[1];
+        }
+    }
 
     if (!token) return null;
 
