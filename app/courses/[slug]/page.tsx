@@ -5,6 +5,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import EnrollmentModal from "../components/EnrollmentModal";
 
 interface IModule {
     _id: string;
@@ -20,18 +21,12 @@ export default function CourseDetails() {
     const [activeTab, setActiveTab] = useState("curriculum");
     const [openModule, setOpenModule] = useState<number>(0);
     const [isEnrolled, setIsEnrolled] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleEnrollment = (e: React.MouseEvent) => {
         e.preventDefault();
         if (isEnrolled) return;
-
-        const user = localStorage.getItem("user");
-        const token = localStorage.getItem("token");
-        if (!user || !token) {
-            window.location.href = `/login?redirect=/checkout/${course?.slug}`;
-        } else {
-            router.push(`/checkout/${course?.slug}`);
-        }
+        setIsModalOpen(true);
     };
 
     useEffect(() => {
@@ -1244,6 +1239,12 @@ export default function CourseDetails() {
             </main>
 
             <Footer />
+            <EnrollmentModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                course={course}
+                discountedPrice={discountedPrice}
+            />
         </div>
     );
 }

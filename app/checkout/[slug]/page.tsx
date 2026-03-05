@@ -3,12 +3,15 @@
 import React, { useEffect, useState } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast, Toaster } from "react-hot-toast";
 
 export default function CheckoutPage() {
     const { slug } = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const urlAmount = searchParams.get("amount");
+
     const [course, setCourse] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -89,13 +92,15 @@ export default function CheckoutPage() {
         setSubmitting(true);
 
         const discountedPrice = course.regularFee * (1 - course.discountPercentage / 100);
+        const paymentAmount = urlAmount ? parseInt(urlAmount) : discountedPrice;
+        const dueAmount = discountedPrice - paymentAmount;
 
         const payload = {
             ...formData,
             courseName: course.title,
             totalCourseFee: discountedPrice,
-            paidAmount: discountedPrice, // Assuming full payment upon checkout for this flow
-            dueAmount: 0,
+            paidAmount: paymentAmount,
+            dueAmount: dueAmount,
         };
 
         try {
@@ -113,7 +118,7 @@ export default function CheckoutPage() {
                 const payRes = await fetch('/api/payment/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ amount: discountedPrice, courseName: course.title, email: formData.email })
+                    body: JSON.stringify({ amount: paymentAmount, courseName: course.title, email: formData.email })
                 });
 
                 if (payRes.status === 401) {
@@ -158,6 +163,7 @@ export default function CheckoutPage() {
     }
 
     const discountedPrice = course.regularFee * (1 - course.discountPercentage / 100);
+    const paymentAmount = urlAmount ? parseInt(urlAmount) : discountedPrice;
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
@@ -295,9 +301,14 @@ export default function CheckoutPage() {
                                 )}
                             </div>
 
-                            <div className="pt-4 border-t border-gray-100 flex justify-between items-center mb-8">
-                                <span className="font-bold text-[#1A1D1F] text-lg">Total</span>
-                                <span className="text-2xl font-extrabold text-[#6C5DD3]">৳{discountedPrice.toLocaleString()}</span>
+                            <div className="pt-4 border-t border-gray-100 flex justify-between items-center mb-2">
+                                <span className="font-bold text-[#1A1D1F]">Total Course Fee</span>
+                                <span className="text-xl font-bold text-gray-800">৳{discountedPrice.toLocaleString()}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center mb-8">
+                                <span className="font-bold text-[#1A1D1F] text-lg">Paiying Now</span>
+                                <span className="text-2xl font-extrabold text-[#6C5DD3]">৳{paymentAmount.toLocaleString()}</span>
                             </div>
 
                             <div className="bg-blue-50 text-blue-800 text-sm p-4 rounded-xl flex items-start gap-3">

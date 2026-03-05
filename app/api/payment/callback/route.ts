@@ -80,10 +80,19 @@ async function handleCallback(req: NextRequest) {
                 const { courseName, email } = transaction.metadata;
                 // Update Student Enrollment
                 if (courseName && email) {
-                    await mongoose.model('Student').findOneAndUpdate(
-                        { email, courseName },
-                        { dueAmount: 0 }
-                    );
+                    const student = await mongoose.model('Student').findOne({ email, courseName });
+                    if (student) {
+                        const newPaidAmount = (student.paidAmount || 0) + transaction.amount;
+                        const newDueAmount = Math.max(0, (student.totalCourseFee || 0) - newPaidAmount);
+
+                        await mongoose.model('Student').findOneAndUpdate(
+                            { email, courseName },
+                            {
+                                paidAmount: newPaidAmount,
+                                dueAmount: newDueAmount
+                            }
+                        );
+                    }
                 }
                 return NextResponse.redirect(new URL(`/checkout/success?transactionId=${invoice_number}`, req.url));
             } else {

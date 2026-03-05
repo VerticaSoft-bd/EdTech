@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         }
 
         if (error.code === 11000) {
-            return NextResponse.json({ success: false, message: 'Email or NID is already registered.' }, { status: 400 });
+            return NextResponse.json({ success: false, message: 'You are already registered for this course.' }, { status: 400 });
         }
 
         return NextResponse.json(

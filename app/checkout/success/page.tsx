@@ -111,15 +111,56 @@ export default async function SuccessPage({
                                 <dd className="text-sm text-gray-900 font-mono bg-gray-50 px-2 py-1 rounded">{transaction.transactionId}</dd>
                             </div>
 
-                            {transaction.gateway_ref && (
-                                <div className="flex justify-between items-start">
-                                    <dt className="flex items-center text-sm font-medium text-gray-500">
-                                        <Banknote className="h-4 w-4 mr-2 text-gray-400" />
-                                        Gateway Ref
-                                    </dt>
-                                    <dd className="text-sm text-gray-900 font-mono bg-gray-50 px-2 py-1 rounded">{transaction.gateway_ref}</dd>
-                                </div>
-                            )}
+                            {transaction.gateway_ref && (() => {
+                                let refData: any = null;
+                                try {
+                                    refData = typeof transaction.gateway_ref === 'string'
+                                        ? JSON.parse(transaction.gateway_ref)
+                                        : transaction.gateway_ref;
+                                } catch (e) {
+                                    // Not JSON, just display as text
+                                }
+
+                                return refData ? (
+                                    <>
+                                        {refData.payment_method && (
+                                            <div className="flex justify-between items-start">
+                                                <dt className="flex items-center text-sm font-medium text-gray-500">
+                                                    <Banknote className="h-4 w-4 mr-2 text-gray-400" />
+                                                    Payment Method
+                                                </dt>
+                                                <dd className="text-sm text-gray-900 font-mono bg-gray-50 px-2 py-1 rounded">{refData.payment_method}</dd>
+                                            </div>
+                                        )}
+                                        {refData.trx_status && (
+                                            <div className="flex justify-between items-start">
+                                                <dt className="flex items-center text-sm font-medium text-gray-500">
+                                                    <CheckCircle className="h-4 w-4 mr-2 text-gray-400" />
+                                                    Gateway Status
+                                                </dt>
+                                                <dd className="text-sm text-gray-900 uppercase font-mono bg-gray-50 px-2 py-1 rounded">{refData.trx_status}</dd>
+                                            </div>
+                                        )}
+                                        {refData.trx_id && (
+                                            <div className="flex justify-between items-start mt-2">
+                                                <dt className="flex items-center text-sm font-medium text-gray-500">
+                                                    <FileText className="h-4 w-4 mr-2 text-gray-400" />
+                                                    Gateway Trx ID
+                                                </dt>
+                                                <dd className="text-sm text-gray-900 font-mono bg-gray-50 px-2 py-1 rounded break-all max-w-[200px] text-right">{refData.trx_id}</dd>
+                                            </div>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="flex justify-between items-start">
+                                        <dt className="flex items-center text-sm font-medium text-gray-500">
+                                            <Banknote className="h-4 w-4 mr-2 text-gray-400" />
+                                            Gateway Ref
+                                        </dt>
+                                        <dd className="text-sm text-gray-900 font-mono bg-gray-50 px-2 py-1 rounded break-all max-w-xs">{transaction.gateway_ref}</dd>
+                                    </div>
+                                );
+                            })()}
 
                             <div className="flex justify-between items-start">
                                 <dt className="flex items-center text-sm font-medium text-gray-500">

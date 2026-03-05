@@ -75,4 +75,11 @@ if (mongoose.models.Student) {
 
 const Student: Model<IStudent> = mongoose.model<IStudent>('Student', StudentSchema);
 
+// Sync indexes to remove any stale unique indexes (e.g., on email alone)
+// that would prevent the same user from enrolling in multiple courses.
+// Only the compound { email, courseName } index should be unique.
+Student.syncIndexes().catch((err) => {
+    console.error('Error syncing Student indexes:', err);
+});
+
 export default Student;
