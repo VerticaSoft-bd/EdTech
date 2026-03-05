@@ -22,13 +22,13 @@ export default function Header() {
                 <div className="flex items-center justify-between h-[80px] gap-4">
                     {/* Left: Logo & Search */}
                     <div className="flex items-center gap-8 shrink-0">
-                        <div className="flex items-center gap-2">
+                        <Link href="/" className="flex items-center gap-2">
                             <img
                                 src="/images/logo.png"
                                 alt="Youth Ins Logo"
                                 className="h-10 w-auto object-contain transition-transform hover:scale-105"
                             />
-                        </div>
+                        </Link>
 
                         <div className="flex items-center gap-4">
                             <button className="hidden sm:block relative group overflow-hidden p-[1px] rounded-[16px] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 bg-gradient-to-br from-[#8E8AFF] via-[#F1F5F9] via-60% to-[#6C5DD3] shrink-0">
@@ -159,32 +159,59 @@ export default function Header() {
 
                                 <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
 
-                                <Link href={user.role === 'student' ? '/student-dashboard' : '/dashboard'} className="flex items-center gap-3 pl-1 group cursor-pointer block">
-                                    <div className="w-10 h-10 bg-[#FFAB7B] rounded-xl flex items-center justify-center text-white font-bold shadow-sm transition-transform group-hover:scale-105">
-                                        {user.name ? user.name.substring(0, 2).toUpperCase() : 'SR'}
+                                <div className="relative group">
+                                    <div className="flex items-center gap-3 pl-1 cursor-pointer block">
+                                        <div className="w-10 h-10 bg-[#FFAB7B] rounded-xl flex items-center justify-center text-white font-bold shadow-sm transition-transform group-hover:scale-105">
+                                            {user.name ? user.name.substring(0, 2).toUpperCase() : 'SR'}
+                                        </div>
+                                        <div className="flex flex-col hidden sm:flex">
+                                            <span className="text-sm font-bold leading-tight text-[#1A1D1F]">
+                                                {user.name || 'Syed Roni'}
+                                            </span>
+                                            <span className="text-[11px] text-gray-500 font-medium capitalize">
+                                                {user.role || 'Product Designer'}
+                                            </span>
+                                        </div>
+                                        <svg
+                                            width="16"
+                                            height="16"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="text-gray-400 group-hover:text-[#1A1D1F] transition-colors"
+                                        >
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
                                     </div>
-                                    <div className="flex flex-col hidden sm:flex">
-                                        <span className="text-sm font-bold leading-tight text-[#1A1D1F]">
-                                            {user.name || 'Syed Roni'}
-                                        </span>
-                                        <span className="text-[11px] text-gray-500 font-medium capitalize">
-                                            {user.role || 'Product Designer'}
-                                        </span>
+
+                                    {/* Dropdown Menu */}
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform origin-top-right scale-95 group-hover:scale-100">
+                                        <div className="p-2 space-y-1">
+                                            <Link
+                                                href={user.role === 'student' ? '/student-dashboard' : '/dashboard'}
+                                                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#1A1D1F] hover:bg-gray-50 rounded-lg transition-colors"
+                                            >
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                                                Profile
+                                            </Link>
+                                            <div className="h-[1px] bg-gray-100 my-1 mx-2"></div>
+                                            <button
+                                                onClick={() => {
+                                                    localStorage.removeItem('token');
+                                                    localStorage.removeItem('user');
+                                                    window.location.href = '/login';
+                                                }}
+                                                className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                            >
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                                                Logout
+                                            </button>
+                                        </div>
                                     </div>
-                                    <svg
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2.5"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="text-gray-400 group-hover:text-[#1A1D1F] transition-colors"
-                                    >
-                                        <path d="m6 9 6 6 6-6" />
-                                    </svg>
-                                </Link>
+                                </div>
                             </>
                         ) : (
                             <Link href="/login" className="px-5 py-2.5 bg-[#6C5DD3] text-white text-[14px] font-bold rounded-xl hover:bg-[#5a4cb5] transition-colors shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2">
