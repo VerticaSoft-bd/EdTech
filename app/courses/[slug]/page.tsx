@@ -19,9 +19,12 @@ export default function CourseDetails() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("curriculum");
     const [openModule, setOpenModule] = useState<number>(0);
+    const [isEnrolled, setIsEnrolled] = useState(false);
 
     const handleEnrollment = (e: React.MouseEvent) => {
         e.preventDefault();
+        if (isEnrolled) return;
+
         const user = localStorage.getItem("user");
         const token = localStorage.getItem("token");
         if (!user || !token) {
@@ -52,6 +55,31 @@ export default function CourseDetails() {
             fetchCourse();
         }
     }, [slug]);
+
+    useEffect(() => {
+        const checkEnrollment = async () => {
+            if (course) {
+                const userStr = localStorage.getItem("user");
+                if (userStr) {
+                    try {
+                        const user = JSON.parse(userStr);
+                        const res = await fetch('/api/check-enrollment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: user.email, courseName: course.title })
+                        });
+                        const data = await res.json();
+                        if (data.isEnrolled) {
+                            setIsEnrolled(true);
+                        }
+                    } catch (err) {
+                        console.error("Error checking enrollment:", err);
+                    }
+                }
+            }
+        };
+        checkEnrollment();
+    }, [course]);
 
     if (loading) {
         return (
@@ -102,9 +130,14 @@ export default function CourseDetails() {
 
                         {/* CTA and Price Section */}
                         <div className="flex flex-wrap items-center gap-6">
-                            <button onClick={handleEnrollment} className="px-8 py-4 bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg shadow-yellow-200">
-                                ব্যাচে ভর্তি হোন
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <button
+                                onClick={handleEnrollment}
+                                disabled={isEnrolled}
+                                className={`px-8 py-4 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg ${isEnrolled ? "bg-gray-300 text-gray-600 cursor-not-allowed shadow-none" : "bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 shadow-yellow-200"
+                                    }`}
+                            >
+                                {isEnrolled ? "ভর্তি সম্পন্ন" : "ব্যাচে ভর্তি হোন"}
+                                {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
                             </button>
 
                             <div className="flex items-center gap-3">
@@ -273,9 +306,14 @@ export default function CourseDetails() {
                                 ))}
                             </div>
 
-                            <button className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-black text-[16px] rounded-2xl hover:from-blue-400 hover:to-purple-500 transition-all shadow-xl shadow-blue-900/40">
-                                কোর্সে ভর্তি হোন
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <button
+                                onClick={handleEnrollment}
+                                disabled={isEnrolled}
+                                className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 shadow-blue-900/40"
+                                    }`}
+                            >
+                                {isEnrolled ? "ভর্তি সম্পন্ন" : "কোর্সে ভর্তি হোন"}
+                                {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
                             </button>
                         </div>
 
@@ -562,8 +600,13 @@ export default function CourseDetails() {
                                     </li>
                                 </ul>
 
-                                <button onClick={handleEnrollment} className="w-full py-4 bg-[#6C5DD3] text-white font-extrabold text-lg rounded-2xl hover:bg-[#5A4CB5] transition-all shadow-lg shadow-[#6C5DD3]/20">
-                                    Enroll Now
+                                <button
+                                    onClick={handleEnrollment}
+                                    disabled={isEnrolled}
+                                    className={`w-full py-4 text-white font-extrabold text-lg rounded-2xl transition-all shadow-lg ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-[#6C5DD3] hover:bg-[#5A4CB5] shadow-[#6C5DD3]/20"
+                                        }`}
+                                >
+                                    {isEnrolled ? "Already Enrolled" : "Enroll Now"}
                                 </button>
                             </div>
                         </div>
@@ -657,9 +700,14 @@ export default function CourseDetails() {
                                 ))}
                             </div>
 
-                            <button className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-black text-[16px] rounded-2xl hover:from-purple-400 hover:to-pink-400 transition-all shadow-xl shadow-purple-900/40">
-                                এখনই ভর্তি হোন
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <button
+                                onClick={handleEnrollment}
+                                disabled={isEnrolled}
+                                className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 shadow-purple-900/40"
+                                    }`}
+                            >
+                                {isEnrolled ? "ভর্তি সম্পন্ন" : "এখনই ভর্তি হোন"}
+                                {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
                             </button>
                         </div>
 

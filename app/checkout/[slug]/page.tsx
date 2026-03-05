@@ -39,6 +39,17 @@ export default function CheckoutPage() {
             return;
         }
 
+        try {
+            const parsedUser = JSON.parse(user);
+            setFormData(prev => ({
+                ...prev,
+                fullName: prev.fullName || parsedUser.name || "",
+                email: prev.email || parsedUser.email || "",
+            }));
+        } catch (e) {
+            console.error("Failed to parse user from local storage");
+        }
+
         const fetchCourse = async () => {
             try {
                 const res = await fetch(`/api/courses/${slug}`);
@@ -167,47 +178,47 @@ export default function CheckoutPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Full Name *</label>
-                                    <input required type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="Enter your full name" />
+                                    <input required type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="Enter your full name" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Email Address *</label>
-                                    <input required type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="your@email.com" />
+                                    <input required type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="your@email.com" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Mobile Number *</label>
-                                    <input required type="text" name="mobileNo" value={formData.mobileNo} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="01XXXXXXXXX" />
+                                    <input required type="text" name="mobileNo" value={formData.mobileNo} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="01XXXXXXXXX" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Guardian's Mobile Number *</label>
-                                    <input required type="text" name="guardianMobileNo" value={formData.guardianMobileNo} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="01XXXXXXXXX" />
+                                    <input required type="text" name="guardianMobileNo" value={formData.guardianMobileNo} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="01XXXXXXXXX" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Father's Name *</label>
-                                    <input required type="text" name="fatherName" value={formData.fatherName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
+                                    <input required type="text" name="fatherName" value={formData.fatherName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Mother's Name *</label>
-                                    <input required type="text" name="motherName" value={formData.motherName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
+                                    <input required type="text" name="motherName" value={formData.motherName} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Date of Birth *</label>
-                                    <input required type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
+                                    <input required type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">NID / Birth Certificate No. *</label>
-                                    <input required type="text" name="nidNo" value={formData.nidNo} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
+                                    <input required type="text" name="nidNo" value={formData.nidNo} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
                                 </div>
 
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Gender *</label>
-                                    <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]">
+                                    <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]">
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Marital Status *</label>
-                                    <select name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]">
+                                    <select name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]">
                                         <option value="Single">Single</option>
                                         <option value="Married">Married</option>
                                         <option value="Others">Others</option>
@@ -215,22 +226,22 @@ export default function CheckoutPage() {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Residential Status *</label>
-                                    <select name="residentialStatus" value={formData.residentialStatus} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]">
+                                    <select name="residentialStatus" value={formData.residentialStatus} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]">
                                         <option value="Resident">Resident</option>
                                         <option value="Non-Resident">Non-Resident</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Country *</label>
-                                    <input required type="text" name="country" value={formData.country} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
+                                    <input required type="text" name="country" value={formData.country} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
                                 </div>
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Educational Background *</label>
-                                    <input required type="text" name="education" value={formData.education} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="e.g. BSc in CSE" />
+                                    <input required type="text" name="education" value={formData.education} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="e.g. BSc in CSE" />
                                 </div>
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Present Address *</label>
-                                    <textarea required name="presentAddress" value={formData.presentAddress} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="Your full present address"></textarea>
+                                    <textarea required name="presentAddress" value={formData.presentAddress} onChange={handleInputChange} rows={3} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" placeholder="Your full present address"></textarea>
                                 </div>
                             </div>
 

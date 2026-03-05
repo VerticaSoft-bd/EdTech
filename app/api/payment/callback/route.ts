@@ -33,7 +33,7 @@ async function handleCallback(req: NextRequest) {
         }
 
         if (!invoice_number) {
-            return NextResponse.redirect(new URL('/dashboard/wallet?status=invalid_callback', req.url));
+            return NextResponse.redirect(new URL('/payment/error?message=invalid_callback_no_invoice', req.url));
         }
 
         // 2. Verify with PayStation API (Server-to-Server Check)
@@ -57,7 +57,7 @@ async function handleCallback(req: NextRequest) {
         const transaction = await Transaction.findOne({ transactionId: invoice_number });
 
         if (!transaction) {
-            return NextResponse.redirect(new URL('/dashboard/wallet?status=trx_not_found', req.url));
+            return NextResponse.redirect(new URL('/payment/error?message=transaction_not_found', req.url));
         }
         console.log("verifyData", verifyData);
         // status: "success" or "failed" usually
@@ -98,11 +98,11 @@ async function handleCallback(req: NextRequest) {
             transaction.status = 'failed';
             transaction.metadata = { ...transaction.metadata, verifyResponse: verifyData };
             await transaction.save();
-            return NextResponse.redirect(new URL('/dashboard/wallet?status=failed', req.url));
+            return NextResponse.redirect(new URL(`/payment/error?message=${encodeURIComponent(verifyData?.message || 'Payment failed')}&invoice_number=${invoice_number}`, req.url));
         }
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Callback Error:", error);
-        return NextResponse.redirect(new URL('/dashboard/wallet?status=error', req.url));
+        return NextResponse.redirect(new URL(`/payment/error?message=${encodeURIComponent(error.message || 'An internal error occurred')}`, req.url));
     }
 }
