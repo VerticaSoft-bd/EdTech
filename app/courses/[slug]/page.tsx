@@ -278,74 +278,76 @@ export default function CourseDetails() {
                 </div>
 
                 {/* AI Section */}
-                <div className="relative overflow-hidden rounded-[40px] mb-16 bg-[#050D1F]">
-                    {/* Glowing Background Orbs */}
-                    <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
-                    <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+                {course.showAiLearningBanner !== false && (
+                    <div className="relative overflow-hidden rounded-[40px] mb-16 bg-[#050D1F]">
+                        {/* Glowing Background Orbs */}
+                        <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+                        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-                    <div className="relative z-10 flex flex-col lg:flex-row items-center gap-0">
-                        {/* Left: Text Content */}
-                        <div className="flex-1 p-10 md:p-14 space-y-7">
-                            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-blue-300 text-[13px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
-                                <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
-                                AI-Powered Learning
-                            </span>
+                        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-0">
+                            {/* Left: Text Content */}
+                            <div className="flex-1 p-10 md:p-14 space-y-7">
+                                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-blue-300 text-[13px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
+                                    <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+                                    {course.aiLearningBadge || 'AI-Powered Learning'}
+                                </span>
 
-                            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
-                                এই কোর্সে <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">AI ব্যবহার করে</span> শিখবেন কীভাবে কাজ করতে হয়
-                            </h2>
+                                <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
+                                    {course.aiLearningTitle1 || 'এই কোর্সে '}<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">{course.aiLearningHighlight || 'AI ব্যবহার করে'}</span>{course.aiLearningTitle2 || ' শিখবেন কীভাবে কাজ করতে হয়'}
+                                </h2>
 
-                            <p className="text-gray-400 text-[16px] leading-relaxed font-medium max-w-[520px]">
-                                {course.aiLearningDetails || 'শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।'}
-                            </p>
+                                <p className="text-gray-400 text-[16px] leading-relaxed font-medium max-w-[520px]">
+                                    {course.aiLearningDetails || 'শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।'}
+                                </p>
 
-                            {/* AI Feature Pills */}
-                            <div className="flex flex-wrap gap-3">
-                                {[
-                                    { icon: '🤖', label: 'ChatGPT Integration' },
-                                    { icon: '⚡', label: 'GitHub Copilot' },
-                                    { icon: '🧠', label: 'AI Error Handling' },
-                                    { icon: '🔍', label: 'AI Code Review' },
-                                    { icon: '📊', label: 'AI Data Analysis' },
-                                ].map((item, i) => (
-                                    <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-300 hover:bg-white/10 hover:border-blue-500/30 transition-all cursor-default">
-                                        <span>{item.icon}</span>
-                                        <span>{item.label}</span>
-                                    </div>
-                                ))}
+                                {/* AI Feature Pills */}
+                                <div className="flex flex-wrap gap-3">
+                                    {[
+                                        { icon: '🤖', label: 'ChatGPT Integration' },
+                                        { icon: '⚡', label: 'GitHub Copilot' },
+                                        { icon: '🧠', label: 'AI Error Handling' },
+                                        { icon: '🔍', label: 'AI Code Review' },
+                                        { icon: '📊', label: 'AI Data Analysis' },
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-300 hover:bg-white/10 hover:border-blue-500/30 transition-all cursor-default">
+                                            <span>{item.icon}</span>
+                                            <span>{item.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={handleEnrollment}
+                                    disabled={isEnrolled}
+                                    className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 shadow-blue-900/40"
+                                        }`}
+                                >
+                                    {isEnrolled ? "ভর্তি সম্পন্ন" : "কোর্সে ভর্তি হোন"}
+                                    {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
+                                </button>
                             </div>
 
-                            <button
-                                onClick={handleEnrollment}
-                                disabled={isEnrolled}
-                                className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 shadow-blue-900/40"
-                                    }`}
-                            >
-                                {isEnrolled ? "ভর্তি সম্পন্ন" : "কোর্সে ভর্তি হোন"}
-                                {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
-                            </button>
-                        </div>
-
-                        {/* Right: AI Banner Image */}
-                        <div className="w-full lg:w-[520px] shrink-0 relative">
-                            {/* Gradient overlay on left edge to blend with text side */}
-                            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
-                            <img
-                                src={course.aiLearningBannerUrl || "/images/ai-banner.png"}
-                                alt="AI-Powered Learning"
-                                className="w-full h-full object-cover opacity-90 rounded-r-[40px]"
-                                style={{ minHeight: '380px', maxHeight: '480px' }}
-                            />
-                            {/* Floating badge */}
-                            <div className="absolute top-6 right-6 z-20 flex flex-col gap-3">
-                                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white text-center shadow-xl">
-                                    <div className="text-2xl font-black text-blue-300">AI</div>
-                                    <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">Driven</div>
+                            {/* Right: AI Banner Image */}
+                            <div className="w-full lg:w-[520px] shrink-0 relative">
+                                {/* Gradient overlay on left edge to blend with text side */}
+                                <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
+                                <img
+                                    src={course.aiLearningBannerUrl || "/images/ai-banner.png"}
+                                    alt="AI-Powered Learning"
+                                    className="w-full h-full object-cover opacity-90 rounded-r-[40px]"
+                                    style={{ minHeight: '380px', maxHeight: '480px' }}
+                                />
+                                {/* Floating badge */}
+                                <div className="absolute top-6 right-6 z-20 flex flex-col gap-3">
+                                    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white text-center shadow-xl">
+                                        <div className="text-2xl font-black text-blue-300">{course.aiLearningImageBadge1 || 'AI'}</div>
+                                        <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">{course.aiLearningImageBadge2 || 'Driven'}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 {/* Tabs and Secondary Content */}
                 <div className="space-y-16">
@@ -692,72 +694,74 @@ export default function CourseDetails() {
                 </section>
 
                 {/* Bottom AI Section */}
-                <div className="relative overflow-hidden rounded-[40px] mt-16 bg-[#050D1F]">
-                    {/* Glowing orbs */}
-                    <div className="absolute -top-32 -right-32 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] pointer-events-none"></div>
-                    <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+                {course.showAiJobReadyBanner !== false && (
+                    <div className="relative overflow-hidden rounded-[40px] mt-16 bg-[#050D1F]">
+                        {/* Glowing orbs */}
+                        <div className="absolute -top-32 -right-32 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+                        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-                    <div className="relative z-10 flex flex-col lg:flex-row-reverse items-center gap-0">
-                        {/* Right (visually left on lg): Text Content */}
-                        <div className="flex-1 p-10 md:p-14 space-y-7">
-                            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-purple-300 text-[13px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
-                                <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
-                                {course.aiJobReadyBadge || 'ক্যারিয়ার রেডি'}
-                            </span>
+                        <div className="relative z-10 flex flex-col lg:flex-row-reverse items-center gap-0">
+                            {/* Right (visually left on lg): Text Content */}
+                            <div className="flex-1 p-10 md:p-14 space-y-7">
+                                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-purple-300 text-[13px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
+                                    <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
+                                    {course.aiJobReadyBadge || 'ক্যারিয়ার রেডি'}
+                                </span>
 
-                            <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
-                                {course.aiJobReadyTitle1 || 'কোর্স শেষে আপনি'} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{course.aiJobReadyHighlight || 'চাকরির জন্য প্রস্তুত'}</span> {course.aiJobReadyTitle2 || 'হয়ে যাবেন'}
-                            </h2>
+                                <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
+                                    {course.aiJobReadyTitle1 || 'কোর্স শেষে আপনি'} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{course.aiJobReadyHighlight || 'চাকরির জন্য প্রস্তুত'}</span> {course.aiJobReadyTitle2 || 'হয়ে যাবেন'}
+                                </h2>
 
-                            <p className="text-gray-400 text-[16px] leading-relaxed font-medium max-w-[520px]">
-                                {course.aiJobReadyDetails || 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।'}
-                            </p>
+                                <p className="text-gray-400 text-[16px] leading-relaxed font-medium max-w-[520px]">
+                                    {course.aiJobReadyDetails || 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।'}
+                                </p>
 
-                            {/* Stats Row */}
-                            <div className="flex flex-wrap gap-5">
-                                {[
-                                    { value: course.modules?.length || '৩৩', label: 'মডিউল' },
-                                    { value: course.totalLectures || '৭৩', label: 'লাইভ ক্লাস' },
-                                    { value: course.totalProjects || '১৫+', label: 'প্রজেক্ট' },
-                                ].map((stat, i) => (
-                                    <div key={i} className="flex flex-col items-center px-6 py-4 bg-white/5 border border-white/10 rounded-2xl min-w-[90px]">
-                                        <span className="text-2xl font-black text-white">{stat.value}</span>
-                                        <span className="text-[12px] font-bold text-gray-400 mt-0.5">{stat.label}</span>
-                                    </div>
-                                ))}
+                                {/* Stats Row */}
+                                <div className="flex flex-wrap gap-5">
+                                    {[
+                                        { value: course.modules?.length || '৩৩', label: 'মডিউল' },
+                                        { value: course.totalLectures || '৭৩', label: 'লাইভ ক্লাস' },
+                                        { value: course.totalProjects || '১৫+', label: 'প্রজেক্ট' },
+                                    ].map((stat, i) => (
+                                        <div key={i} className="flex flex-col items-center px-6 py-4 bg-white/5 border border-white/10 rounded-2xl min-w-[90px]">
+                                            <span className="text-2xl font-black text-white">{stat.value}</span>
+                                            <span className="text-[12px] font-bold text-gray-400 mt-0.5">{stat.label}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={handleEnrollment}
+                                    disabled={isEnrolled}
+                                    className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 shadow-purple-900/40"
+                                        }`}
+                                >
+                                    {isEnrolled ? "ভর্তি সম্পন্ন" : "এখনই ভর্তি হোন"}
+                                    {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
+                                </button>
                             </div>
 
-                            <button
-                                onClick={handleEnrollment}
-                                disabled={isEnrolled}
-                                className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 shadow-purple-900/40"
-                                    }`}
-                            >
-                                {isEnrolled ? "ভর্তি সম্পন্ন" : "এখনই ভর্তি হোন"}
-                                {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
-                            </button>
-                        </div>
-
-                        {/* Left (visually right on lg): AI Banner Image */}
-                        <div className="w-full lg:w-[520px] shrink-0 relative">
-                            {/* Gradient overlay on right edge to blend */}
-                            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
-                            <img
-                                src={course.aiBannerUrl || "/images/ai-banner.png"}
-                                alt="Career Ready"
-                                className="w-full h-full object-cover opacity-90 rounded-l-[40px]"
-                                style={{ minHeight: '380px', maxHeight: '480px' }}
-                            />
-                            {/* Floating badge */}
-                            <div className="absolute top-6 left-6 z-20">
-                                <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white text-center shadow-xl">
-                                    <div className="text-2xl font-black text-purple-300">🏆</div>
-                                    <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">{course.aiJobReadyImageBadge || 'Job Ready'}</div>
+                            {/* Left (visually right on lg): AI Banner Image */}
+                            <div className="w-full lg:w-[520px] shrink-0 relative">
+                                {/* Gradient overlay on right edge to blend */}
+                                <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
+                                <img
+                                    src={course.aiBannerUrl || "/images/ai-banner.png"}
+                                    alt="Career Ready"
+                                    className="w-full h-full object-cover opacity-90 rounded-l-[40px]"
+                                    style={{ minHeight: '380px', maxHeight: '480px' }}
+                                />
+                                {/* Floating badge */}
+                                <div className="absolute top-6 left-6 z-20">
+                                    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white text-center shadow-xl">
+                                        <div className="text-2xl font-black text-purple-300">🏆</div>
+                                        <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">{course.aiJobReadyImageBadge || 'Job Ready'}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 {course.instructorBannerUrl && (
                     <section className="mt-20 mb-8 max-w-5xl mx-auto px-4">

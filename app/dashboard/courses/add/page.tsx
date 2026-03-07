@@ -78,13 +78,21 @@ export default function AddCoursePage() {
         instructorBannerUrl: '',
         aiBannerUrl: '',
         aiLearningBannerUrl: '',
+        aiLearningBadge: 'AI-Powered Learning',
+        aiLearningTitle1: 'এই কোর্সে',
+        aiLearningHighlight: 'AI ব্যবহার করে',
+        aiLearningTitle2: 'শিখবেন কীভাবে কাজ করতে হয়',
         aiLearningDetails: 'শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।',
+        aiLearningImageBadge1: 'AI',
+        aiLearningImageBadge2: 'Driven',
+        showAiLearningBanner: true,
         aiJobReadyBadge: 'ক্যারিয়ার রেডি',
         aiJobReadyTitle1: 'কোর্স শেষে আপনি',
         aiJobReadyHighlight: 'চাকরির জন্য প্রস্তুত',
         aiJobReadyTitle2: 'হয়ে যাবেন',
         aiJobReadyDetails: 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।',
         aiJobReadyImageBadge: 'Job Ready',
+        showAiJobReadyBanner: true,
         status: 'Draft' as 'Draft' | 'Active' | 'Archived'
     });
 
@@ -903,11 +911,93 @@ export default function AddCoursePage() {
                         {activeTab === 'banners' && (
                             <div className="space-y-8">
                                 <div className="p-6 bg-blue-50 rounded-2xl border border-blue-100">
-                                    <h3 className="font-bold text-blue-900 mb-4 text-base flex items-center gap-2">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
-                                        AI-Powered Learning Banner details (Top Option)
-                                    </h3>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="font-bold text-blue-900 text-base flex items-center gap-2">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+                                            AI-Powered Learning Banner details (Top Option)
+                                        </h3>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-sm font-bold text-blue-800">Show Banner</span>
+                                            <button
+                                                type="button"
+                                                role="switch"
+                                                aria-checked={courseData.showAiLearningBanner}
+                                                onClick={() => handleInputChange('showAiLearningBanner', !courseData.showAiLearningBanner)}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${courseData.showAiLearningBanner ? 'bg-blue-600' : 'bg-gray-300'}`}
+                                            >
+                                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${courseData.showAiLearningBanner ? 'translate-x-6' : 'translate-x-1'}`} />
+                                            </button>
+                                        </div>
+                                    </div>
                                     <div className="space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Small Badge Text</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiLearningBadge}
+                                                    onChange={(e) => handleInputChange('aiLearningBadge', e.target.value)}
+                                                    placeholder="AI-Powered Learning"
+                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Image Badge Line 1</label>
+                                                    <input
+                                                        type="text"
+                                                        value={courseData.aiLearningImageBadge1}
+                                                        onChange={(e) => handleInputChange('aiLearningImageBadge1', e.target.value)}
+                                                        placeholder="AI"
+                                                        className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Image Badge Line 2</label>
+                                                    <input
+                                                        type="text"
+                                                        value={courseData.aiLearningImageBadge2}
+                                                        onChange={(e) => handleInputChange('aiLearningImageBadge2', e.target.value)}
+                                                        placeholder="Driven"
+                                                        className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Title Prefix</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiLearningTitle1}
+                                                    onChange={(e) => handleInputChange('aiLearningTitle1', e.target.value)}
+                                                    placeholder="এই কোর্সে"
+                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Highlighted Text</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiLearningHighlight}
+                                                    onChange={(e) => handleInputChange('aiLearningHighlight', e.target.value)}
+                                                    placeholder="AI ব্যবহার করে"
+                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Title Suffix</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiLearningTitle2}
+                                                    onChange={(e) => handleInputChange('aiLearningTitle2', e.target.value)}
+                                                    placeholder="শিখবেন কীভাবে কাজ করতে হয়"
+                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                        </div>
+
                                         <div>
                                             <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Details Text Paragraph</label>
                                             <textarea
@@ -953,14 +1043,87 @@ export default function AddCoursePage() {
                                                 )}
                                             </div>
                                         </div>
+
+                                        {/* TOP BANNER LIVE PREVIEW */}
+                                        <div className="mt-8 relative overflow-hidden rounded-[30px] bg-[#050D1F] border border-blue-900/40 pointer-events-none xl:scale-100 origin-top-left transition-all">
+                                            <div className="absolute top-4 left-4 bg-blue-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full z-50 shadow-lg tracking-wider">Live Preview</div>
+
+                                            <div className="relative z-10 flex flex-col lg:flex-row items-center gap-0">
+                                                {/* Text Content */}
+                                                <div className="flex-1 p-8 lg:p-10 space-y-6">
+                                                    <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 text-blue-300 text-[11px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
+                                                        <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></span>
+                                                        {courseData.aiLearningBadge || 'AI-Powered Learning'}
+                                                    </span>
+
+                                                    <h2 className="text-2xl lg:text-3xl font-black text-white leading-tight">
+                                                        {courseData.aiLearningTitle1 || 'এই কোর্সে '} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">{courseData.aiLearningHighlight || 'AI ব্যবহার করে'}</span> {courseData.aiLearningTitle2 || ' শিখবেন কীভাবে কাজ করতে হয়'}
+                                                    </h2>
+
+                                                    <p className="text-gray-400 text-[14px] leading-relaxed font-medium max-w-[480px]">
+                                                        {courseData.aiLearningDetails || 'শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।'}
+                                                    </p>
+
+                                                    {/* Feature Pills */}
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {[
+                                                            { icon: '🤖', label: 'ChatGPT Integration' },
+                                                            { icon: '⚡', label: 'GitHub Copilot' },
+                                                            { icon: '🧠', label: 'AI Error Handling' },
+                                                        ].map((item, i) => (
+                                                            <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-gray-300">
+                                                                <span>{item.icon}</span>
+                                                                <span>{item.label}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    <button className="inline-flex items-center gap-2 px-6 py-3 text-white font-black text-[14px] rounded-2xl transition-all shadow-xl bg-gradient-to-r from-blue-500 to-purple-600 shadow-blue-900/40">
+                                                        কোর্সে ভর্তি হোন
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                                    </button>
+                                                </div>
+
+                                                {/* Right Banner Image */}
+                                                <div className="w-full lg:w-[400px] shrink-0 relative">
+                                                    <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#050D1F] to-transparent z-10"></div>
+                                                    <img
+                                                        src={aiLearningBannerFile ? URL.createObjectURL(aiLearningBannerFile) : (courseData.aiLearningBannerUrl || "/images/ai-banner.png")}
+                                                        alt="AI Learning Preview"
+                                                        className="w-full h-full object-cover opacity-90 rounded-r-[30px]"
+                                                        style={{ minHeight: '300px', maxHeight: '420px' }}
+                                                    />
+                                                    <div className="absolute top-5 right-5 z-20 flex flex-col gap-2">
+                                                        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-3 py-2 text-white text-center shadow-lg">
+                                                            <div className="text-xl font-black text-blue-300">{courseData.aiLearningImageBadge1 || 'AI'}</div>
+                                                            <div className="text-[10px] font-black text-gray-300 uppercase tracking-wider">{courseData.aiLearningImageBadge2 || 'Driven'}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div className="p-6 bg-purple-50 rounded-2xl border border-purple-100">
-                                    <h3 className="font-bold text-purple-900 mb-4 text-base flex items-center gap-2">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
-                                        AI Job Ready Banner details (Bottom Option)
-                                    </h3>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="font-bold text-purple-900 text-base flex items-center gap-2">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+                                            AI Job Ready Banner details (Bottom Option)
+                                        </h3>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-sm font-bold text-purple-800">Show Banner</span>
+                                            <button
+                                                type="button"
+                                                role="switch"
+                                                aria-checked={courseData.showAiJobReadyBanner}
+                                                onClick={() => handleInputChange('showAiJobReadyBanner', !courseData.showAiJobReadyBanner)}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${courseData.showAiJobReadyBanner ? 'bg-purple-600' : 'bg-gray-300'}`}
+                                            >
+                                                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${courseData.showAiJobReadyBanner ? 'translate-x-6' : 'translate-x-1'}`} />
+                                            </button>
+                                        </div>
+                                    </div>
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>

@@ -101,6 +101,14 @@ export interface ICourse extends Document {
     aiJobReadyTitle2: string;
     aiJobReadyDetails: string;
     aiJobReadyImageBadge: string;
+    aiLearningBadge: string;
+    aiLearningTitle1: string;
+    aiLearningHighlight: string;
+    aiLearningTitle2: string;
+    aiLearningImageBadge1: string;
+    aiLearningImageBadge2: string;
+    showAiLearningBanner: boolean;
+    showAiJobReadyBanner: boolean;
     status: 'Draft' | 'Active' | 'Archived';
 }
 
@@ -201,13 +209,21 @@ const CourseSchema: Schema<ICourse> = new Schema({
     instructorBannerUrl: { type: String, default: '' },
     aiBannerUrl: { type: String, default: '' },
     aiLearningBannerUrl: { type: String, default: '' },
+    aiLearningBadge: { type: String, default: 'AI-Powered Learning' },
+    aiLearningTitle1: { type: String, default: 'এই কোর্সে' },
+    aiLearningHighlight: { type: String, default: 'AI ব্যবহার করে' },
+    aiLearningTitle2: { type: String, default: 'শিখবেন কীভাবে কাজ করতে হয়' },
     aiLearningDetails: { type: String, default: 'শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।' },
+    aiLearningImageBadge1: { type: String, default: 'AI' },
+    aiLearningImageBadge2: { type: String, default: 'Driven' },
     aiJobReadyBadge: { type: String, default: 'ক্যারিয়ার রেডি' },
     aiJobReadyTitle1: { type: String, default: 'কোর্স শেষে আপনি' },
     aiJobReadyHighlight: { type: String, default: 'চাকরির জন্য প্রস্তুত' },
     aiJobReadyTitle2: { type: String, default: 'হয়ে যাবেন' },
     aiJobReadyDetails: { type: String, default: 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।' },
     aiJobReadyImageBadge: { type: String, default: 'Job Ready' },
+    showAiLearningBanner: { type: Boolean, default: true },
+    showAiJobReadyBanner: { type: Boolean, default: true },
     status: {
         type: String,
         enum: ['Draft', 'Active', 'Archived'],
