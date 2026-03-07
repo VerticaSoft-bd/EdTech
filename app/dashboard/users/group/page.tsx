@@ -117,11 +117,7 @@ export default function GroupUsersPage() {
     return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
             {/* Header section matches design of Categories page */}
-            <div className="flex justify-between items-center mb-6">
-                <div>
-                    <h2 className="text-2xl font-bold text-[#1A1D1F]">User Groups</h2>
-                    <p className="text-sm text-gray-500 mt-1">Manage cohorts, batches, and collective class groupings.</p>
-                </div>
+            <div className="flex justify-end items-center mb-6">
                 <button
                     onClick={openCreateModal}
                     className="flex items-center gap-2 bg-[#6C5DD3] hover:bg-[#5a4cb5] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-[#6C5DD3]/20"

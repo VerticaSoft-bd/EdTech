@@ -51,8 +51,7 @@ export default function StudentsPage() {
 
     return (
         <div className="space-y-6 pb-8">
-            <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-[#1A1D1F]">Student Management</h2>
+            <div className="flex items-center justify-end">
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2"

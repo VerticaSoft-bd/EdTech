@@ -95,14 +95,6 @@ export default function EnrollmentsPage() {
 
     return (
         <div className="space-y-6 pb-8">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold text-[#1A1D1F]">Course Enrollments</h2>
-                    <p className="text-sm text-gray-400 mt-1">All course purchase transactions</p>
-                </div>
-            </div>
-
             {/* Quick Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">

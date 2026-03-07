@@ -52,13 +52,6 @@ export default function AccountsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-[#1A1D1F]">Accounts</h1>
-                    <p className="text-sm text-gray-500 mt-1">Manage and track student course fees.</p>
-                </div>
-            </div>
-
             {/* Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-[24px] shadow-sm border border-gray-50 flex items-center justify-between">
@@ -165,8 +158,8 @@ export default function AccountsPage() {
                                         <td className="p-4 text-right font-bold text-red-500">৳{(student.dueAmount || 0).toLocaleString()}</td>
                                         <td className="p-4 text-center">
                                             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${(student.dueAmount || 0) <= 0
-                                                    ? 'bg-green-100 text-green-700'
-                                                    : 'bg-orange-100 text-orange-700'
+                                                ? 'bg-green-100 text-green-700'
+                                                : 'bg-orange-100 text-orange-700'
                                                 }`}>
                                                 {(student.dueAmount || 0) <= 0 ? 'Clear' : 'Due'}
                                             </span>

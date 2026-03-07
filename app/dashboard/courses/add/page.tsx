@@ -175,15 +175,9 @@ export default function AddCoursePage() {
         <div className="space-y-8 pb-10">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link href="/dashboard/courses" className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
-                    </Link>
-                    <div>
-                        <h2 className="text-2xl font-bold text-[#1A1D1F]">Create New Course</h2>
-                        <p className="text-sm text-gray-500">Fill in the details to publish a new course.</p>
-                    </div>
-                </div>
+                <Link href="/dashboard/courses" className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
+                </Link>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => handleSave('Draft')}

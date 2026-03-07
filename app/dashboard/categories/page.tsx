@@ -200,39 +200,33 @@ export default function CategoriesPage() {
     return (
         <div className="space-y-8 pb-8 relative">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-[#1A1D1F]">Categories</h2>
-                    <p className="text-sm text-gray-500">Manage course categories and grouping.</p>
-                </div>
-                <div className="flex items-center gap-3">
-                    {/* Status Filter */}
-                    <div className="relative">
-                        <select
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            className="appearance-none pl-4 pr-10 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 cursor-pointer font-bold text-[#1A1D1F]"
-                        >
-                            <option value="All">All Status</option>
-                            <option value="Active">Active</option>
-                            <option value="Draft">Draft</option>
-                        </select>
-                        <svg className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
-                    </div>
-
-                    <div className="relative">
-                        <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-                        <input type="text" placeholder="Search categories..." className="pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 w-[240px]" />
-                    </div>
-                    {/* Create Category Button */}
-                    <button
-                        onClick={() => { closeModal(); setIsModalOpen(true); }}
-                        className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2"
+            <div className="flex flex-wrap items-center justify-end gap-3">
+                {/* Status Filter */}
+                <div className="relative">
+                    <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="appearance-none pl-4 pr-10 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 cursor-pointer font-bold text-[#1A1D1F]"
                     >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        Create Category
-                    </button>
+                        <option value="All">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Draft">Draft</option>
+                    </select>
+                    <svg className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
                 </div>
+
+                <div className="relative">
+                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+                    <input type="text" placeholder="Search categories..." className="pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 w-[240px]" />
+                </div>
+                {/* Create Category Button */}
+                <button
+                    onClick={() => { closeModal(); setIsModalOpen(true); }}
+                    className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2"
+                >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    Create Category
+                </button>
             </div>
 
             {/* Category Table */}
@@ -328,176 +322,180 @@ export default function CategoriesPage() {
             </div>
 
             {/* Pagination Controls */}
-            {!isLoading && totalPages > 1 && (
-                <div className="p-6 bg-white rounded-[24px] border border-gray-100 flex items-center justify-between shadow-sm">
-                    <p className="text-xs text-gray-500 font-medium">
-                        Showing <span className="text-[#1A1D1F] font-bold">{filteredCategories.length > 0 ? startIndex + 1 : 0}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, filteredCategories.length)}</span> of <span className="text-[#1A1D1F] font-bold">{filteredCategories.length}</span> categories
-                    </p>
+            {
+                !isLoading && totalPages > 1 && (
+                    <div className="p-6 bg-white rounded-[24px] border border-gray-100 flex items-center justify-between shadow-sm">
+                        <p className="text-xs text-gray-500 font-medium">
+                            Showing <span className="text-[#1A1D1F] font-bold">{filteredCategories.length > 0 ? startIndex + 1 : 0}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, filteredCategories.length)}</span> of <span className="text-[#1A1D1F] font-bold">{filteredCategories.length}</span> categories
+                        </p>
 
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className={`p-2 rounded-xl transition-all ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-[#1A1D1F]'}`}
-                        >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
-                        </button>
-
-                        {Array.from({ length: totalPages }).map((_, idx) => {
-                            const page = idx + 1;
-                            return (
-                                <button
-                                    key={page}
-                                    onClick={() => handlePageChange(page)}
-                                    className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${currentPage === page
-                                        ? 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20'
-                                        : 'text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]'
-                                        }`}
-                                >
-                                    {page}
-                                </button>
-                            );
-                        })}
-
-                        <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className={`p-2 rounded-xl transition-all ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-[#1A1D1F]'}`}
-                        >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* Create Component Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center">
-                    {/* Backdrop */}
-                    <div
-                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-                        onClick={closeModal}
-                    ></div>
-
-                    {/* Modal Content */}
-                    <div className="relative bg-white rounded-[24px] shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-[#1A1D1F]">{editingId ? 'Edit Category' : 'Create New Category'}</h3>
+                        <div className="flex items-center gap-2">
                             <button
-                                onClick={closeModal}
-                                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`p-2 rounded-xl transition-all ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-[#1A1D1F]'}`}
                             >
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                            </button>
+
+                            {Array.from({ length: totalPages }).map((_, idx) => {
+                                const page = idx + 1;
+                                return (
+                                    <button
+                                        key={page}
+                                        onClick={() => handlePageChange(page)}
+                                        className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${currentPage === page
+                                            ? 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20'
+                                            : 'text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]'
+                                            }`}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            })}
+
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className={`p-2 rounded-xl transition-all ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-[#1A1D1F]'}`}
+                            >
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
                             </button>
                         </div>
-
-                        <form onSubmit={handleSubmit} className="p-6">
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Category Name <span className="text-red-500">*</span></label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={formData.name}
-                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all"
-                                        placeholder="e.g. Web Development"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Description</label>
-                                    <textarea
-                                        value={formData.description}
-                                        onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all min-h-[100px] resize-none"
-                                        placeholder="Brief description of the category..."
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Status</label>
-                                    <div className="relative">
-                                        <select
-                                            value={formData.status}
-                                            onChange={e => setFormData({ ...formData, status: e.target.value })}
-                                            className="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all font-medium text-[#1A1D1F]"
-                                        >
-                                            <option value="Active">Active</option>
-                                            <option value="Draft">Draft</option>
-                                            <option value="Inactive">Inactive</option>
-                                        </select>
-                                        <svg className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Category Image (Optional)</label>
-                                    <div className={`relative border-2 border-dashed ${(thumbnailFile || originalThumbnail) ? 'border-transparent' : 'border-gray-200'} rounded-xl hover:border-[#6C5DD3] transition-colors bg-gray-50 text-center overflow-hidden min-h-[140px] flex items-center justify-center`}>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={e => {
-                                                if (e.target.files && e.target.files.length > 0) {
-                                                    setThumbnailFile(e.target.files[0]);
-                                                }
-                                            }}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                                        />
-
-                                        {(thumbnailFile || originalThumbnail) ? (
-                                            <div className="absolute inset-0 w-full h-full pointer-events-none group-thumbnail">
-                                                <img
-                                                    src={thumbnailFile ? URL.createObjectURL(thumbnailFile) : originalThumbnail!}
-                                                    alt="Preview"
-                                                    className="object-cover w-full h-full"
-                                                />
-                                                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 pointer-events-auto">
-                                                    <span className="text-white text-sm font-bold mb-1">Click to change</span>
-                                                    <span className="text-white/80 text-xs truncate max-w-[200px] px-4">{thumbnailFile ? thumbnailFile.name : "Current Image"}</span>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10">
-                                                <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 text-gray-400">
-                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                                </div>
-                                                <span className="text-sm font-bold text-gray-700 mb-1">Click to upload</span>
-                                                <span className="text-xs font-medium text-gray-400">or drag and drop</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mt-8 flex items-center justify-end gap-3">
-                                <button
-                                    type="button"
-                                    onClick={closeModal}
-                                    className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting || !formData.name}
-                                    className={`px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${(isSubmitting || !formData.name) ? 'opacity-50 cursor-not-allowed' : 'shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5]'
-                                        }`}
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                            {editingId ? 'Saving...' : 'Creating...'}
-                                        </>
-                                    ) : (
-                                        editingId ? 'Save Changes' : 'Create Category'
-                                    )}
-                                </button>
-                            </div>
-                        </form>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+
+            {/* Create Component Modal */}
+            {
+                isModalOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+                        {/* Backdrop */}
+                        <div
+                            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                            onClick={closeModal}
+                        ></div>
+
+                        {/* Modal Content */}
+                        <div className="relative bg-white rounded-[24px] shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-[#1A1D1F]">{editingId ? 'Edit Category' : 'Create New Category'}</h3>
+                                <button
+                                    onClick={closeModal}
+                                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+
+                            <form onSubmit={handleSubmit} className="p-6">
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Category Name <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={formData.name}
+                                            onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all"
+                                            placeholder="e.g. Web Development"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Description</label>
+                                        <textarea
+                                            value={formData.description}
+                                            onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all min-h-[100px] resize-none"
+                                            placeholder="Brief description of the category..."
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Status</label>
+                                        <div className="relative">
+                                            <select
+                                                value={formData.status}
+                                                onChange={e => setFormData({ ...formData, status: e.target.value })}
+                                                className="w-full appearance-none px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all font-medium text-[#1A1D1F]"
+                                            >
+                                                <option value="Active">Active</option>
+                                                <option value="Draft">Draft</option>
+                                                <option value="Inactive">Inactive</option>
+                                            </select>
+                                            <svg className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold text-[#1A1D1F] mb-1.5">Category Image (Optional)</label>
+                                        <div className={`relative border-2 border-dashed ${(thumbnailFile || originalThumbnail) ? 'border-transparent' : 'border-gray-200'} rounded-xl hover:border-[#6C5DD3] transition-colors bg-gray-50 text-center overflow-hidden min-h-[140px] flex items-center justify-center`}>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={e => {
+                                                    if (e.target.files && e.target.files.length > 0) {
+                                                        setThumbnailFile(e.target.files[0]);
+                                                    }
+                                                }}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                            />
+
+                                            {(thumbnailFile || originalThumbnail) ? (
+                                                <div className="absolute inset-0 w-full h-full pointer-events-none group-thumbnail">
+                                                    <img
+                                                        src={thumbnailFile ? URL.createObjectURL(thumbnailFile) : originalThumbnail!}
+                                                        alt="Preview"
+                                                        className="object-cover w-full h-full"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 pointer-events-auto">
+                                                        <span className="text-white text-sm font-bold mb-1">Click to change</span>
+                                                        <span className="text-white/80 text-xs truncate max-w-[200px] px-4">{thumbnailFile ? thumbnailFile.name : "Current Image"}</span>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10">
+                                                    <div className="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 text-gray-400">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                                    </div>
+                                                    <span className="text-sm font-bold text-gray-700 mb-1">Click to upload</span>
+                                                    <span className="text-xs font-medium text-gray-400">or drag and drop</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mt-8 flex items-center justify-end gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={closeModal}
+                                        className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-100 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting || !formData.name}
+                                        className={`px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${(isSubmitting || !formData.name) ? 'opacity-50 cursor-not-allowed' : 'shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5]'
+                                            }`}
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                                {editingId ? 'Saving...' : 'Creating...'}
+                                            </>
+                                        ) : (
+                                            editingId ? 'Save Changes' : 'Create Category'
+                                        )}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 }

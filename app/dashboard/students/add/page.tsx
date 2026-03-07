@@ -77,16 +77,6 @@ export default function AddStudentPage() {
 
     return (
         <div className="space-y-6 pb-8">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold text-[#1A1D1F]">Add New Student</h2>
-                    <div className="text-sm text-gray-500 mt-1 flex items-center gap-2">
-                        <Link href="/dashboard/students" className="hover:text-[#6C5DD3] transition-colors">Students</Link>
-                        <span>/</span>
-                        <span className="text-[#1A1D1F] font-medium">Add Student</span>
-                    </div>
-                </div>
-            </div>
 
             <form onSubmit={handleSubmit} className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 space-y-8">
 
