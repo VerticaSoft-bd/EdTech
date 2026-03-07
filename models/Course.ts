@@ -50,6 +50,7 @@ export interface IDemoClass {
     date: string;
     time: string;
     platform: string;
+    videoUrls: string[];
 }
 
 export interface ICourse extends Document {
@@ -90,6 +91,16 @@ export interface ICourse extends Document {
     faqs: IFAQ[];
     tools: { name: string; image: string }[];
     demoClass: IDemoClass;
+    instructorBannerUrl: string;
+    aiBannerUrl: string;
+    aiLearningBannerUrl: string;
+    aiLearningDetails: string;
+    aiJobReadyBadge: string;
+    aiJobReadyTitle1: string;
+    aiJobReadyHighlight: string;
+    aiJobReadyTitle2: string;
+    aiJobReadyDetails: string;
+    aiJobReadyImageBadge: string;
     status: 'Draft' | 'Active' | 'Archived';
 }
 
@@ -137,6 +148,7 @@ const DemoClassSchema = new Schema<IDemoClass>({
     date: { type: String },
     time: { type: String },
     platform: { type: String },
+    videoUrls: [{ type: String }],
 });
 
 const FeatureSchema = new Schema<IFeature>({
@@ -184,8 +196,18 @@ const CourseSchema: Schema<ICourse> = new Schema({
     successStories: { type: [SuccessStorySchema], default: [] },
     testimonials: { type: [TestimonialSchema], default: [] },
     faqs: { type: [FAQSchema], default: [] },
-    tools: { type: [{ name: { type: String, required: true }, image: { type: String } }], default: [] },
+    tools: { type: [{ name: { type: String }, image: { type: String } }], default: [] },
     demoClass: { type: DemoClassSchema, default: {} },
+    instructorBannerUrl: { type: String, default: '' },
+    aiBannerUrl: { type: String, default: '' },
+    aiLearningBannerUrl: { type: String, default: '' },
+    aiLearningDetails: { type: String, default: 'শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।' },
+    aiJobReadyBadge: { type: String, default: 'ক্যারিয়ার রেডি' },
+    aiJobReadyTitle1: { type: String, default: 'কোর্স শেষে আপনি' },
+    aiJobReadyHighlight: { type: String, default: 'চাকরির জন্য প্রস্তুত' },
+    aiJobReadyTitle2: { type: String, default: 'হয়ে যাবেন' },
+    aiJobReadyDetails: { type: String, default: 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।' },
+    aiJobReadyImageBadge: { type: String, default: 'Job Ready' },
     status: {
         type: String,
         enum: ['Draft', 'Active', 'Archived'],

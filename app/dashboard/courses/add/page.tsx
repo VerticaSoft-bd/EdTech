@@ -34,6 +34,10 @@ export default function AddCoursePage() {
     }, []);
 
     // Centralized Course State
+    const [instructorBannerFile, setInstructorBannerFile] = useState<File | null>(null);
+    const [aiBannerFile, setAiBannerFile] = useState<File | null>(null);
+    const [aiLearningBannerFile, setAiLearningBannerFile] = useState<File | null>(null);
+
     const [courseData, setCourseData] = useState({
         title: '',
         subtitle: '',
@@ -70,7 +74,17 @@ export default function AddCoursePage() {
         testimonials: [] as { text: string, name: string }[],
         faqs: [] as { question: string, answer: string }[],
         tools: [] as { name: string, image: string }[],
-        demoClass: { date: '', time: '', platform: '' },
+        demoClass: { date: '', time: '', platform: '', videoUrls: [] as string[] },
+        instructorBannerUrl: '',
+        aiBannerUrl: '',
+        aiLearningBannerUrl: '',
+        aiLearningDetails: 'শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।',
+        aiJobReadyBadge: 'ক্যারিয়ার রেডি',
+        aiJobReadyTitle1: 'কোর্স শেষে আপনি',
+        aiJobReadyHighlight: 'চাকরির জন্য প্রস্তুত',
+        aiJobReadyTitle2: 'হয়ে যাবেন',
+        aiJobReadyDetails: 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।',
+        aiJobReadyImageBadge: 'Job Ready',
         status: 'Draft' as 'Draft' | 'Active' | 'Archived'
     });
 
@@ -195,6 +209,57 @@ export default function AddCoursePage() {
                 uploadedBenefits.push({ ...benefit, icon: imageUrl });
             }
 
+            // Handle instructor banner upload
+            let uploadedInstructorBannerUrl = courseData.instructorBannerUrl;
+            if (instructorBannerFile) {
+                const uploadFormData = new FormData();
+                uploadFormData.append('file', instructorBannerFile);
+
+                const uploadRes = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: uploadFormData,
+                });
+
+                if (uploadRes.ok) {
+                    const data = await uploadRes.json();
+                    uploadedInstructorBannerUrl = data.url;
+                }
+            }
+
+            // Handle AI banner upload
+            let uploadedAiBannerUrl = courseData.aiBannerUrl;
+            if (aiBannerFile) {
+                const uploadFormData = new FormData();
+                uploadFormData.append('file', aiBannerFile);
+
+                const uploadRes = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: uploadFormData,
+                });
+
+                if (uploadRes.ok) {
+                    const data = await uploadRes.json();
+                    uploadedAiBannerUrl = data.url;
+                }
+            }
+
+            // Handle AI Learning banner upload
+            let uploadedAiLearningBannerUrl = courseData.aiLearningBannerUrl;
+            if (aiLearningBannerFile) {
+                const uploadFormData = new FormData();
+                uploadFormData.append('file', aiLearningBannerFile);
+
+                const uploadRes = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: uploadFormData,
+                });
+
+                if (uploadRes.ok) {
+                    const data = await uploadRes.json();
+                    uploadedAiLearningBannerUrl = data.url;
+                }
+            }
+
             const payload = {
                 ...courseData,
                 thumbnail: thumbnailUrl,
@@ -202,6 +267,9 @@ export default function AddCoursePage() {
                 tools: uploadedTools,
                 whatYouWillLearn: uploadedLearnItems,
                 benefits: uploadedBenefits,
+                instructorBannerUrl: uploadedInstructorBannerUrl,
+                aiBannerUrl: uploadedAiBannerUrl,
+                aiLearningBannerUrl: uploadedAiLearningBannerUrl,
                 assignedTeachers: courseData.assignedTeachers.filter(id => id.trim() !== ""),
                 status
             };
@@ -230,7 +298,7 @@ export default function AddCoursePage() {
         }
     };
 
-    const tabList = ['basic', 'details', 'curriculum', 'media', 'pricing', 'teacher', 'career', 'features', 'extras'];
+    const tabList = ['basic', 'details', 'curriculum', 'media', 'banners', 'pricing', 'teacher', 'career', 'features', 'extras'];
 
     const handleNextTab = () => {
         const currentIndex = tabList.indexOf(activeTab);
@@ -480,14 +548,14 @@ export default function AddCoursePage() {
                         {activeTab === 'details' && (
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Course Details</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Detailed Description</label>
                                     <textarea
-                                        rows={6}
                                         value={courseData.fullDetails}
                                         onChange={(e) => handleInputChange('fullDetails', e.target.value)}
-                                        placeholder="Describe the full course details..."
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] resize-none"
-                                    ></textarea>
+                                        placeholder="Comprehensive description of the course, what students will learn, output, etc."
+                                        rows={6}
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] resize-y"
+                                    />
                                 </div>
 
                                 <div>
@@ -725,6 +793,7 @@ export default function AddCoursePage() {
                                         </div>
                                     )}
                                 </div>
+
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Intro Video (Optional)</label>
                                     <input
@@ -826,6 +895,275 @@ export default function AddCoursePage() {
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
                                             Add Details from URL
                                         </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'banners' && (
+                            <div className="space-y-8">
+                                <div className="p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                                    <h3 className="font-bold text-blue-900 mb-4 text-base flex items-center gap-2">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /></svg>
+                                        AI-Powered Learning Banner details (Top Option)
+                                    </h3>
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Details Text Paragraph</label>
+                                            <textarea
+                                                value={courseData.aiLearningDetails}
+                                                onChange={(e) => handleInputChange('aiLearningDetails', e.target.value)}
+                                                placeholder="শুধু কোড নয়, এই কোর্সে আপনি শিখবেন..."
+                                                rows={3}
+                                                className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F] resize-y"
+                                            />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider">Background Image</label>
+                                                <span className="text-xs text-blue-400 font-medium">JPG, PNG, WEBP (Max 2MB)</span>
+                                            </div>
+                                            <div className={`relative border-2 border-dashed ${(aiLearningBannerFile || courseData.aiLearningBannerUrl) ? 'border-transparent' : 'border-blue-200'} rounded-xl hover:border-blue-400 transition-colors bg-white text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
+                                                <input
+                                                    type="file"
+                                                    accept="image/jpeg, image/png, image/webp"
+                                                    onChange={e => {
+                                                        if (e.target.files && e.target.files.length > 0) {
+                                                            const file = e.target.files[0];
+                                                            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                                                            if (!validTypes.includes(file.type)) { alert('Invalid image format.'); return; }
+                                                            if (file.size > 2 * 1024 * 1024) { alert('Size exceeds limit.'); return; }
+                                                            setAiLearningBannerFile(file);
+                                                        }
+                                                    }}
+                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                                />
+                                                {(aiLearningBannerFile || courseData.aiLearningBannerUrl) ? (
+                                                    <div className="absolute inset-0 w-full h-full group-thumbnail">
+                                                        <img src={aiLearningBannerFile ? URL.createObjectURL(aiLearningBannerFile) : courseData.aiLearningBannerUrl} alt="AI Learning Banner" className="w-full h-full object-cover" />
+                                                        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 pointer-events-auto">
+                                                            <span className="text-white text-sm font-bold mb-1">Click to change</span>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10 text-blue-400">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                                        <span className="text-sm font-bold text-blue-700">Upload Banner Image</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="p-6 bg-purple-50 rounded-2xl border border-purple-100">
+                                    <h3 className="font-bold text-purple-900 mb-4 text-base flex items-center gap-2">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+                                        AI Job Ready Banner details (Bottom Option)
+                                    </h3>
+                                    <div className="space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Small Badge Text</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiJobReadyBadge}
+                                                    onChange={(e) => handleInputChange('aiJobReadyBadge', e.target.value)}
+                                                    placeholder="ক্যারিয়ার রেডি"
+                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Image Badge Text</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiJobReadyImageBadge}
+                                                    onChange={(e) => handleInputChange('aiJobReadyImageBadge', e.target.value)}
+                                                    placeholder="Job Ready"
+                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Title Prefix</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiJobReadyTitle1}
+                                                    onChange={(e) => handleInputChange('aiJobReadyTitle1', e.target.value)}
+                                                    placeholder="কোর্স শেষে আপনি"
+                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Highlighted Text</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiJobReadyHighlight}
+                                                    onChange={(e) => handleInputChange('aiJobReadyHighlight', e.target.value)}
+                                                    placeholder="চাকরির জন্য প্রস্তুত"
+                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Title Suffix</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiJobReadyTitle2}
+                                                    onChange={(e) => handleInputChange('aiJobReadyTitle2', e.target.value)}
+                                                    placeholder="হয়ে যাবেন"
+                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Details Text Paragraph</label>
+                                            <textarea
+                                                value={courseData.aiJobReadyDetails}
+                                                onChange={(e) => handleInputChange('aiJobReadyDetails', e.target.value)}
+                                                placeholder="প্রতিটি মডিউলে real-world project..."
+                                                rows={3}
+                                                className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F] resize-y"
+                                            />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider">Background Image</label>
+                                                <span className="text-xs text-purple-400 font-medium">JPG, PNG, WEBP (Max 2MB)</span>
+                                            </div>
+                                            <div className={`relative border-2 border-dashed ${(aiBannerFile || courseData.aiBannerUrl) ? 'border-transparent' : 'border-purple-200'} rounded-xl hover:border-purple-400 transition-colors bg-white text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
+                                                <input
+                                                    type="file"
+                                                    accept="image/jpeg, image/png, image/webp"
+                                                    onChange={e => {
+                                                        if (e.target.files && e.target.files.length > 0) {
+                                                            const file = e.target.files[0];
+                                                            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                                                            if (!validTypes.includes(file.type)) { alert('Invalid image format.'); return; }
+                                                            if (file.size > 2 * 1024 * 1024) { alert('Size exceeds limit.'); return; }
+                                                            setAiBannerFile(file);
+                                                        }
+                                                    }}
+                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                                />
+                                                {(aiBannerFile || courseData.aiBannerUrl) ? (
+                                                    <div className="absolute inset-0 w-full h-full group-thumbnail">
+                                                        <img src={aiBannerFile ? URL.createObjectURL(aiBannerFile) : courseData.aiBannerUrl} alt="AI Banner" className="w-full h-full object-cover" />
+                                                        <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 pointer-events-auto">
+                                                            <span className="text-white text-sm font-bold mb-1">Click to change</span>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10 text-purple-400">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                                        <span className="text-sm font-bold text-purple-700">Upload AI Banner Image</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* LIVE PREVIEW SECTION */}
+                                        <div className="mt-8 relative overflow-hidden rounded-[30px] bg-[#050D1F] border border-purple-900/40 pointer-events-none xl:scale-100 origin-top-left transition-all">
+                                            <div className="absolute top-4 left-4 bg-purple-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full z-50 shadow-lg tracking-wider">Live Preview</div>
+
+                                            {/* Glowing Background Orbs */}
+                                            <div className="absolute -top-32 -left-32 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+                                            <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-pink-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+                                            <div className="relative z-10 flex flex-col lg:flex-row-reverse items-center gap-0">
+                                                {/* Text Content */}
+                                                <div className="flex-1 p-8 lg:p-10 space-y-6">
+                                                    <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 text-purple-300 text-[11px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
+                                                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse"></span>
+                                                        {courseData.aiJobReadyBadge || 'ক্যারিয়ার রেডি'}
+                                                    </span>
+
+                                                    <h2 className="text-2xl lg:text-3xl font-black text-white leading-tight">
+                                                        {courseData.aiJobReadyTitle1 || 'কোর্স শেষে আপনি'} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{courseData.aiJobReadyHighlight || 'চাকরির জন্য প্রস্তুত'}</span> {courseData.aiJobReadyTitle2 || 'হয়ে যাবেন'}
+                                                    </h2>
+
+                                                    <p className="text-gray-400 text-[14px] leading-relaxed font-medium max-w-[480px]">
+                                                        {courseData.aiJobReadyDetails || 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।'}
+                                                    </p>
+
+                                                    {/* Stats Row */}
+                                                    <div className="flex flex-wrap gap-3">
+                                                        {[
+                                                            { value: '৩৩', label: 'মডিউল' },
+                                                            { value: '৭৩', label: 'লাইভ ক্লাস' },
+                                                            { value: '১৫+', label: 'প্রজেক্ট' },
+                                                        ].map((stat, i) => (
+                                                            <div key={i} className="flex flex-col items-center px-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl min-w-[75px]">
+                                                                <span className="text-xl font-black text-white">{stat.value}</span>
+                                                                <span className="text-[10px] font-bold text-gray-400 mt-0.5">{stat.label}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    <button
+                                                        className="inline-flex items-center gap-2 px-6 py-3 text-white font-black text-[14px] rounded-2xl transition-all shadow-xl bg-gradient-to-r from-purple-500 to-pink-500 shadow-purple-900/40"
+                                                    >
+                                                        এখনই ভর্তি হোন
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                                    </button>
+                                                </div>
+
+                                                {/* AI Banner Image */}
+                                                <div className="w-full lg:w-[400px] shrink-0 relative">
+                                                    <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
+                                                    <img
+                                                        src={aiBannerFile ? URL.createObjectURL(aiBannerFile) : (courseData.aiBannerUrl || "/images/ai-banner.png")}
+                                                        alt="Career Ready Preview"
+                                                        className="w-full h-full object-cover opacity-90 rounded-l-[30px]"
+                                                        style={{ minHeight: '300px', maxHeight: '420px' }}
+                                                    />
+                                                    <div className="absolute top-5 left-5 z-20">
+                                                        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-3 py-2 text-white text-center shadow-lg">
+                                                            <div className="text-xl font-black text-purple-300">🏆</div>
+                                                            <div className="text-[10px] font-black text-gray-300 uppercase tracking-wider">{courseData.aiJobReadyImageBadge || 'Job Ready'}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Instructor Banner Image</label>
+                                        <span className="text-xs text-gray-400 font-medium">JPG, PNG, WEBP (Max 2MB)</span>
+                                    </div>
+                                    <div className={`relative border-2 border-dashed ${(instructorBannerFile || courseData.instructorBannerUrl) ? 'border-transparent' : 'border-gray-200'} rounded-xl hover:border-[#6C5DD3] transition-colors bg-gray-50 text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
+                                        <input
+                                            type="file"
+                                            accept="image/jpeg, image/png, image/webp"
+                                            onChange={e => {
+                                                if (e.target.files && e.target.files.length > 0) {
+                                                    const file = e.target.files[0];
+                                                    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                                                    if (!validTypes.includes(file.type)) { alert('Invalid image format.'); return; }
+                                                    if (file.size > 2 * 1024 * 1024) { alert('Size exceeds limit.'); return; }
+                                                    setInstructorBannerFile(file);
+                                                }
+                                            }}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                        />
+                                        {(instructorBannerFile || courseData.instructorBannerUrl) ? (
+                                            <div className="absolute inset-0 w-full h-full group-thumbnail">
+                                                <img src={instructorBannerFile ? URL.createObjectURL(instructorBannerFile) : courseData.instructorBannerUrl} alt="Instructor Banner" className="w-full h-full object-cover" />
+                                                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 pointer-events-auto">
+                                                    <span className="text-white text-sm font-bold mb-1">Click to change</span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10 text-gray-400">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                                <span className="text-sm font-bold text-gray-700">Upload Banner Image</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -1153,6 +1491,18 @@ export default function AddCoursePage() {
                                             <input type="text" value={courseData.demoClass.platform} onChange={(e) => handleInputChange('demoClass', { ...courseData.demoClass, platform: e.target.value })} placeholder="e.g. Zoom" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
                                         </div>
                                     </div>
+                                    <div className="mt-6">
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Youtube Video Links (Up to 4)</label>
+                                        <div className="space-y-3">
+                                            {courseData.demoClass.videoUrls?.map((url, index) => (
+                                                <div key={index} className="flex gap-2">
+                                                    <input type="text" value={url} onChange={(e) => { const n = [...(courseData.demoClass.videoUrls || [])]; n[index] = e.target.value; handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: n }); }} placeholder="e.g. https://www.youtube.com/watch?v=..." className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                                    <button onClick={() => handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: (courseData.demoClass.videoUrls || []).filter((_, i) => i !== index) })} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                </div>
+                                            ))}
+                                            <button type="button" onClick={() => handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: [...(courseData.demoClass.videoUrls || []), ''] })} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Video Link</button>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* Tools */}
@@ -1397,6 +1747,6 @@ export default function AddCoursePage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

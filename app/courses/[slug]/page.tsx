@@ -13,6 +13,20 @@ interface IModule {
     topics: { _id: string; title: string }[];
 }
 
+const getYoutubeEmbedUrl = (url: string) => {
+    try {
+        const urlObj = new URL(url);
+        if (urlObj.hostname.includes('youtube.com')) {
+            return `https://www.youtube.com/embed/${urlObj.searchParams.get('v')}`;
+        } else if (urlObj.hostname.includes('youtu.be')) {
+            return `https://www.youtube.com/embed${urlObj.pathname}`;
+        }
+    } catch (e) {
+        return url;
+    }
+    return url;
+};
+
 export default function CourseDetails() {
     const { slug } = useParams();
     const router = useRouter();
@@ -282,7 +296,7 @@ export default function CourseDetails() {
                             </h2>
 
                             <p className="text-gray-400 text-[16px] leading-relaxed font-medium max-w-[520px]">
-                                শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।
+                                {course.aiLearningDetails || 'শুধু কোড নয়, এই কোর্সে আপনি শিখবেন কীভাবে AI tools ব্যবহার করে real-world সমস্যা সমাধান করতে হয়, Error Handle করতে হয় এবং productivity বাড়াতে হয়।'}
                             </p>
 
                             {/* AI Feature Pills */}
@@ -317,7 +331,7 @@ export default function CourseDetails() {
                             {/* Gradient overlay on left edge to blend with text side */}
                             <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
                             <img
-                                src="/images/ai-banner.png"
+                                src={course.aiLearningBannerUrl || "/images/ai-banner.png"}
                                 alt="AI-Powered Learning"
                                 className="w-full h-full object-cover opacity-90 rounded-r-[40px]"
                                 style={{ minHeight: '380px', maxHeight: '480px' }}
@@ -369,23 +383,37 @@ export default function CourseDetails() {
                         </h2>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {[1, 2, 3, 4].map((i) => (
-                                <div key={i} className="relative group cursor-pointer rounded-3xl overflow-hidden shadow-md">
-                                    <img
-                                        src={`https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=400&auto=format&fit=crop`}
-                                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                                        alt="Demo Class"
-                                    />
-                                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="w-14 h-14 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/50 group-hover:bg-white/40 transition-all">
-                                            <div className="w-10 h-10 bg-[#FBBF24] rounded-full flex items-center justify-center ml-0.5 shadow-lg shadow-yellow-500/20">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            {course?.demoClass?.videoUrls?.length > 0 ? (
+                                course.demoClass.videoUrls.map((url: string, i: number) => (
+                                    <div key={i} className="relative group rounded-[24px] overflow-hidden shadow-md bg-black w-full" style={{ paddingBottom: '56.25%' }}>
+                                        <iframe
+                                            src={getYoutubeEmbedUrl(url)}
+                                            title="Demo Video"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            className="absolute top-0 left-0 w-full h-full border-0"
+                                        ></iframe>
+                                    </div>
+                                ))
+                            ) : (
+                                [1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="relative group cursor-pointer rounded-3xl overflow-hidden shadow-md">
+                                        <img
+                                            src={`https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=400&auto=format&fit=crop`}
+                                            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                                            alt="Demo Class"
+                                        />
+                                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-14 h-14 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/50 group-hover:bg-white/40 transition-all">
+                                                <div className="w-10 h-10 bg-[#FBBF24] rounded-full flex items-center justify-center ml-0.5 shadow-lg shadow-yellow-500/20">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            )}
                         </div>
                     </section>
 
@@ -674,15 +702,15 @@ export default function CourseDetails() {
                         <div className="flex-1 p-10 md:p-14 space-y-7">
                             <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-purple-300 text-[13px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
                                 <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
-                                ক্যারিয়ার রেডি
+                                {course.aiJobReadyBadge || 'ক্যারিয়ার রেডি'}
                             </span>
 
                             <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
-                                কোর্স শেষে আপনি <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">চাকরির জন্য প্রস্তুত</span> হয়ে যাবেন
+                                {course.aiJobReadyTitle1 || 'কোর্স শেষে আপনি'} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{course.aiJobReadyHighlight || 'চাকরির জন্য প্রস্তুত'}</span> {course.aiJobReadyTitle2 || 'হয়ে যাবেন'}
                             </h2>
 
                             <p className="text-gray-400 text-[16px] leading-relaxed font-medium max-w-[520px]">
-                                প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।
+                                {course.aiJobReadyDetails || 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।'}
                             </p>
 
                             {/* Stats Row */}
@@ -715,7 +743,7 @@ export default function CourseDetails() {
                             {/* Gradient overlay on right edge to blend */}
                             <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
                             <img
-                                src="/images/ai-banner.png"
+                                src={course.aiBannerUrl || "/images/ai-banner.png"}
                                 alt="Career Ready"
                                 className="w-full h-full object-cover opacity-90 rounded-l-[40px]"
                                 style={{ minHeight: '380px', maxHeight: '480px' }}
@@ -724,15 +752,27 @@ export default function CourseDetails() {
                             <div className="absolute top-6 left-6 z-20">
                                 <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white text-center shadow-xl">
                                     <div className="text-2xl font-black text-purple-300">🏆</div>
-                                    <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">Job Ready</div>
+                                    <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">{course.aiJobReadyImageBadge || 'Job Ready'}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                {course.instructorBannerUrl && (
+                    <section className="mt-20 mb-8 max-w-5xl mx-auto px-4">
+                        <div className="w-full rounded-[32px] overflow-hidden shadow-xl border border-gray-100 relative group">
+                            <img
+                                src={course.instructorBannerUrl}
+                                alt="Course Instructor Banner"
+                                className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                            />
+                        </div>
+                    </section>
+                )}
+
                 {/* Requirements Section */}
-                <section className="mt-20 mb-16">
+                <section className="mt-16 mb-16">
                     <div className="flex flex-col items-center justify-center mb-12">
                         <div className="relative inline-block">
                             <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
@@ -814,7 +854,11 @@ export default function CourseDetails() {
                                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Project</span>
                                                 <span className="text-3xl">⚙️</span>
                                             </div>
-                                        ) : item.icon}
+                                        ) : item.icon?.startsWith('http') || item.icon?.startsWith('/') ? (
+                                            <img src={item.icon} alt={item.title} className="w-12 h-12 object-contain" />
+                                        ) : (
+                                            item.icon
+                                        )}
                                     </div>
                                     <h3 className="text-[#1A1D1F] font-extrabold text-[17px] md:text-lg mb-3 leading-snug">
                                         {item.title}
