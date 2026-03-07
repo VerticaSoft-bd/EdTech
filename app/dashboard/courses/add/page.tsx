@@ -9,6 +9,8 @@ export default function AddCoursePage() {
     const [successMessage, setSuccessMessage] = useState('');
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
     const [toolImageFiles, setToolImageFiles] = useState<(File | null)[]>([]);
+    const [learnItemIconFiles, setLearnItemIconFiles] = useState<(File | null)[]>([]);
+    const [benefitIconFiles, setBenefitIconFiles] = useState<(File | null)[]>([]);
     const [imageError, setImageError] = useState('');
     const [studentProjectFiles, setStudentProjectFiles] = useState<(File | string)[]>([]);
     const [teachers, setTeachers] = useState<any[]>([]);
@@ -63,7 +65,7 @@ export default function AddCoursePage() {
         totalSeats: 0,
         batchNumber: '',
         benefits: [] as { icon: string, title: string, subtitle: string }[],
-        whatYouWillLearn: [] as string[],
+        whatYouWillLearn: [] as { text: string, icon: string }[],
         successStories: [] as { name: string, role: string }[],
         testimonials: [] as { text: string, name: string }[],
         faqs: [] as { question: string, answer: string }[],
@@ -153,11 +155,53 @@ export default function AddCoursePage() {
                 uploadedTools.push({ name: tool.name, image: imageUrl });
             }
 
+            // Upload What You Will Learn Icons
+            const uploadedLearnItems: { text: string, icon: string }[] = [];
+            for (let i = 0; i < courseData.whatYouWillLearn.length; i++) {
+                const item = courseData.whatYouWillLearn[i];
+                const imageFile = learnItemIconFiles[i];
+                let imageUrl = item.icon || '';
+                if (imageFile) {
+                    const uploadFormData = new FormData();
+                    uploadFormData.append('file', imageFile);
+                    const uploadRes = await fetch('/api/upload', { method: 'POST', body: uploadFormData });
+                    if (uploadRes.ok) {
+                        const uploadData = await uploadRes.json();
+                        imageUrl = uploadData.url;
+                    } else {
+                        throw new Error(`Failed to upload icon for what you will learn item ${i + 1}`);
+                    }
+                }
+                uploadedLearnItems.push({ text: item.text, icon: imageUrl });
+            }
+
+            // Upload Benefit Icons
+            const uploadedBenefits: { icon: string, title: string, subtitle: string }[] = [];
+            for (let i = 0; i < courseData.benefits.length; i++) {
+                const benefit = courseData.benefits[i];
+                const imageFile = benefitIconFiles[i];
+                let imageUrl = benefit.icon || '';
+                if (imageFile) {
+                    const uploadFormData = new FormData();
+                    uploadFormData.append('file', imageFile);
+                    const uploadRes = await fetch('/api/upload', { method: 'POST', body: uploadFormData });
+                    if (uploadRes.ok) {
+                        const uploadData = await uploadRes.json();
+                        imageUrl = uploadData.url; // Use URL string 
+                    } else {
+                        throw new Error(`Failed to upload benefit icon ${i + 1}`);
+                    }
+                }
+                uploadedBenefits.push({ ...benefit, icon: imageUrl });
+            }
+
             const payload = {
                 ...courseData,
                 thumbnail: thumbnailUrl,
                 studentProjects: uploadedProjectUrls,
                 tools: uploadedTools,
+                whatYouWillLearn: uploadedLearnItems,
+                benefits: uploadedBenefits,
                 assignedTeachers: courseData.assignedTeachers.filter(id => id.trim() !== ""),
                 status
             };
@@ -1149,15 +1193,29 @@ export default function AddCoursePage() {
                                         <span className="w-1 h-4 bg-[#6C5DD3] rounded-full"></span>
                                         What You Will Learn
                                     </h3>
-                                    <div className="space-y-2">
+                                    <div className="space-y-3">
                                         {courseData.whatYouWillLearn.map((item, index) => (
-                                            <div key={index} className="flex gap-2">
-                                                <input type="text" value={item} onChange={(e) => { const n = [...courseData.whatYouWillLearn]; n[index] = e.target.value; handleInputChange('whatYouWillLearn', n); }} placeholder="e.g. পাইথন প্রোগ্রামিং শিখবেন" className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                                <button onClick={() => handleInputChange('whatYouWillLearn', courseData.whatYouWillLearn.filter((_, i) => i !== index))} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                            <div key={index} className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-3">
+                                                <div className="flex gap-2">
+                                                    <input type="text" value={item.text} onChange={(e) => { const n = [...courseData.whatYouWillLearn]; n[index] = { ...n[index], text: e.target.value }; handleInputChange('whatYouWillLearn', n); }} placeholder="e.g. পাইথন প্রোগ্রামিং শিখবেন" className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-[#1A1D1F]" />
+                                                    <button onClick={() => { handleInputChange('whatYouWillLearn', courseData.whatYouWillLearn.filter((_, i) => i !== index)); const nf = [...learnItemIconFiles]; nf.splice(index, 1); setLearnItemIconFiles(nf); }} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    {(learnItemIconFiles[index] || item.icon) && (
+                                                        <img src={learnItemIconFiles[index] ? URL.createObjectURL(learnItemIconFiles[index]!) : item.icon} alt="Icon" className="w-12 h-12 object-contain rounded-lg border border-gray-200 bg-white p-1" />
+                                                    )}
+                                                    <label className="flex-1 cursor-pointer">
+                                                        <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-500 hover:border-[#6C5DD3] transition-colors">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+                                                            {learnItemIconFiles[index] ? learnItemIconFiles[index]!.name : (item.icon ? 'Change Icon' : 'Upload Icon/Image')}
+                                                        </div>
+                                                        <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { const nf = [...learnItemIconFiles]; while (nf.length <= index) nf.push(null); nf[index] = e.target.files[0]; setLearnItemIconFiles(nf); } }} />
+                                                    </label>
+                                                </div>
                                             </div>
                                         ))}
                                         {courseData.whatYouWillLearn.length === 0 && <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No items added yet.</div>}
-                                        <button onClick={() => setCourseData(prev => ({ ...prev, whatYouWillLearn: [...prev.whatYouWillLearn, ''] }))} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Item</button>
+                                        <button onClick={() => { setCourseData(prev => ({ ...prev, whatYouWillLearn: [...prev.whatYouWillLearn, { text: '', icon: '' }] })); setLearnItemIconFiles(prev => [...prev, null]); }} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Item</button>
                                     </div>
                                 </div>
 
@@ -1169,19 +1227,31 @@ export default function AddCoursePage() {
                                     </h3>
                                     <div className="space-y-3">
                                         {courseData.benefits.map((benefit, index) => (
-                                            <div key={index} className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
+                                            <div key={index} className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-3">
                                                 <div className="grid grid-cols-4 gap-2">
-                                                    <input type="text" value={benefit.icon} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], icon: e.target.value }; handleInputChange('benefits', n); }} placeholder="🗓️" className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 text-center" />
+                                                    <input type="text" value={benefit.icon} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], icon: e.target.value }; handleInputChange('benefits', n); }} placeholder="🗓️ (Text Icon)" className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 text-center" />
                                                     <input type="text" value={benefit.title} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], title: e.target.value }; handleInputChange('benefits', n); }} placeholder="Title" className="col-span-3 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
                                                 </div>
                                                 <div className="flex gap-2">
                                                     <input type="text" value={benefit.subtitle} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], subtitle: e.target.value }; handleInputChange('benefits', n); }} placeholder="Subtitle" className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
-                                                    <button onClick={() => handleInputChange('benefits', courseData.benefits.filter((_, i) => i !== index))} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                    <button onClick={() => { handleInputChange('benefits', courseData.benefits.filter((_, i) => i !== index)); const nf = [...benefitIconFiles]; nf.splice(index, 1); setBenefitIconFiles(nf); }} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    {(benefitIconFiles[index] || (benefit.icon && benefit.icon.startsWith('http'))) && (
+                                                        <img src={benefitIconFiles[index] ? URL.createObjectURL(benefitIconFiles[index]!) : benefit.icon} alt="Benefit" className="w-12 h-12 object-contain rounded-lg border border-gray-200 bg-white p-1" />
+                                                    )}
+                                                    <label className="flex-1 cursor-pointer">
+                                                        <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-500 hover:border-[#6C5DD3] transition-colors">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
+                                                            {benefitIconFiles[index] ? benefitIconFiles[index]!.name : (benefit.icon && benefit.icon.startsWith('http') ? 'Change Image' : 'Upload Image (Overrides Text)')}
+                                                        </div>
+                                                        <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { const nf = [...benefitIconFiles]; while (nf.length <= index) nf.push(null); nf[index] = e.target.files[0]; setBenefitIconFiles(nf); } }} />
+                                                    </label>
                                                 </div>
                                             </div>
                                         ))}
                                         {courseData.benefits.length === 0 && <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No benefits added yet.</div>}
-                                        <button onClick={() => handleInputChange('benefits', [...courseData.benefits, { icon: '', title: '', subtitle: '' }])} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Benefit</button>
+                                        <button onClick={() => { handleInputChange('benefits', [...courseData.benefits, { icon: '', title: '', subtitle: '' }]); setBenefitIconFiles(prev => [...prev, null]); }} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Benefit</button>
                                     </div>
                                 </div>
 

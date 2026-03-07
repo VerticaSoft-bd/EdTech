@@ -84,7 +84,7 @@ export interface ICourse extends Document {
     totalSeats: number;
     batchNumber: string;
     benefits: IBenefit[];
-    whatYouWillLearn: string[];
+    whatYouWillLearn: { text: string; icon: string }[];
     successStories: ISuccessStory[];
     testimonials: ITestimonial[];
     faqs: IFAQ[];
@@ -180,7 +180,7 @@ const CourseSchema: Schema<ICourse> = new Schema({
     totalSeats: { type: Number, default: 0 },
     batchNumber: { type: String },
     benefits: { type: [BenefitSchema], default: [] },
-    whatYouWillLearn: { type: [String], default: [] },
+    whatYouWillLearn: { type: [{ text: { type: String, required: true }, icon: { type: String } }], default: [] },
     successStories: { type: [SuccessStorySchema], default: [] },
     testimonials: { type: [TestimonialSchema], default: [] },
     faqs: { type: [FAQSchema], default: [] },

@@ -842,24 +842,28 @@ export default function CourseDetails() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {(Array.isArray(course.whatYouWillLearn) && course.whatYouWillLearn.length > 0 ? course.whatYouWillLearn : [
-                            "প্রোগ্রামিং ল্যাংগুয়েজ হিসেবে শেখানো হবে পাইথন",
-                            "ব্যাকএন্ডের জন্য আমরা শিখবো Django, Django Rest Framework, Flask",
-                            "ফ্রন্টেন্ডের জন্য শেখানো হবে React",
-                            "পাইথন এর এডভান্স কনসেপ্ট",
-                            "Django রেস্ট ফ্রেমওয়ার্ক এর এডভান্স কনসেপ্ট",
-                            "Authentication, Permissions, Throttling, Filtering",
-                            "Pagination, Automated API testing, Searching and Ordering"
+                        {(Array.isArray(course.whatYouWillLearn) && course.whatYouWillLearn.length > 0 && typeof course.whatYouWillLearn[0] === 'object' ? course.whatYouWillLearn : [
+                            { text: "প্রোগ্রামিং ল্যাংগুয়েজ হিসেবে শেখানো হবে পাইথন", icon: "" },
+                            { text: "ব্যাকএন্ডের জন্য আমরা শিখবো Django, Django Rest Framework, Flask", icon: "" },
+                            { text: "ফ্রন্টেন্ডের জন্য শেখানো হবে React", icon: "" },
+                            { text: "পাইথন এর এডভান্স কনসেপ্ট", icon: "" },
+                            { text: "Django রেস্ট ফ্রেমওয়ার্ক এর এডভান্স কনসেপ্ট", icon: "" },
+                            { text: "Authentication, Permissions, Throttling, Filtering", icon: "" },
+                            { text: "Pagination, Automated API testing, Searching and Ordering", icon: "" }
                         ]).map((item: any, i: number) => (
                             <div key={i} className="bg-white border border-gray-100 rounded-[20px] p-6 flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:border-gray-200">
                                 <div className="mt-1 flex-shrink-0">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="12" cy="12" r="10" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M8 12.5L10.5 15L16 9" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
+                                    {item.icon ? (
+                                        <img src={item.icon} alt="icon" className="w-7 h-7 object-contain" />
+                                    ) : (
+                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="12" cy="12" r="10" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M8 12.5L10.5 15L16 9" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    )}
                                 </div>
                                 <p className="text-[#1A1D1F] font-bold text-[15px] leading-relaxed">
-                                    {item}
+                                    {item.text || item}
                                 </p>
                             </div>
                         ))}
