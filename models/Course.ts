@@ -25,6 +25,33 @@ export interface IFeature {
     description: string;
 }
 
+export interface IBenefit {
+    icon: string;
+    title: string;
+    subtitle: string;
+}
+
+export interface ISuccessStory {
+    name: string;
+    role: string;
+}
+
+export interface ITestimonial {
+    text: string;
+    name: string;
+}
+
+export interface IFAQ {
+    question: string;
+    answer: string;
+}
+
+export interface IDemoClass {
+    date: string;
+    time: string;
+    platform: string;
+}
+
 export interface ICourse extends Document {
     title: string;
     slug: string;
@@ -38,7 +65,7 @@ export interface ICourse extends Document {
     totalLectures: number;
     totalProjects: number;
     fullDetails: string;
-    targetAudience: string;
+    targetAudience: string[];
     keyDeliverables: string[];
     modules: IModule[];
     thumbnail?: string;
@@ -52,6 +79,17 @@ export interface ICourse extends Document {
     assignedTeachers: mongoose.Types.ObjectId[];
     careerOpportunities: ICareerOpportunity[];
     uniqueFeatures: IFeature[];
+    totalPreRecordedVideos: number;
+    enrollmentDeadline: string;
+    totalSeats: number;
+    batchNumber: string;
+    benefits: IBenefit[];
+    whatYouWillLearn: string[];
+    successStories: ISuccessStory[];
+    testimonials: ITestimonial[];
+    faqs: IFAQ[];
+    tools: { name: string; image: string }[];
+    demoClass: IDemoClass;
     status: 'Draft' | 'Active' | 'Archived';
 }
 
@@ -74,6 +112,33 @@ const CareerOpportunitySchema = new Schema<ICareerOpportunity>({
     description: { type: String, required: true },
 });
 
+const BenefitSchema = new Schema<IBenefit>({
+    icon: { type: String, required: true },
+    title: { type: String, required: true },
+    subtitle: { type: String, required: true },
+});
+
+const SuccessStorySchema = new Schema<ISuccessStory>({
+    name: { type: String, required: true },
+    role: { type: String, required: true },
+});
+
+const TestimonialSchema = new Schema<ITestimonial>({
+    text: { type: String, required: true },
+    name: { type: String, required: true },
+});
+
+const FAQSchema = new Schema<IFAQ>({
+    question: { type: String, required: true },
+    answer: { type: String, required: true },
+});
+
+const DemoClassSchema = new Schema<IDemoClass>({
+    date: { type: String },
+    time: { type: String },
+    platform: { type: String },
+});
+
 const FeatureSchema = new Schema<IFeature>({
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -92,7 +157,7 @@ const CourseSchema: Schema<ICourse> = new Schema({
     totalLectures: { type: Number, default: 0 },
     totalProjects: { type: Number, default: 0 },
     fullDetails: { type: String, required: true },
-    targetAudience: { type: String, required: true },
+    targetAudience: { type: [String], default: [] },
     keyDeliverables: { type: [String], default: [] },
     modules: { type: [ModuleSchema], default: [] },
     thumbnail: { type: String },
@@ -110,6 +175,17 @@ const CourseSchema: Schema<ICourse> = new Schema({
     },
     careerOpportunities: { type: [CareerOpportunitySchema], default: [] },
     uniqueFeatures: { type: [FeatureSchema], default: [] },
+    totalPreRecordedVideos: { type: Number, default: 0 },
+    enrollmentDeadline: { type: String },
+    totalSeats: { type: Number, default: 0 },
+    batchNumber: { type: String },
+    benefits: { type: [BenefitSchema], default: [] },
+    whatYouWillLearn: { type: [String], default: [] },
+    successStories: { type: [SuccessStorySchema], default: [] },
+    testimonials: { type: [TestimonialSchema], default: [] },
+    faqs: { type: [FAQSchema], default: [] },
+    tools: { type: [{ name: { type: String, required: true }, image: { type: String } }], default: [] },
+    demoClass: { type: DemoClassSchema, default: {} },
     status: {
         type: String,
         enum: ['Draft', 'Active', 'Archived'],

@@ -99,8 +99,8 @@ export default function CheckoutPage() {
             ...formData,
             courseName: course.title,
             totalCourseFee: discountedPrice,
-            paidAmount: paymentAmount,
-            dueAmount: dueAmount,
+            paidAmount: 0,
+            dueAmount: discountedPrice,
         };
 
         try {

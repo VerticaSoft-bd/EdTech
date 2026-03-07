@@ -159,8 +159,8 @@ export default function CourseDetails() {
                             {[
                                 { icon: "🎥", label: `${course.totalLectures} টি লাইভ ক্লাস` },
                                 { icon: "📂", label: `${course.totalProjects} টি প্রজেক্টসমূহ` },
-                                { icon: "🗓️", label: "৫৯ দিন বাকি" },
-                                { icon: "🎬", label: "২৭৮ টি প্রি রেকর্ডড ভিডিও" }
+                                { icon: "🗓️", label: course.enrollmentDeadline ? `${Math.ceil((new Date(course.enrollmentDeadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} দিন বাকি` : "৫৯ দিন বাকি" },
+                                { icon: "🎬", label: `${course.totalPreRecordedVideos || '২৭৮'} টি প্রি রেকর্ডড ভিডিও` }
                             ].map((stat, i) => (
                                 <div key={i} className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-bold text-gray-700">
                                     <span>{stat.icon}</span>
@@ -248,7 +248,7 @@ export default function CourseDetails() {
                             <span className="block text-gray-500 text-xs font-bold uppercase mb-2">
                                 <span className="mr-2">🪑</span>সিট বাকি
                             </span>
-                            <span className="font-extrabold text-gray-800 text-xl tracking-tight">৫৪ টি</span>
+                            <span className="font-extrabold text-gray-800 text-xl tracking-tight">{course.totalSeats || '৫৪'} টি</span>
                         </div>
                         <div className="p-8">
                             <div className="flex items-center justify-between">
@@ -256,7 +256,7 @@ export default function CourseDetails() {
                                     <span className="block text-gray-500 text-xs font-bold uppercase mb-2 text-[#EF4444]">
                                         <span className="mr-2">🎓</span>ভর্তি চলছে
                                     </span>
-                                    <span className="font-extrabold text-gray-800 text-xl">১১তম ব্যাচে</span>
+                                    <span className="font-extrabold text-gray-800 text-xl">{course.batchNumber || '১১তম ব্যাচে'}</span>
                                 </div>
                             </div>
                         </div>
@@ -406,13 +406,13 @@ export default function CourseDetails() {
                                 </h3>
                                 <div className="flex flex-wrap items-center gap-4">
                                     <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-extrabold text-[#1A1D1F]">
-                                        <span className="text-[#EF4444]">📅</span> ৬ই মার্চ
+                                        <span className="text-[#EF4444]">📅</span> {course.demoClass?.date || '৬ই মার্চ'}
                                     </div>
                                     <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-extrabold text-[#1A1D1F]">
-                                        <span className="text-[#EF4444]">🕒</span> রাত ১০:৩০টা
+                                        <span className="text-[#EF4444]">🕒</span> {course.demoClass?.time || 'রাত ১০:৩০টা'}
                                     </div>
                                     <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-extrabold text-[#1A1D1F]">
-                                        <span className="text-[#EF4444]">📍</span> zoom
+                                        <span className="text-[#EF4444]">📍</span> {course.demoClass?.platform || 'zoom'}
                                     </div>
                                 </div>
                             </div>
@@ -535,25 +535,29 @@ export default function CourseDetails() {
                                         <h2 className="text-2xl md:text-3xl font-black text-[#1A1D1F] mb-10">যেসব টুলস ও টেকনোলজি শিখবেন</h2>
 
                                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-                                            {[
-                                                { icon: <div className="text-[#E34F26] text-3xl font-black">HTML</div>, label: "HTML" },
-                                                { icon: <div className="text-[#1572B6] text-3xl font-black">CSS</div>, label: "CSS" },
-                                                { icon: <div className="w-10 h-10 bg-[#F7DF1E] text-black font-black text-xl flex items-center justify-center rounded">JS</div>, label: "Javascript" },
-                                                { icon: <div className="text-[#181717] text-3xl font-black">Git</div>, label: "Git & Git Hub" },
-                                                { icon: <div className="text-[#000000] text-3xl font-black">PC</div>, label: "PyCharm" },
-                                                { icon: <div className="text-gray-800 text-3xl font-serif">Flask</div>, label: "Flask" },
-                                                { icon: <div className="text-[#009688] text-3xl font-black">Fast</div>, label: "Fast" },
-                                                { icon: <div className="text-[#1A1D1F] text-2xl font-black border border-gray-200 px-2 rounded">DRF</div>, label: "DRF" },
-                                                { icon: <div className="text-[#3776AB] text-3xl font-black">PY</div>, label: "Python" },
-                                                { icon: <div className="text-[#092E20] text-3xl font-black">DJ</div>, label: "Django" },
-                                                { icon: <div className="text-[#61DAFB] text-3xl font-black">⚛️</div>, label: "React" },
-                                                { icon: <div className="text-[#10A37F] text-3xl font-black">AI</div>, label: "ChatGPT" },
-                                            ].map((tool, idx) => (
+                                            {(Array.isArray(course.tools) && course.tools.length > 0 && typeof course.tools[0] === 'object' ? course.tools : [
+                                                { name: "HTML", image: "" },
+                                                { name: "CSS", image: "" },
+                                                { name: "Javascript", image: "" },
+                                                { name: "Git & Git Hub", image: "" },
+                                                { name: "PyCharm", image: "" },
+                                                { name: "Flask", image: "" },
+                                                { name: "Fast", image: "" },
+                                                { name: "DRF", image: "" },
+                                                { name: "Python", image: "" },
+                                                { name: "Django", image: "" },
+                                                { name: "React", image: "" },
+                                                { name: "ChatGPT", image: "" },
+                                            ]).map((tool: any, idx: number) => (
                                                 <div key={idx} className="bg-[#F8FAFC] border border-gray-100 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 hover:shadow-md hover:border-gray-200 transition-all cursor-default">
                                                     <div className="h-12 flex items-center justify-center">
-                                                        {tool.icon}
+                                                        {tool.image ? (
+                                                            <img src={tool.image} alt={tool.name} className="w-10 h-10 object-contain" />
+                                                        ) : (
+                                                            <div className="text-[#1A1D1F] text-2xl font-black">{tool.name?.substring(0, 3)}</div>
+                                                        )}
                                                     </div>
-                                                    <span className="font-bold text-gray-800 text-sm">{tool.label}</span>
+                                                    <span className="font-bold text-gray-800 text-sm">{tool.name}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -788,7 +792,7 @@ export default function CourseDetails() {
 
                     <div className="rounded-[24px] overflow-hidden border border-gray-100 bg-gray-100 shadow-sm">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px]">
-                            {[
+                            {(Array.isArray(course.benefits) && course.benefits.length > 0 ? course.benefits : [
                                 { icon: "🗓️", title: "৮ মাসের গাইডেড জার্নি", subtitle: "একদম বিগিনার ফ্রেন্ডলি ওয়েতে আপডেটেড কারিকুলাম" },
                                 { icon: "LIVE", title: "৭৩টি লাইভ ক্লাস এবং ৩০৭টি প্রি রেকর্ডড ভিডিও", subtitle: "ইন্ডাস্ট্রি এক্সপার্টদের কাছে শিখুন লাইভে" },
                                 { icon: "PROJECT", title: "২ টি ইন্ডাস্ট্রি স্ট্যান্ডার্ড প্রজেক্ট ও ১২টি কম্প্রিহেন্সিভ প্রজেক্ট", subtitle: "ইন্ডাস্ট্রি স্ট্যান্ডার্ড প্রজেক্ট এড করুন সিভিতে, থাকুন সবার চেয়ে এগিয়ে" },
@@ -798,7 +802,7 @@ export default function CourseDetails() {
                                 { icon: "⏳", title: "লাইফটাইম এক্সেস", subtitle: "প্রিরেকর্ডেড ভিডিও, রিসোর্স এবং ক্লাস রেকর্ডিং এ থাকবে লাইফ টাইম এক্সেস" },
                                 { icon: "🎯", title: "জব মার্কেট গাইডলাইন", subtitle: "ইন্ডাস্ট্রি এক্সপার্টদের কাছে পান জব মার্কেটে প্রবেশ করার পূর্ণাঙ্গ নির্দেশনা" },
                                 { icon: "💼", title: "মার্কেটপ্লেস গাইডলাইন", subtitle: "কোড ক্যানিয়নের মত মার্কেটপ্লেসে কিভাবে প্রজেক্ট সেল করবেন, পাবেন গাইডলাইন" },
-                            ].map((item, i) => (
+                            ]).map((item: any, i: number) => (
                                 <div key={i} className="bg-white p-8 md:p-10 flex flex-col items-center text-center justify-center hover:bg-gray-50 transition-colors">
                                     <div className="text-4xl mb-6 flex items-center justify-center min-h-[50px]">
                                         {item.icon === "LIVE" ? (
@@ -838,7 +842,7 @@ export default function CourseDetails() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[
+                        {(Array.isArray(course.whatYouWillLearn) && course.whatYouWillLearn.length > 0 ? course.whatYouWillLearn : [
                             "প্রোগ্রামিং ল্যাংগুয়েজ হিসেবে শেখানো হবে পাইথন",
                             "ব্যাকএন্ডের জন্য আমরা শিখবো Django, Django Rest Framework, Flask",
                             "ফ্রন্টেন্ডের জন্য শেখানো হবে React",
@@ -846,7 +850,7 @@ export default function CourseDetails() {
                             "Django রেস্ট ফ্রেমওয়ার্ক এর এডভান্স কনসেপ্ট",
                             "Authentication, Permissions, Throttling, Filtering",
                             "Pagination, Automated API testing, Searching and Ordering"
-                        ].map((item, i) => (
+                        ]).map((item: any, i: number) => (
                             <div key={i} className="bg-white border border-gray-100 rounded-[20px] p-6 flex flex-col md:flex-row items-center md:items-start text-center md:text-left gap-4 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-md transition-all hover:border-gray-200">
                                 <div className="mt-1 flex-shrink-0">
                                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -873,12 +877,12 @@ export default function CourseDetails() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {[
+                        {(Array.isArray(course.targetAudience) && course.targetAudience.length > 0 ? course.targetAudience : [
                             "যারা একদম শূন্য থেকে ওয়েব ডেভেলপমেন্ট শিখে ক্যারিয়ার স্টার্ট করতে চান",
                             "ইউনিভার্সিটি কিংবা কলেজের শিক্ষার্থী যিনি ডেভেলপার হতে চান",
                             "যিনি ওয়েব ডেভেলপমেন্ট শেখার বিগিনার স্টেজে আছেন",
                             "যারা প্রজেক্ট করে ওয়েব ডেভেলপমেন্ট শিখতে চাচ্ছেন"
-                        ].map((item, i) => (
+                        ]).map((item: any, i: number) => (
                             <div key={i} className="bg-white border border-gray-100 rounded-xl p-6 flex items-start gap-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow">
                                 <div className="mt-0.5 flex-shrink-0">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -905,7 +909,7 @@ export default function CourseDetails() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                        {[
+                        {(Array.isArray(course.successStories) && course.successStories.length > 0 ? course.successStories.map((s: any) => ({ ...s, initial: s.name.split(" ").map((n: any) => n[0]).join("").substring(0, 2) })) : [
                             { name: "Shahriya Naeem (Batch 1)", role: "Jr. Django Developer, Softvence Agency", initial: "SN" },
                             { name: "Md. Main (Batch 1)", role: "Jr. Python Developer, Softvence Agency", initial: "MM" },
                             { name: "Nasir Uddin (Batch 2)", role: "Python Django developer, Softvence Agency", initial: "NU" },
@@ -924,7 +928,7 @@ export default function CourseDetails() {
                             { name: "Md. Munna", role: "Software Developer (python) at Intelligent Systems and Solutions Limited (ISSL)", initial: "MM" },
                             { name: "MOHIAN UL ISLAM", role: "Intern at Star Computer System Limited", initial: "MU" },
                             { name: "Md. Mominul Islam", role: "Jr. django developer at Softvence", initial: "MM" },
-                        ].map((student, i) => (
+                        ]).map((student: any, i: number) => (
                             <div key={i} className="bg-white border border-gray-100 rounded-xl p-5 flex items-start gap-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow group">
                                 <div className="relative shrink-0">
                                     <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-white shadow-sm font-bold text-gray-500 text-sm">
@@ -966,7 +970,7 @@ export default function CourseDetails() {
 
                     {/* True Masonry-style Grid for Testimonials */}
                     <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-                        {[
+                        {(Array.isArray(course.testimonials) && course.testimonials.length > 0 ? course.testimonials : [
                             {
                                 text: "কোর্স করে অনেক ভালোকিছু আমি শিখতে পেরেছি। ইন্সট্রাক্টর ভাই খুব সুন্দর করে কোর্স করিয়েছেন। এবং আমার যে কোন প্রবলেমে আমি সাপোর্ট ক্লাসে জয়েন করে সাপোর্ট নিতে পেরেছি। ধন্যবাদ ওস্তাদ টিমকে। আমি খুবই খুশি কোর্স করে। আমি কোর্স রেটিং ১০ এ ৮ দিবো।",
                                 name: "Ashutosh Roy"
@@ -1011,7 +1015,7 @@ export default function CourseDetails() {
                                 text: "আমি মোহাম্মদ আনিস। ওস্তাদের Python Django কোর্সের ব্যাচ ২ এ আছি। কোর্সটি করে আমি খুব স্যাটিসফাইড। ক্লাসগুলোতে খুব ভালো পড়ানোর ফলে অনেক ইজিলি সব বিষয় সম্পর্কে বুঝতে পারি এবং প্রজেক্ট ক্লাসগুলাও বেশ হেল্পফুল। আমি আগেও ওস্তাদের অন্য কোর্স করেছি খুবই ভাল সার্ভিস উনাদের।",
                                 name: "Mohammad Anis"
                             }
-                        ].map((review, i) => (
+                        ]).map((review: any, i: number) => (
                             <div key={i} className="break-inside-avoid bg-white border border-gray-100 rounded-xl p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col mb-6 hover:shadow-md transition-shadow">
                                 <p className="text-[#334155] text-[14px] leading-relaxed font-medium mb-6">
                                     {review.text}
@@ -1019,7 +1023,7 @@ export default function CourseDetails() {
                                 <div className="border-t border-gray-100 pt-4 flex items-center justify-between mt-auto">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-[#1A1D1F] text-white flex items-center justify-center text-xs font-bold uppercase shrink-0">
-                                            {review.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                                            {review.name.split(' ').map((n: any) => n[0]).join('').substring(0, 2)}
                                         </div>
                                         <h4 className="font-extrabold text-[#1A1D1F] text-[15px]">
                                             {review.name}
@@ -1202,7 +1206,7 @@ export default function CourseDetails() {
                         </div>
 
                         <div className="space-y-4">
-                            {[
+                            {(Array.isArray(course.faqs) && course.faqs.length > 0 ? course.faqs.map((f: any) => ({ q: f.question, a: f.answer })) : [
                                 { q: "1. আমি কি ভিডিওগুলো ডাউনলোড করতে পারবো?", a: "না, ভিডিওগুলো ডাউনলোড করার কোনো অপশন নেই। তবে আপনি আমাদের প্ল্যাটফর্ম থেকে যেকোনো সময় ভিডিওগুলো দেখতে পারবেন।" },
                                 { q: "2. আমি কি মোবাইল দিয়ে জয়েন করতে পারবো?", a: "হ্যাঁ, আপনি মোবাইল, ল্যাপটপ বা ডেস্কটপ যেকোনো ডিভাইস থেকে কোর্সে জয়েন করতে পারবেন।" },
                                 { q: "3. আমার কি ভিডিওগুলোর লাইফটাইম এক্সেস থাকবে?", a: "হ্যাঁ, কোর্স সম্পন্ন করার পর আপনি কোর্সের সমস্ত ভিডিওর লাইফটাইম এক্সেস পাবেন।" },
@@ -1212,7 +1216,7 @@ export default function CourseDetails() {
                                 { q: "7. দেশের বাইরে থেকে কিভাবে পেমেন্ট করবো?", a: "দেশের বাইরে থেকে পেমেন্ট করার জন্য আপনি ডেবিট/ক্রেডিট কার্ড অথবা পেপ্যাল ব্যবহার করতে পারেন।" },
                                 { q: "8. লাইভ ক্লাসের রেকর্ডিং থাকবে?", a: "হ্যাঁ, প্রতিটি লাইভ ক্লাসের রেকর্ডিং ক্লাসের পর প্ল্যাটফর্মে আপলোড করা হবে।" },
                                 { q: "9. প্র্যাকটিস করতে গিয়ে সমস্যায় পড়লে সাপোর্ট পাবো কোথায়?", a: "আমাদের ডেডিকেটেড সাপোর্ট গ্রুপ এবং লাইভ সাপোর্ট ক্লাস রয়েছে যেখানে আপনি আপনার যেকোনো সমস্যার সমাধান পাবেন।" }
-                            ].map((faq, index) => (
+                            ]).map((faq: any, index: number) => (
                                 <details key={index} className="group border border-gray-100 bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&_summary::-webkit-details-marker]:hidden">
                                     <summary className="flex cursor-pointer items-center justify-between gap-1.5 rounded-xl p-5 md:p-6 text-[#1A1D1F] font-bold md:text-[17px] focus:outline-none">
                                         {faq.q}
