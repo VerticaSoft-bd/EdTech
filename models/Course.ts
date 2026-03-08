@@ -1,5 +1,7 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
-import slugify from 'slugify';
+import _slugify from 'slugify';
+const slugify = typeof _slugify === 'function' ? _slugify : (_slugify as any).default;
+
 
 export interface ITopic {
     title: string;
@@ -231,12 +233,12 @@ const CourseSchema: Schema<ICourse> = new Schema({
     }
 }, { timestamps: true });
 
-CourseSchema.pre<ICourse>('save', function (next: any) {
+CourseSchema.pre('save', async function (this: ICourse) {
     if (this.isModified('title')) {
         this.slug = slugify(this.title, { lower: true, strict: true }) + '-' + Math.floor(Math.random() * 1000);
     }
-    next();
 });
+
 
 const Course: Model<ICourse> = mongoose.models.Course || mongoose.model<ICourse>('Course', CourseSchema);
 
