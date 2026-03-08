@@ -19,8 +19,18 @@ interface DashboardStats {
 export default function AdminDashboard() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState<{ role: string } | null>(null);
 
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (e) {
+                console.error("Error parsing user");
+            }
+        }
+
         const fetchStats = async () => {
             try {
                 const res = await fetch('/api/admin/stats');
@@ -47,18 +57,23 @@ export default function AdminDashboard() {
         return change.startsWith('+') && change !== '+0%';
     };
 
+    const role = user?.role || 'admin';
+    const isStaff = role === 'staff';
+
     return (
         <div className="space-y-6">
             {/* Top Row: Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                    title="Total Revenue"
-                    value={isLoading ? '—' : formatCurrency(stats?.totalRevenue || 0)}
-                    change={isLoading ? '...' : stats?.revenueChange || '0%'}
-                    isPositive={isPositiveChange(stats?.revenueChange || '0%')}
-                    color="bg-[#6C5DD3]"
-                    icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>}
-                />
+            <div className={`grid grid-cols-1 md:grid-cols-2 ${isStaff ? 'lg:grid-cols-2' : 'lg:grid-cols-4'} gap-6`}>
+                {!isStaff && (
+                    <StatCard
+                        title="Total Revenue"
+                        value={isLoading ? '—' : formatCurrency(stats?.totalRevenue || 0)}
+                        change={isLoading ? '...' : stats?.revenueChange || '0%'}
+                        isPositive={isPositiveChange(stats?.revenueChange || '0%')}
+                        color="bg-[#6C5DD3]"
+                        icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>}
+                    />
+                )}
                 <StatCard
                     title="Active Students"
                     value={isLoading ? '—' : (stats?.totalStudents || 0).toLocaleString()}
@@ -75,27 +90,33 @@ export default function AdminDashboard() {
                     color="bg-[#FFAB7B]"
                     icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>}
                 />
-                <StatCard
-                    title="Pending Payments"
-                    value={isLoading ? '—' : (stats?.pendingPayments || 0).toLocaleString()}
-                    change="Needs attention"
-                    isPositive={false}
-                    color="bg-[#FF4C4C]"
-                    icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>}
-                />
+                {!isStaff && (
+                    <StatCard
+                        title="Pending Payments"
+                        value={isLoading ? '—' : (stats?.pendingPayments || 0).toLocaleString()}
+                        change="Needs attention"
+                        isPositive={false}
+                        color="bg-[#FF4C4C]"
+                        icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>}
+                    />
+                )}
             </div>
 
             {/* Middle Row: Revenue Chart & Recent Enrollments */}
             <div className="grid grid-cols-12 gap-6">
-                <RevenueChart />
-                <RecentAdmissions />
+                {!isStaff && <RevenueChart />}
+                <div className={`${isStaff ? 'col-span-12' : 'col-span-12 lg:col-span-4'}`}>
+                    <RecentAdmissions />
+                </div>
             </div>
 
             {/* Bottom Row: Quick Actions & Critical Alerts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <QuickActions />
-                <CriticalAlerts />
-            </div>
+            {!isStaff && (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <QuickActions />
+                    <CriticalAlerts />
+                </div>
+            )}
         </div>
     );
 }

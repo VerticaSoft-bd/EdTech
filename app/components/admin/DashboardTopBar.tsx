@@ -20,13 +20,33 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
 
 const DashboardTopBar: React.FC = () => {
     const pathname = usePathname();
+    const [user, setUser] = React.useState<{ name: string; role: string } | null>(null);
+
+    React.useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (e) {
+                console.error("Error parsing user");
+            }
+        }
+    }, []);
+
+    const userDisplayName = user?.name || 'User';
+    const userRole = user?.role || 'Admin';
 
     // Find exact match first, then try prefix match for dynamic routes
     const pageInfo = pageTitles[pathname || ''] ||
         Object.entries(pageTitles)
             .filter(([key]) => key !== '/dashboard' && pathname?.startsWith(key))
             .sort((a, b) => b[0].length - a[0].length)[0]?.[1] ||
-        { title: 'Dashboard', subtitle: 'Welcome back, Admin' };
+        { title: 'Dashboard', subtitle: `Welcome back, ${userDisplayName}` };
+
+    // Override the dashboard subtitle to be personalized
+    if (pathname === '/dashboard') {
+        pageInfo.subtitle = `Welcome back, ${userDisplayName} (${userRole})`;
+    }
 
     return (
         <div className="flex items-center justify-between mb-8">
