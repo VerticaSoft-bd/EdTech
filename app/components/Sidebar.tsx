@@ -169,10 +169,10 @@ const Sidebar: React.FC = () => {
             {/* Profile Info */}
             <div className="p-4 border-t border-gray-100">
                 <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
-                    <img src={`https://i.pravatar.cc/150?u=${user?.email || 'admin'}`} className="w-10 h-10 rounded-full bg-gray-200" alt="Admin" />
+                    <img src={`https://i.pravatar.cc/150?u=${(user as any)?.email || 'admin'}`} className="w-10 h-10 rounded-full bg-gray-200" alt="Admin" />
                     <div>
-                        <h4 className="text-sm font-bold text-[#1A1D1F]">{user?.name || 'Admin User'}</h4>
-                        <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">{user?.role || 'Super Admin'}</p>
+                        <h4 className="text-sm font-bold text-[#1A1D1F]">{(user as any)?.name || 'Admin User'}</h4>
+                        <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">{(user as any)?.role || 'Super Admin'}</p>
                     </div>
                 </div>
             </div>

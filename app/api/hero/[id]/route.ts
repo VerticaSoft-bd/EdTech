@@ -4,11 +4,12 @@ import HeroSlide from '@/models/HeroSlide';
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         await connectToDatabase();
-        const slide = await HeroSlide.findById(params.id);
+        const slide = await HeroSlide.findById(id);
         if (!slide) {
             return NextResponse.json({ success: false, message: 'Slide not found' }, { status: 404 });
         }
@@ -21,12 +22,13 @@ export async function GET(
 
 export async function PATCH(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const body = await request.json();
         await connectToDatabase();
-        const updatedSlide = await HeroSlide.findByIdAndUpdate(params.id, body, { new: true });
+        const updatedSlide = await HeroSlide.findByIdAndUpdate(id, body, { new: true });
         if (!updatedSlide) {
             return NextResponse.json({ success: false, message: 'Slide not found' }, { status: 404 });
         }
@@ -39,11 +41,12 @@ export async function PATCH(
 
 export async function DELETE(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         await connectToDatabase();
-        const deletedSlide = await HeroSlide.findByIdAndDelete(params.id);
+        const deletedSlide = await HeroSlide.findByIdAndDelete(id);
         if (!deletedSlide) {
             return NextResponse.json({ success: false, message: 'Slide not found' }, { status: 404 });
         }
