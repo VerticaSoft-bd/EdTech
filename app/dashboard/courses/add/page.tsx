@@ -271,7 +271,10 @@ export default function AddCoursePage() {
             const payload = {
                 ...courseData,
                 thumbnail: thumbnailUrl,
-                studentProjects: uploadedProjectUrls,
+                studentProjects: Array.from(new Set([
+                    ...uploadedProjectUrls,
+                    ...courseData.studentProjects.filter(url => typeof url === 'string' && url.trim() !== '')
+                ])),
                 tools: uploadedTools,
                 whatYouWillLearn: uploadedLearnItems,
                 benefits: uploadedBenefits,

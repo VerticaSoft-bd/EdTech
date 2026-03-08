@@ -7,6 +7,7 @@ const Sidebar: React.FC = () => {
     const pathname = usePathname();
     const [isUsersOpen, setIsUsersOpen] = useState(false);
     const [user, setUser] = useState<{ role: string; name: string } | null>(null);
+    const [siteSettings, setSiteSettings] = useState<any>(null);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -26,6 +27,12 @@ const Sidebar: React.FC = () => {
 
         window.addEventListener('auth-change', handleAuthChange);
         return () => window.removeEventListener('auth-change', handleAuthChange);
+    }, []);
+
+    useEffect(() => {
+        fetch('/api/settings').then(r => r.json()).then(d => {
+            if (d.success) setSiteSettings(d.data);
+        }).catch(() => { });
     }, []);
 
     // Auto-expand the Users accordion if we are currently on any users subpage
@@ -57,10 +64,13 @@ const Sidebar: React.FC = () => {
         <aside className="fixed left-0 top-0 h-screen w-[280px] bg-white border-r border-gray-100 flex flex-col z-50">
             {/* Logo area */}
             <div className="h-[80px] flex items-center px-8 border-b border-gray-50">
-                <div className="w-8 h-8 bg-[#6C5DD3] rounded-lg flex items-center justify-center transform -rotate-12 mr-3">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
-                </div>
-                <span className="text-xl font-bold tracking-tight text-[#1A1D1F]">Streva Admin</span>
+                {siteSettings?.logo ? (
+                    <img src={siteSettings.logo} alt={siteSettings.siteName || 'Logo'} className="h-10 object-contain" />
+                ) : (
+                    <div className="w-8 h-8 bg-[#6C5DD3] rounded-lg flex items-center justify-center transform -rotate-12">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                    </div>
+                )}
             </div>
 
             {/* Navigation */}
@@ -158,7 +168,7 @@ const Sidebar: React.FC = () => {
                             <span className="text-sm font-bold">Home Settings</span>
                         </Link>
 
-                        <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
+                        <Link href="/dashboard/settings" className={getLinkClasses('/dashboard/settings')}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.74v-.86a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             <span className="text-sm font-bold">Settings</span>
                         </Link>

@@ -76,6 +76,9 @@ export async function PATCH(
 
         // Update fields
         Object.keys(body).forEach((key) => {
+            if (['id', '_id', '__v', 'createdAt', 'updatedAt'].includes(key)) {
+                return; // Prevent updating immutable or internal fields
+            }
             (course as any)[key] = body[key];
         });
 

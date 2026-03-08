@@ -309,14 +309,19 @@ export default function EditCoursePage() {
             const payload = {
                 ...courseData,
                 thumbnail: thumbnailUrl,
-                studentProjects: uploadedProjectUrls,
+                studentProjects: Array.from(new Set([
+                    ...uploadedProjectUrls,
+                    ...courseData.studentProjects.filter(url => typeof url === 'string' && url.trim() !== '')
+                ])),
                 tools: uploadedTools,
                 whatYouWillLearn: uploadedLearnItems,
                 benefits: uploadedBenefits,
                 instructorBannerUrl: uploadedInstructorBannerUrl,
                 aiBannerUrl: uploadedAiBannerUrl,
                 aiLearningBannerUrl: uploadedAiLearningBannerUrl,
-                assignedTeachers: courseData.assignedTeachers.filter(id => id.trim() !== ""),
+                assignedTeachers: courseData.assignedTeachers
+                    .map((t: any) => typeof t === 'string' ? t : t._id)
+                    .filter((id: string) => id && typeof id === 'string' && id.trim() !== ""),
                 status
             };
 
