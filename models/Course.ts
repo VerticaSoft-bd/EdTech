@@ -233,11 +233,23 @@ const CourseSchema: Schema<ICourse> = new Schema({
     }
 }, { timestamps: true });
 
-CourseSchema.pre('save', async function (this: ICourse) {
+CourseSchema.pre<ICourse>('save', async function () {
     if (this.isModified('title')) {
-        this.slug = slugify(this.title, { lower: true, strict: true }) + '-' + Math.floor(Math.random() * 1000);
+        try {
+            const _slugify = require('slugify');
+            const slugFunc = typeof _slugify === 'function' ? _slugify : _slugify.default;
+
+            if (typeof slugFunc === 'function') {
+                this.slug = slugFunc(this.title, { lower: true, strict: true }) + '-' + Math.floor(Math.random() * 1000);
+            }
+        } catch (err) {
+            console.error("Slug generation failed:", err);
+        }
     }
 });
+
+
+
 
 
 const Course: Model<ICourse> = mongoose.models.Course || mongoose.model<ICourse>('Course', CourseSchema);
