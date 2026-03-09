@@ -42,19 +42,97 @@ export default function EditCoursePage() {
                 const res = await fetch(`/api/courses/${id}`);
                 const data = await res.json();
                 if (data.success && data.data) {
-                    setCourseData(data.data);
+                    const raw = data.data;
+
+                    // Helper to strip MongoDB _id from sub-document arrays
+                    const cleanSubDocs = (arr: any[]) => arr?.map(({ _id, ...rest }: any) => rest) || [];
+
+                    // Normalize assignedTeachers: extract string IDs from populated objects
+                    const normalizedTeachers = (raw.assignedTeachers || []).map((t: any) =>
+                        typeof t === 'string' ? t : (t?._id || '')
+                    ).filter((id: string) => id !== '');
+
+                    // Build clean courseData, stripping all Mongoose internal fields
+                    const cleanData = {
+                        title: raw.title || '',
+                        subtitle: raw.subtitle || '',
+                        category: raw.category || 'Design',
+                        level: raw.level || 'Beginner',
+                        courseMode: raw.courseMode || 'Offline Class',
+                        duration: raw.duration || '',
+                        batches: cleanSubDocs(raw.batches),
+                        totalStudents: raw.totalStudents || 0,
+                        totalLectures: raw.totalLectures || 0,
+                        totalProjects: raw.totalProjects || 0,
+                        fullDetails: raw.fullDetails || '',
+                        targetAudience: raw.targetAudience || [],
+                        keyDeliverables: raw.keyDeliverables || [],
+                        modules: (raw.modules || []).map(({ _id, title, topics }: any) => ({
+                            title: title || '',
+                            topics: (topics || []).map(({ _id: _tid, title: tTitle }: any) => ({ title: tTitle || '' }))
+                        })),
+                        thumbnail: raw.thumbnail || '',
+                        introVideo: raw.introVideo || '',
+                        studentProjects: raw.studentProjects || [],
+                        regularFee: raw.regularFee || 0,
+                        discountPercentage: raw.discountPercentage || 0,
+                        admissionUrl: raw.admissionUrl || '',
+                        seminarUrl: raw.seminarUrl || '',
+                        isFree: raw.isFree || false,
+                        assignedTeachers: normalizedTeachers,
+                        careerOpportunities: cleanSubDocs(raw.careerOpportunities),
+                        uniqueFeatures: cleanSubDocs(raw.uniqueFeatures),
+                        totalPreRecordedVideos: raw.totalPreRecordedVideos || 0,
+                        enrollmentDeadline: raw.enrollmentDeadline || '',
+                        totalSeats: raw.totalSeats || 0,
+                        batchNumber: raw.batchNumber || '',
+                        benefits: cleanSubDocs(raw.benefits),
+                        whatYouWillLearn: cleanSubDocs(raw.whatYouWillLearn),
+                        successStories: cleanSubDocs(raw.successStories),
+                        testimonials: cleanSubDocs(raw.testimonials),
+                        faqs: cleanSubDocs(raw.faqs),
+                        tools: (raw.tools || []).map(({ _id, name, image }: any) => ({ name: name || '', image: image || '' })),
+                        demoClass: {
+                            date: raw.demoClass?.date || '',
+                            time: raw.demoClass?.time || '',
+                            platform: raw.demoClass?.platform || '',
+                            videoUrls: raw.demoClass?.videoUrls || []
+                        },
+                        instructorBannerUrl: raw.instructorBannerUrl || '',
+                        aiBannerUrl: raw.aiBannerUrl || '',
+                        aiLearningBannerUrl: raw.aiLearningBannerUrl || '',
+                        aiLearningBadge: raw.aiLearningBadge || 'AI-Powered Learning',
+                        aiLearningTitle1: raw.aiLearningTitle1 || 'এই কোর্সে',
+                        aiLearningHighlight: raw.aiLearningHighlight || 'AI ব্যবহার করে',
+                        aiLearningTitle2: raw.aiLearningTitle2 || 'শিখবেন কীভাবে কাজ করতে হয়',
+                        aiLearningDetails: raw.aiLearningDetails || '',
+                        aiLearningImageBadge1: raw.aiLearningImageBadge1 || 'AI',
+                        aiLearningImageBadge2: raw.aiLearningImageBadge2 || 'Driven',
+                        showAiLearningBanner: raw.showAiLearningBanner !== false,
+                        aiJobReadyBadge: raw.aiJobReadyBadge || 'ক্যারিয়ার রেডি',
+                        aiJobReadyTitle1: raw.aiJobReadyTitle1 || 'কোর্স শেষে আপনি',
+                        aiJobReadyHighlight: raw.aiJobReadyHighlight || 'চাকরির জন্য প্রস্তুত',
+                        aiJobReadyTitle2: raw.aiJobReadyTitle2 || 'হয়ে যাবেন',
+                        aiJobReadyDetails: raw.aiJobReadyDetails || '',
+                        aiJobReadyImageBadge: raw.aiJobReadyImageBadge || 'Job Ready',
+                        showAiJobReadyBanner: raw.showAiJobReadyBanner !== false,
+                        status: raw.status || 'Draft'
+                    };
+
+                    setCourseData(cleanData as any);
+
                     // Initialize file arrays for existing data
-                    if (data.data.studentProjects) {
-                        setStudentProjectFiles(data.data.studentProjects);
+                    if (raw.studentProjects) {
+                        setStudentProjectFiles(raw.studentProjects);
                     }
-                    if (data.data.tools) {
-                        setToolImageFiles(new Array(data.data.tools.length).fill(null));
+                    if (raw.tools) {
+                        setToolImageFiles(new Array(raw.tools.length).fill(null));
                     }
-                    if (data.data.whatYouWillLearn) {
-                        setLearnItemIconFiles(new Array(data.data.whatYouWillLearn.length).fill(null));
+                    if (raw.whatYouWillLearn) {
+                        setLearnItemIconFiles(new Array(raw.whatYouWillLearn.length).fill(null));
                     }
-                    if (data.data.benefits) {
-                        setBenefitIconFiles(new Array(data.data.benefits.length).fill(null));
+                    if (raw.benefits) {
+                        setBenefitIconFiles(new Array(raw.benefits.length).fill(null));
                     }
                 } else {
                     setError(data.message || 'Failed to fetch course data');
@@ -306,7 +384,7 @@ export default function EditCoursePage() {
                 }
             }
 
-            const payload = {
+            const payload: any = {
                 ...courseData,
                 thumbnail: thumbnailUrl,
                 studentProjects: Array.from(new Set([
@@ -324,6 +402,13 @@ export default function EditCoursePage() {
                     .filter((id: string) => id && typeof id === 'string' && id.trim() !== ""),
                 status
             };
+
+            // Safety: remove any stray internal fields
+            delete payload._id;
+            delete payload.__v;
+            delete payload.slug;
+            delete payload.createdAt;
+            delete payload.updatedAt;
 
             const res = await fetch(`/api/courses/${id}`, {
                 method: 'PATCH',

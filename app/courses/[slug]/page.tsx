@@ -6,6 +6,14 @@ import Footer from "@/app/components/Footer";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import EnrollmentModal from "../components/EnrollmentModal";
+import {
+    ChevronRight, ChevronDown, Check, Play, Video, FolderOpen, CalendarDays,
+    Clapperboard, Briefcase, FolderArchive, Loader2, BookOpen, FileText,
+    Minus, Plus, CircleCheckBig, ArrowRight, Clock, MapPin, Phone, Mail,
+    User, GraduationCap, Star, Trophy, Sparkles, Zap, Brain, Search,
+    BarChart3, Bot, BadgeCheck, MonitorSmartphone, Cpu, Wifi, CheckCircle2,
+    MessageSquareQuote, Info
+} from "lucide-react";
 
 interface IModule {
     _id: string;
@@ -94,7 +102,7 @@ export default function CourseDetails() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-[#6C5DD3] border-t-transparent rounded-full animate-spin"></div>
+                    <Loader2 className="w-12 h-12 text-[#6C5DD3] animate-spin" />
                     <p className="text-[#1A1D1F] font-bold">Loading Course Details...</p>
                 </div>
             </div>
@@ -146,7 +154,7 @@ export default function CourseDetails() {
                                     }`}
                             >
                                 {isEnrolled ? "ভর্তি সম্পন্ন" : "ব্যাচে ভর্তি হোন"}
-                                {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
+                                {!isEnrolled && <ChevronRight className="w-5 h-5" strokeWidth={3} />}
                             </button>
 
                             <div className="flex items-center gap-3">
@@ -159,7 +167,7 @@ export default function CourseDetails() {
                                     </span>
                                 )}
                                 <span className="flex items-center gap-1 text-[#10B981] text-sm font-bold">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <Check className="w-3.5 h-3.5" strokeWidth={3} />
                                     প্রোমো অ্যাপ্লাইড
                                 </span>
                                 <span className="px-3 py-1 bg-[#D1FAE5] text-[#10B981] text-[10px] font-extrabold uppercase rounded-md tracking-wider">
@@ -186,11 +194,11 @@ export default function CourseDetails() {
                         {/* Benefits Cards */}
                         <div className="flex flex-wrap gap-4">
                             <div className="flex items-center gap-2 px-6 py-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl text-[#059669] text-sm font-bold">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                <Briefcase className="w-[18px] h-[18px]" strokeWidth={2.5} />
                                 জব প্লেসমেন্ট সাপোর্ট
                             </div>
                             <div className="flex items-center gap-2 px-6 py-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl text-[#059669] text-sm font-bold">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                <FolderArchive className="w-[18px] h-[18px]" strokeWidth={2.5} />
                                 ক্লাস রেকর্ডিং ও লাইফটাইম এক্সেস
                             </div>
                         </div>
@@ -210,7 +218,7 @@ export default function CourseDetails() {
                             <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent">
                                 <div className="flex items-center gap-2 text-white font-bold">
                                     <div className="bg-[#EF4444] p-1.5 rounded-lg">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                        <Play className="w-5 h-5 text-white fill-white" />
                                     </div>
                                     ক্লিক করে দেখে নিন কোর্সের ডেমো ক্লাস
                                 </div>
@@ -219,8 +227,8 @@ export default function CourseDetails() {
                             {/* Center Play Button Overlay */}
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-4 border-white animate-pulse">
-                                    <div className="w-16 h-16 bg-[#FEE2E2] rounded-full flex items-center justify-center ml-1">
-                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="#EF4444" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    <div className="w-16 h-16 bg-[#FEE2E2] rounded-full flex items-center justify-center pl-1">
+                                        <Play className="w-8 h-8 text-[#EF4444] fill-[#EF4444]" />
                                     </div>
                                 </div>
                             </div>
@@ -323,7 +331,7 @@ export default function CourseDetails() {
                                         }`}
                                 >
                                     {isEnrolled ? "ভর্তি সম্পন্ন" : "কোর্সে ভর্তি হোন"}
-                                    {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
+                                    {!isEnrolled && <ChevronRight className="w-5 h-5" strokeWidth={3} />}
                                 </button>
                             </div>
 
@@ -349,6 +357,31 @@ export default function CourseDetails() {
                     </div>
                 )}
 
+                {/* Detailed Description Section */}
+                {course.fullDetails && (
+                    <section className="mb-16">
+                        <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
+                            <div className="p-8 md:p-12">
+                                <div className="flex items-center gap-3 mb-8">
+                                    <div className="w-10 h-10 rounded-xl bg-[#6C5DD3]/10 flex items-center justify-center">
+                                        <Info className="w-5 h-5 text-[#6C5DD3]" />
+                                    </div>
+                                    <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1D1F]">কোর্স বিস্তারিত</h2>
+                                </div>
+                                <div className="prose prose-lg max-w-none">
+                                    {course.fullDetails.split('\n').map((paragraph: string, idx: number) => (
+                                        paragraph.trim() ? (
+                                            <p key={idx} className="text-gray-600 text-[16px] leading-[1.9] font-medium mb-4 last:mb-0">
+                                                {paragraph}
+                                            </p>
+                                        ) : <br key={idx} />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
                 {/* Tabs and Secondary Content */}
                 <div className="space-y-16">
                     {/* Tabs Navigation */}
@@ -366,7 +399,15 @@ export default function CourseDetails() {
                             ].map(tab => (
                                 <button
                                     key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setActiveTab(tab.id);
+                                        const element = document.getElementById(tab.id);
+                                        if (element) {
+                                            const y = element.getBoundingClientRect().top + window.scrollY - 100;
+                                            window.scrollTo({ top: y, behavior: 'smooth' });
+                                        }
+                                    }}
                                     className={`px-4 py-6 font-bold text-[15px] whitespace-nowrap transition-all relative ${activeTab === tab.id ? 'text-[#1A1D1F]' : 'text-gray-500 hover:text-gray-900'}`}
                                 >
                                     {tab.label}
@@ -408,8 +449,8 @@ export default function CourseDetails() {
                                         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors"></div>
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <div className="w-14 h-14 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/50 group-hover:bg-white/40 transition-all">
-                                                <div className="w-10 h-10 bg-[#FBBF24] rounded-full flex items-center justify-center ml-0.5 shadow-lg shadow-yellow-500/20">
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                                <div className="w-10 h-10 bg-[#FBBF24] rounded-full flex items-center justify-center pl-0.5 shadow-lg shadow-yellow-500/20">
+                                                    <Play className="w-5 h-5 text-white fill-white" />
                                                 </div>
                                             </div>
                                         </div>
@@ -436,13 +477,13 @@ export default function CourseDetails() {
                                 </h3>
                                 <div className="flex flex-wrap items-center gap-4">
                                     <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-extrabold text-[#1A1D1F]">
-                                        <span className="text-[#EF4444]">📅</span> {course.demoClass?.date || '৬ই মার্চ'}
+                                        <CalendarDays className="w-4 h-4 text-[#EF4444]" /> {course.demoClass?.date || '৬ই মার্চ'}
                                     </div>
                                     <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-extrabold text-[#1A1D1F]">
-                                        <span className="text-[#EF4444]">🕒</span> {course.demoClass?.time || 'রাত ১০:৩০টা'}
+                                        <Clock className="w-4 h-4 text-[#EF4444]" /> {course.demoClass?.time || 'রাত ১০:৩০টা'}
                                     </div>
                                     <div className="flex items-center gap-2 bg-white rounded-full px-5 py-2.5 text-sm font-extrabold text-[#1A1D1F]">
-                                        <span className="text-[#EF4444]">📍</span> {course.demoClass?.platform || 'zoom'}
+                                        <MapPin className="w-4 h-4 text-[#EF4444]" /> {course.demoClass?.platform || 'zoom'}
                                     </div>
                                 </div>
                             </div>
@@ -488,7 +529,7 @@ export default function CourseDetails() {
 
                                 <button className="w-full py-5 bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 font-black text-lg rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-yellow-200">
                                     লাইভ ডেমো ক্লাস বুক করুন
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    <Check className="w-6 h-6" strokeWidth={4} />
                                 </button>
                             </div>
                         </div>
@@ -497,7 +538,7 @@ export default function CourseDetails() {
                     {/* Content Section (Tabs Content) */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                         {/* Left Content */}
-                        <div className="lg:col-span-2 space-y-12">
+                        <div id="curriculum" className="lg:col-span-2 space-y-12">
                             {activeTab === 'curriculum' ? (
                                 <div className="bg-white p-6 md:p-10 rounded-[32px] border border-gray-100 shadow-sm min-h-[400px] animate-fade-in font-sans">
                                     {/* Section Header */}
@@ -519,9 +560,7 @@ export default function CourseDetails() {
                                                     >
                                                         <div className="flex items-center gap-4">
                                                             <div className={`w-6 h-6 rounded-full flex items-center justify-center border ${isOpen ? 'border-[#6C5DD3] text-[#6C5DD3]' : 'border-gray-300 text-gray-400'}`}>
-                                                                <span className="text-xl leading-none font-medium mb-0.5">
-                                                                    {isOpen ? '−' : '+'}
-                                                                </span>
+                                                                {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                                                             </div>
                                                             <span className={`font-bold text-[16px] ${isOpen ? 'text-[#6C5DD3]' : 'text-gray-800'}`}>{module.title}</span>
                                                         </div>
@@ -534,9 +573,7 @@ export default function CourseDetails() {
                                                             {module.topics.map((topic: any, tIdx: number) => (
                                                                 <div key={topic._id} className="flex items-center justify-between py-4 px-5 md:pl-[4.5rem] md:pr-8 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors group">
                                                                     <div className="flex items-center gap-4">
-                                                                        <svg className="w-5 h-5 text-gray-400 group-hover:text-[#6C5DD3] transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                                        </svg>
+                                                                        <FileText className="w-5 h-5 text-gray-400 group-hover:text-[#6C5DD3] transition-colors shrink-0" />
                                                                         <div className="flex items-center gap-3">
                                                                             <span className="text-gray-700 font-medium text-[15px] group-hover:text-[#6C5DD3] transition-colors line-clamp-1">{topic.title}</span>
                                                                             {tIdx === 0 && mIdx === 0 && (
@@ -545,10 +582,7 @@ export default function CourseDetails() {
                                                                         </div>
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
-                                                                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                        </svg>
+                                                                        <Video className="w-4 h-4 text-gray-400" />
                                                                         <span className="text-xs text-gray-500 font-medium shrink-0">10:00</span>
                                                                     </div>
                                                                 </div>
@@ -611,19 +645,19 @@ export default function CourseDetails() {
                                 <ul className="space-y-4 mb-8">
                                     <li className="flex items-center gap-3 text-gray-300">
                                         <div className="w-5 h-5 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center shrink-0">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <Check className="w-3 h-3" strokeWidth={3} />
                                         </div>
                                         লাইফটাইম এক্সেস
                                     </li>
                                     <li className="flex items-center gap-3 text-gray-300">
                                         <div className="w-5 h-5 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center shrink-0">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <Check className="w-3 h-3" strokeWidth={3} />
                                         </div>
                                         সার্টিফিকেশন প্রজেক্টসমূহ
                                     </li>
                                     <li className="flex items-center gap-3 text-gray-300">
                                         <div className="w-5 h-5 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center shrink-0">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <Check className="w-3 h-3" strokeWidth={3} />
                                         </div>
                                         ২৪/৭ মেন্টর সাপোর্ট
                                     </li>
@@ -671,7 +705,7 @@ export default function CourseDetails() {
                                 <div key={idx} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col">
                                     <div className="flex justify-between items-start mb-4">
                                         <div className="inline-flex items-center gap-1.5 px-3 py-1 border border-dashed border-[#A855F7] text-[#A855F7] text-[10px] font-bold rounded uppercase tracking-wide">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                            <CheckCircle2 className="w-3 h-3 text-[#10B981]" strokeWidth={3} />
                                             LEAD INSTRUCTOR
                                         </div>
                                         <img
@@ -694,86 +728,90 @@ export default function CourseDetails() {
                 </section>
 
                 {/* Bottom AI Section */}
-                {course.showAiJobReadyBanner !== false && (
-                    <div className="relative overflow-hidden rounded-[40px] mt-16 bg-[#050D1F]">
-                        {/* Glowing orbs */}
-                        <div className="absolute -top-32 -right-32 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] pointer-events-none"></div>
-                        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+                {
+                    course.showAiJobReadyBanner !== false && (
+                        <div className="relative overflow-hidden rounded-[40px] mt-16 bg-[#050D1F]">
+                            {/* Glowing orbs */}
+                            <div className="absolute -top-32 -right-32 w-96 h-96 bg-purple-500/20 rounded-full blur-[120px] pointer-events-none"></div>
+                            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
 
-                        <div className="relative z-10 flex flex-col lg:flex-row-reverse items-center gap-0">
-                            {/* Right (visually left on lg): Text Content */}
-                            <div className="flex-1 p-10 md:p-14 space-y-7">
-                                <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-purple-300 text-[13px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
-                                    <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
-                                    {course.aiJobReadyBadge || 'ক্যারিয়ার রেডি'}
-                                </span>
+                            <div className="relative z-10 flex flex-col lg:flex-row-reverse items-center gap-0">
+                                {/* Right (visually left on lg): Text Content */}
+                                <div className="flex-1 p-10 md:p-14 space-y-7">
+                                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-purple-300 text-[13px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
+                                        <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
+                                        {course.aiJobReadyBadge || 'ক্যারিয়ার রেডি'}
+                                    </span>
 
-                                <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
-                                    {course.aiJobReadyTitle1 || 'কোর্স শেষে আপনি'} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{course.aiJobReadyHighlight || 'চাকরির জন্য প্রস্তুত'}</span> {course.aiJobReadyTitle2 || 'হয়ে যাবেন'}
-                                </h2>
+                                    <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
+                                        {course.aiJobReadyTitle1 || 'কোর্স শেষে আপনি'} <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{course.aiJobReadyHighlight || 'চাকরির জন্য প্রস্তুত'}</span> {course.aiJobReadyTitle2 || 'হয়ে যাবেন'}
+                                    </h2>
 
-                                <p className="text-gray-400 text-[16px] leading-relaxed font-medium max-w-[520px]">
-                                    {course.aiJobReadyDetails || 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।'}
-                                </p>
+                                    <p className="text-gray-400 text-[16px] leading-relaxed font-medium max-w-[520px]">
+                                        {course.aiJobReadyDetails || 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।'}
+                                    </p>
 
-                                {/* Stats Row */}
-                                <div className="flex flex-wrap gap-5">
-                                    {[
-                                        { value: course.modules?.length || '৩৩', label: 'মডিউল' },
-                                        { value: course.totalLectures || '৭৩', label: 'লাইভ ক্লাস' },
-                                        { value: course.totalProjects || '১৫+', label: 'প্রজেক্ট' },
-                                    ].map((stat, i) => (
-                                        <div key={i} className="flex flex-col items-center px-6 py-4 bg-white/5 border border-white/10 rounded-2xl min-w-[90px]">
-                                            <span className="text-2xl font-black text-white">{stat.value}</span>
-                                            <span className="text-[12px] font-bold text-gray-400 mt-0.5">{stat.label}</span>
-                                        </div>
-                                    ))}
+                                    {/* Stats Row */}
+                                    <div className="flex flex-wrap gap-5">
+                                        {[
+                                            { value: course.modules?.length || '৩৩', label: 'মডিউল' },
+                                            { value: course.totalLectures || '৭৩', label: 'লাইভ ক্লাস' },
+                                            { value: course.totalProjects || '১৫+', label: 'প্রজেক্ট' },
+                                        ].map((stat, i) => (
+                                            <div key={i} className="flex flex-col items-center px-6 py-4 bg-white/5 border border-white/10 rounded-2xl min-w-[90px]">
+                                                <span className="text-2xl font-black text-white">{stat.value}</span>
+                                                <span className="text-[12px] font-bold text-gray-400 mt-0.5">{stat.label}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        onClick={handleEnrollment}
+                                        disabled={isEnrolled}
+                                        className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 shadow-purple-900/40"
+                                            }`}
+                                    >
+                                        {isEnrolled ? "ভর্তি সম্পন্ন" : "এখনই ভর্তি হোন"}
+                                        {!isEnrolled && <ChevronRight className="w-5 h-5" strokeWidth={3} />}
+                                    </button>
                                 </div>
 
-                                <button
-                                    onClick={handleEnrollment}
-                                    disabled={isEnrolled}
-                                    className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 shadow-purple-900/40"
-                                        }`}
-                                >
-                                    {isEnrolled ? "ভর্তি সম্পন্ন" : "এখনই ভর্তি হোন"}
-                                    {!isEnrolled && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>}
-                                </button>
-                            </div>
-
-                            {/* Left (visually right on lg): AI Banner Image */}
-                            <div className="w-full lg:w-[520px] shrink-0 relative">
-                                {/* Gradient overlay on right edge to blend */}
-                                <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
-                                <img
-                                    src={course.aiBannerUrl || "/images/ai-banner.png"}
-                                    alt="Career Ready"
-                                    className="w-full h-full object-cover opacity-90 rounded-l-[40px]"
-                                    style={{ minHeight: '380px', maxHeight: '480px' }}
-                                />
-                                {/* Floating badge */}
-                                <div className="absolute top-6 left-6 z-20">
-                                    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white text-center shadow-xl">
-                                        <div className="text-2xl font-black text-purple-300">🏆</div>
-                                        <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">{course.aiJobReadyImageBadge || 'Job Ready'}</div>
+                                {/* Left (visually right on lg): AI Banner Image */}
+                                <div className="w-full lg:w-[520px] shrink-0 relative">
+                                    {/* Gradient overlay on right edge to blend */}
+                                    <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#050D1F] to-transparent z-10 pointer-events-none"></div>
+                                    <img
+                                        src={course.aiBannerUrl || "/images/ai-banner.png"}
+                                        alt="Career Ready"
+                                        className="w-full h-full object-cover opacity-90 rounded-l-[40px]"
+                                        style={{ minHeight: '380px', maxHeight: '480px' }}
+                                    />
+                                    {/* Floating badge */}
+                                    <div className="absolute top-6 left-6 z-20">
+                                        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white text-center shadow-xl">
+                                            <div className="text-2xl font-black text-purple-300">🏆</div>
+                                            <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">{course.aiJobReadyImageBadge || 'Job Ready'}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
-                {course.instructorBannerUrl && (
-                    <section className="mt-20 mb-8 max-w-5xl mx-auto px-4">
-                        <div className="w-full rounded-[32px] overflow-hidden shadow-xl border border-gray-100 relative group">
-                            <img
-                                src={course.instructorBannerUrl}
-                                alt="Course Instructor Banner"
-                                className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-700"
-                            />
-                        </div>
-                    </section>
-                )}
+                {
+                    course.instructorBannerUrl && (
+                        <section className="mt-20 mb-8 max-w-5xl mx-auto px-4">
+                            <div className="w-full rounded-[32px] overflow-hidden shadow-xl border border-gray-100 relative group">
+                                <img
+                                    src={course.instructorBannerUrl}
+                                    alt="Course Instructor Banner"
+                                    className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                                />
+                            </div>
+                        </section>
+                    )
+                }
 
                 {/* Requirements Section */}
                 <section className="mt-16 mb-16">
@@ -792,7 +830,7 @@ export default function CourseDetails() {
                         {/* Card 1 */}
                         <div className="bg-[#EEF2F6] rounded-2xl p-8 flex flex-col items-start gap-6">
                             <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                <span className="text-3xl">💻</span>
+                                <MonitorSmartphone className="w-8 h-8 text-[#6C5DD3]" />
                             </div>
                             <h3 className="text-[#1A1D1F] font-bold text-lg leading-relaxed">
                                 ন্যূনতম ৪ জিবি র‍্যাম
@@ -802,7 +840,7 @@ export default function CourseDetails() {
                         {/* Card 2 */}
                         <div className="bg-[#EEF2F6] rounded-2xl p-8 flex flex-col items-start gap-6">
                             <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                <span className="text-3xl">👨‍💻</span>
+                                <Cpu className="w-8 h-8 text-[#6C5DD3]" />
                             </div>
                             <h3 className="text-[#1A1D1F] font-bold text-lg leading-relaxed">
                                 ৬৪ বিটের প্রসেসর আছে এমন ডেস্কটপ বা ল্যাপটপ ও ভালো ইন্টারনেট কানেকশন
@@ -812,7 +850,7 @@ export default function CourseDetails() {
                         {/* Card 3 */}
                         <div className="bg-[#EEF2F6] rounded-2xl p-8 flex flex-col items-start gap-6">
                             <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                <span className="text-3xl">🧗</span>
+                                <Brain className="w-8 h-8 text-[#6C5DD3]" />
                             </div>
                             <h3 className="text-[#1A1D1F] font-bold text-lg leading-relaxed">
                                 লেগে থাকার মানসিকতা
@@ -822,7 +860,7 @@ export default function CourseDetails() {
                 </section>
 
                 {/* Course Benefits Detailed Grid */}
-                <section className="mt-20 mb-16">
+                <section id="benefits" className="mt-20 mb-16">
                     <div className="flex flex-col items-center justify-center mb-12">
                         <div className="relative inline-block px-4">
                             <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
@@ -904,10 +942,7 @@ export default function CourseDetails() {
                                     {item.icon ? (
                                         <img src={item.icon} alt="icon" className="w-7 h-7 object-contain" />
                                     ) : (
-                                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="12" cy="12" r="10" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                            <path d="M8 12.5L10.5 15L16 9" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
+                                        <CheckCircle2 className="w-7 h-7 text-[#22C55E]" strokeWidth={2} />
                                     )}
                                 </div>
                                 <p className="text-[#1A1D1F] font-bold text-[15px] leading-relaxed">
@@ -919,7 +954,7 @@ export default function CourseDetails() {
                 </section>
 
                 {/* Target Audience Section */}
-                <section className="mt-20 mb-16">
+                <section id="audience" className="mt-20 mb-16">
                     <div className="flex flex-col items-center justify-center mb-12">
                         <div className="relative inline-block">
                             <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
@@ -937,10 +972,7 @@ export default function CourseDetails() {
                         ]).map((item: any, i: number) => (
                             <div key={i} className="bg-white border border-gray-100 rounded-xl p-6 flex items-start gap-4 shadow-[0_2px_10px_rgba(0,0,0,0.02)] hover:shadow-md transition-shadow">
                                 <div className="mt-0.5 flex-shrink-0">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="12" cy="12" r="10" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M8 12.5L10.5 15L16 9" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
+                                    <CheckCircle2 className="w-6 h-6 text-[#22C55E]" strokeWidth={2} />
                                 </div>
                                 <p className="text-[#1A1D1F] font-extrabold text-[15px] leading-relaxed flex-1">
                                     {item}
@@ -951,7 +983,7 @@ export default function CourseDetails() {
                 </section>
 
                 {/* Success Stories Section */}
-                <section className="mt-20 mb-16">
+                <section id="placements" className="mt-20 mb-16">
                     <div className="flex flex-col items-center justify-center mb-12">
                         <div className="relative inline-block">
                             <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
@@ -1010,7 +1042,7 @@ export default function CourseDetails() {
                 </section>
 
                 {/* Testimonials / Feedback Section */}
-                <section className="mt-20 mb-20">
+                <section id="reviews" className="mt-20 mb-20">
                     <div className="flex flex-col items-center justify-center mb-12">
                         <span className="px-4 py-1.5 bg-[#D1FAE5] text-[#059669] text-sm font-bold rounded-full mb-4">
                             ফিডব্যাক
@@ -1246,7 +1278,7 @@ export default function CourseDetails() {
                 </section>
 
                 {/* FAQ Section */}
-                <section className="mt-20 mb-20">
+                <section id="faq" className="mt-20 mb-20">
                     <div className="container mx-auto px-4 max-w-4xl">
                         <div className="flex flex-col items-center justify-center mb-12 text-center">
                             <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
@@ -1272,15 +1304,7 @@ export default function CourseDetails() {
                                 <details key={index} className="group border border-gray-100 bg-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)] [&_summary::-webkit-details-marker]:hidden">
                                     <summary className="flex cursor-pointer items-center justify-between gap-1.5 rounded-xl p-5 md:p-6 text-[#1A1D1F] font-bold md:text-[17px] focus:outline-none">
                                         {faq.q}
-                                        <svg
-                                            className="h-5 w-5 shrink-0 transition duration-300 group-open:-rotate-180 text-gray-500"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-                                        </svg>
+                                        <ChevronDown className="h-5 w-5 shrink-0 transition duration-300 group-open:-rotate-180 text-gray-500" strokeWidth={2.5} />
                                     </summary>
 
                                     <div className="px-5 pb-5 md:px-6 md:pb-6 text-[#475569] font-medium leading-relaxed">
@@ -1292,7 +1316,7 @@ export default function CourseDetails() {
                     </div>
                 </section>
 
-            </main>
+            </main >
 
             <Footer />
             <EnrollmentModal
@@ -1301,6 +1325,6 @@ export default function CourseDetails() {
                 course={course}
                 discountedPrice={discountedPrice}
             />
-        </div>
+        </div >
     );
 }

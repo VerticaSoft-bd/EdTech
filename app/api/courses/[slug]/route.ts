@@ -74,10 +74,11 @@ export async function PATCH(
             );
         }
 
-        // Update fields
+        // Update fields - filter out internal/auto-managed fields
+        const excludedFields = ['id', '_id', '__v', 'createdAt', 'updatedAt', 'slug'];
         Object.keys(body).forEach((key) => {
-            if (['id', '_id', '__v', 'createdAt', 'updatedAt'].includes(key)) {
-                return; // Prevent updating immutable or internal fields
+            if (excludedFields.includes(key)) {
+                return;
             }
             (course as any)[key] = body[key];
         });
