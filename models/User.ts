@@ -6,6 +6,7 @@ export interface IUser extends Document {
     email: string;
     password?: string; // Optional if you decide to implement OAuth later
     role: 'student' | 'teacher' | 'admin' | 'staff';
+    staffPermissions?: string[];
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -36,6 +37,10 @@ const UserSchema: Schema<IUser> = new Schema({
         type: String,
         enum: ['student', 'teacher', 'admin', 'staff'],
         default: 'student',
+    },
+    staffPermissions: {
+        type: [String],
+        default: [],
     }
 }, { timestamps: true });
 

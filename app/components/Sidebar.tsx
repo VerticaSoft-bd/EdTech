@@ -59,6 +59,8 @@ const Sidebar: React.FC = () => {
 
     const role = user?.role || 'admin'; // Default to admin if not found (safer for dev, but usually would be restricted)
     const isStaff = role === 'staff';
+    const staffPermissions = (user as any)?.staffPermissions || [];
+    const hasAccountsAccess = !isStaff || (isStaff && staffPermissions.length > 0);
 
     return (
         <aside className="fixed left-0 top-0 h-screen w-[280px] bg-white border-r border-gray-100 flex flex-col z-50">
@@ -144,13 +146,15 @@ const Sidebar: React.FC = () => {
                     )}
                 </div>
 
+                {hasAccountsAccess && (
+                    <Link href="/dashboard/accounts" className={getLinkClasses('/dashboard/accounts')}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                        <span className="text-sm font-bold">Accounts</span>
+                    </Link>
+                )}
+
                 {!isStaff && (
                     <>
-                        <Link href="/dashboard/accounts" className={getLinkClasses('/dashboard/accounts')}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-                            <span className="text-sm font-bold">Accounts</span>
-                        </Link>
-
                         <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                             <span className="text-sm font-bold">Revenue</span>

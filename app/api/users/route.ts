@@ -5,7 +5,7 @@ import User from '@/models/User';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, email, password, role } = body;
+        const { name, email, password, role, staffPermissions } = body;
 
         // Basic validation
         if (!name || !email || !password || !role) {
@@ -42,6 +42,7 @@ export async function POST(request: Request) {
             email,
             password,
             role,
+            staffPermissions: role === 'staff' ? (staffPermissions || []) : [],
         });
 
         // Remove password from response for security

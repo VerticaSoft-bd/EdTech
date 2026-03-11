@@ -33,7 +33,28 @@ const TABS = [
 const EXPENSE_CATEGORIES = ['Rent', 'Utilities', 'Supplies', 'Marketing', 'Transport', 'Food', 'Maintenance', 'Internet', 'Salary Advance', 'Other'];
 
 export default function AccountsPage() {
-    const [activeTab, setActiveTab] = useState('overview');
+    const [user, setUser] = useState<any>(null);
+    const [activeTab, setActiveTab] = useState('');
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) setUser(JSON.parse(storedUser));
+    }, []);
+
+    const role = user?.role || 'admin';
+    const isStaff = role === 'staff';
+    const staffPermissions = user?.staffPermissions || [];
+    
+    // Compute permitted tabs
+    const permittedTabs = React.useMemo(() => {
+        return TABS.filter(tab => !isStaff || staffPermissions.includes(tab.id));
+    }, [isStaff, staffPermissions]);
+
+    useEffect(() => {
+        if (!activeTab && permittedTabs.length > 0) {
+            setActiveTab(permittedTabs[0].id);
+        }
+    }, [permittedTabs, activeTab]);
 
     // ─── OVERVIEW state ────────────────────
     const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -149,7 +170,7 @@ export default function AccountsPage() {
         <div className="space-y-6">
             {/* Tab Navigation */}
             <div className="bg-white rounded-[24px] shadow-sm border border-gray-50 p-2 flex gap-1 overflow-x-auto">
-                {TABS.map(tab => (
+                {permittedTabs.map(tab => (
                     <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                         className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${activeTab === tab.id
                             ? 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20'

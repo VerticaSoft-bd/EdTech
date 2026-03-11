@@ -75,6 +75,7 @@ export async function POST(request: Request) {
             name: user.name,
             email: user.email,
             role: user.role,
+            staffPermissions: user.staffPermissions || [],
         };
 
         return NextResponse.json({
