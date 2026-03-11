@@ -8,6 +8,14 @@ export default function StaffUsersPage() {
     const [editingUser, setEditingUser] = useState<any>(null);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentUser, setCurrentUser] = useState<any>(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setCurrentUser(JSON.parse(storedUser));
+        }
+    }, []);
 
     const fetchUsers = useCallback(async () => {
         setLoading(true);
@@ -27,6 +35,18 @@ export default function StaffUsersPage() {
     useEffect(() => {
         fetchUsers();
     }, [fetchUsers]);
+
+    if (currentUser && currentUser.role !== 'admin') {
+        return (
+            <div className="bg-white rounded-[24px] border border-red-100 p-12 text-center shadow-sm">
+                <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                </div>
+                <h3 className="text-lg font-bold text-[#1A1D1F] mb-2">Access Denied</h3>
+                <p className="text-gray-500 text-sm max-w-sm mx-auto">You do not have permission to view or manage staff users. This area is restricted to administrators.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
