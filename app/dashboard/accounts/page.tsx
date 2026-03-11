@@ -34,11 +34,13 @@ const EXPENSE_CATEGORIES = ['Rent', 'Utilities', 'Supplies', 'Marketing', 'Trans
 
 export default function AccountsPage() {
     const [user, setUser] = useState<any>(null);
+    const [isUserLoaded, setIsUserLoaded] = useState(false);
     const [activeTab, setActiveTab] = useState('');
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) setUser(JSON.parse(storedUser));
+        setIsUserLoaded(true);
     }, []);
 
     const role = user?.role || 'admin';
@@ -47,14 +49,17 @@ export default function AccountsPage() {
     
     // Compute permitted tabs
     const permittedTabs = React.useMemo(() => {
+        if (!isUserLoaded) return [];
         return TABS.filter(tab => !isStaff || staffPermissions.includes(tab.id));
-    }, [isStaff, staffPermissions]);
+    }, [isStaff, staffPermissions, isUserLoaded]);
 
     useEffect(() => {
-        if (!activeTab && permittedTabs.length > 0) {
-            setActiveTab(permittedTabs[0].id);
+        if (isUserLoaded && permittedTabs.length > 0) {
+            if (!activeTab || !permittedTabs.find(t => t.id === activeTab)) {
+                setActiveTab(permittedTabs[0].id);
+            }
         }
-    }, [permittedTabs, activeTab]);
+    }, [permittedTabs, activeTab, isUserLoaded]);
 
     // ─── OVERVIEW state ────────────────────
     const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -166,6 +171,14 @@ export default function AccountsPage() {
     // ───────────────────────────────────────
     // RENDER
     // ───────────────────────────────────────
+    if (!isUserLoaded) {
+        return (
+            <div className="flex items-center justify-center min-h-[50vh]">
+                <div className="w-8 h-8 border-4 border-[#6C5DD3]/20 border-t-[#6C5DD3] rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
             {/* Tab Navigation */}
