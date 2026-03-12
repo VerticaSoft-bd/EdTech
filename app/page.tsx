@@ -357,18 +357,23 @@ export default function RootPage() {
                 </section>
 
                 {/* Full Width Map Section */}
-                <section className="w-full mt-4">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14608.20302773666!2d90.3541168128418!3d23.745561084200424!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8b087026b81%3A0x8fa563bbdd5904c2!2sDhaka!5e0!3m2!1sen!2sbd!4v1710245000000!5m2!1sen!2sbd"
-                        width="100%"
-                        height="400"
-                        style={{ border: 0 }}
-                        allowFullScreen={false}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        title="Our Location"
-                        className="grayscale-[30%] hover:grayscale-0 transition-all duration-500"
-                    ></iframe>
+                <section className="w-full mt-10 mb-8">
+                    <div className="text-center mb-8">
+                        <h2 className="text-[28px] font-extrabold text-gray-900">Our Location</h2>
+                    </div>
+                    <div className="w-full rounded-[24px] overflow-hidden shadow-sm border border-gray-100">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.9650079615135!2d90.42680589999999!3d23.748627199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b9b4c1ff8911%3A0x8d70c5c554d258ee!2sYouth%20Instructory%20-%20Computer%20Training%20Center!5e0!3m2!1sen!2sbd!4v1773306370451!5m2!1sen!2sbd"
+                            width="100%"
+                            height="400"
+                            style={{ border: 0 }}
+                            allowFullScreen={false}
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                            title="Our Location"
+                            className="grayscale-[10%] hover:grayscale-0 transition-all duration-500"
+                        ></iframe>
+                    </div>
                 </section>
             </main>
 
