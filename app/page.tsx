@@ -266,13 +266,33 @@ export default function RootPage() {
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto border-t border-b border-gray-200 py-10">
                         {[
-                            { title: "১০০% জব প্লেসমেন্ট গাইডেন্স", icon: "💼", color: "text-amber-600", bg: "bg-amber-50" },
-                            { title: "ইন্টারেক্টিভ লাইভ সেশন", icon: "💻", color: "text-blue-600", bg: "bg-blue-50" },
-                            { title: "ইন্ডাস্ট্রি এক্সপার্টদের মেন্টরশিপ", icon: "👨‍🏫", color: "text-emerald-600", bg: "bg-emerald-50" },
-                            { title: "কোর্স সমাপ্তিতে সার্টিফিকেট", icon: "🎓", color: "text-purple-600", bg: "bg-purple-50" }
+                            {
+                                title: "১০০% জব প্লেসমেন্ট গাইডেন্স",
+                                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>,
+                                color: "text-amber-600",
+                                bg: "bg-amber-50"
+                            },
+                            {
+                                title: "ইন্টারেক্টিভ লাইভ সেশন",
+                                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>,
+                                color: "text-blue-600",
+                                bg: "bg-blue-50"
+                            },
+                            {
+                                title: "ইন্ডাস্ট্রি এক্সপার্টদের মেন্টরশিপ",
+                                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>,
+                                color: "text-emerald-600",
+                                bg: "bg-emerald-50"
+                            },
+                            {
+                                title: "কোর্স সমাপ্তিতে সার্টিফিকেট",
+                                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>,
+                                color: "text-purple-600",
+                                bg: "bg-purple-50"
+                            }
                         ].map((f, i) => (
                             <div key={i} className="flex flex-col items-center text-center gap-4 group">
-                                <div className={`w-16 h-16 rounded-[20px] ${f.bg} flex items-center justify-center text-[28px] shadow-sm transform group-hover:-translate-y-2 transition-transform duration-300`}>
+                                <div className={`w-16 h-16 rounded-[20px] ${f.bg} flex items-center justify-center shadow-sm transform group-hover:-translate-y-2 transition-transform duration-300`}>
                                     <span className={f.color}>{f.icon}</span>
                                 </div>
                                 <p className="font-bold text-gray-800 text-[14px] max-w-[140px] leading-snug">{f.title}</p>
@@ -334,6 +354,21 @@ export default function RootPage() {
                             </div>
                         ))}
                     </div>
+                </section>
+
+                {/* Full Width Map Section */}
+                <section className="w-full mt-4">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14608.20302773666!2d90.3541168128418!3d23.745561084200424!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8b087026b81%3A0x8fa563bbdd5904c2!2sDhaka!5e0!3m2!1sen!2sbd!4v1710245000000!5m2!1sen!2sbd"
+                        width="100%"
+                        height="400"
+                        style={{ border: 0 }}
+                        allowFullScreen={false}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        title="Our Location"
+                        className="grayscale-[30%] hover:grayscale-0 transition-all duration-500"
+                    ></iframe>
                 </section>
             </main>
 
