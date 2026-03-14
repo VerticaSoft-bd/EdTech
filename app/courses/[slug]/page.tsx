@@ -206,46 +206,58 @@ export default function CourseDetails() {
 
                     {/* Right: Video Preview Card */}
                     <div className="w-full lg:w-[500px] shrink-0">
-                        <div className="relative group cursor-pointer overflow-hidden rounded-[24px] shadow-2xl shadow-gray-300">
-                            <img
-                                src={course.thumbnail || "/images/course-placeholder.jpg"}
-                                alt={course.title}
-                                className="w-full h-[320px] object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors"></div>
-
-                            {/* Video Badge Overlay */}
-                            <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent">
-                                <div className="flex items-center gap-2 text-white font-bold">
-                                    <div className="bg-[#EF4444] p-1.5 rounded-lg">
-                                        <Play className="w-5 h-5 text-white fill-white" />
-                                    </div>
-                                    ক্লিক করে দেখে নিন কোর্সের ডেমো ক্লাস
-                                </div>
+                        {course.introVideo ? (
+                            <div className="relative rounded-[24px] overflow-hidden shadow-2xl shadow-gray-300 bg-black w-full" style={{ paddingBottom: '64%' }}>
+                                <iframe
+                                    src={getYoutubeEmbedUrl(course.introVideo)}
+                                    title="Course Intro Video"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="absolute top-0 left-0 w-full h-full border-0"
+                                ></iframe>
                             </div>
+                        ) : (
+                            <div className="relative group cursor-pointer overflow-hidden rounded-[24px] shadow-2xl shadow-gray-300">
+                                <img
+                                    src={course.thumbnail || "/images/course-placeholder.jpg"}
+                                    alt={course.title}
+                                    className="w-full h-[320px] object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors"></div>
 
-                            {/* Center Play Button Overlay */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-4 border-white animate-pulse">
-                                    <div className="w-16 h-16 bg-[#FEE2E2] rounded-full flex items-center justify-center pl-1">
-                                        <Play className="w-8 h-8 text-[#EF4444] fill-[#EF4444]" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Bottom Label Overlay */}
-                            <div className="absolute bottom-6 left-6 right-6">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-white font-bold text-sm">Your code editor,</span>
-                                        <span className="text-white font-bold text-xl">Redefined with AI.</span>
-                                    </div>
-                                    <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center">
-                                        <span className="text-2xl">🐍</span>
+                                {/* Video Badge Overlay */}
+                                <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent">
+                                    <div className="flex items-center gap-2 text-white font-bold">
+                                        <div className="bg-[#EF4444] p-1.5 rounded-lg">
+                                            <Play className="w-5 h-5 text-white fill-white" />
+                                        </div>
+                                        ক্লিক করে দেখে নিন কোর্সের ডেমো ক্লাস
                                     </div>
                                 </div>
+
+                                {/* Center Play Button Overlay */}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-4 border-white animate-pulse">
+                                        <div className="w-16 h-16 bg-[#FEE2E2] rounded-full flex items-center justify-center pl-1">
+                                            <Play className="w-8 h-8 text-[#EF4444] fill-[#EF4444]" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Bottom Label Overlay */}
+                                <div className="absolute bottom-6 left-6 right-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex flex-col">
+                                            <span className="text-white font-bold text-sm">Your code editor,</span>
+                                            <span className="text-white font-bold text-xl">Redefined with AI.</span>
+                                        </div>
+                                        <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center">
+                                            <span className="text-2xl">🐍</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
