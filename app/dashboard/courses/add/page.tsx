@@ -14,23 +14,35 @@ export default function AddCoursePage() {
     const [imageError, setImageError] = useState('');
     const [studentProjectFiles, setStudentProjectFiles] = useState<(File | string)[]>([]);
     const [teachers, setTeachers] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
 
-    // Fetch teachers on mount
+    // Fetch teachers and categories on mount
     useEffect(() => {
-        const fetchTeachers = async () => {
+        const fetchInitialData = async () => {
             try {
-                const res = await fetch('/api/users?role=teacher');
-                if (res.ok) {
-                    const data = await res.json();
+                const [teachersRes, categoriesRes] = await Promise.all([
+                    fetch('/api/users?role=teacher'),
+                    fetch('/api/categories')
+                ]);
+
+                if (teachersRes.ok) {
+                    const data = await teachersRes.json();
                     if (data.success && data.data) {
                         setTeachers(data.data);
                     }
                 }
+
+                if (categoriesRes.ok) {
+                    const data = await categoriesRes.json();
+                    if (data.success && data.data) {
+                        setCategories(data.data);
+                    }
+                }
             } catch (err) {
-                console.error("Failed to fetch teachers:", err);
+                console.error("Failed to fetch initial data:", err);
             }
         };
-        fetchTeachers();
+        fetchInitialData();
     }, []);
 
     // Centralized Course State
@@ -417,10 +429,10 @@ export default function AddCoursePage() {
                                                 onChange={(e) => handleInputChange('category', e.target.value)}
                                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] appearance-none cursor-pointer"
                                             >
-                                                <option>Design</option>
-                                                <option>Development</option>
-                                                <option>Marketing</option>
-                                                <option>Business</option>
+                                                <option value="">Select Category</option>
+                                                {categories.map((cat) => (
+                                                    <option key={cat._id} value={cat.name}>{cat.name}</option>
+                                                ))}
                                             </select>
                                         </div>
                                         <div>
