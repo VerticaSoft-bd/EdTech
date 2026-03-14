@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Category from '@/models/Category';
+import Course from '@/models/Course';
 import AWS from 'aws-sdk';
 
 // Next.js 15: Force this API to never cache GET responses
@@ -20,7 +21,17 @@ export async function GET() {
         await connectToDatabase();
         // Sort by createdAt descending (newest first)
         const categories = await Category.find({}).sort({ createdAt: -1 });
-        return NextResponse.json({ success: true, data: categories }, { status: 200 });
+
+        // Count courses for each category dynamically
+        const categoriesWithCount = await Promise.all(categories.map(async (cat) => {
+            const count = await Course.countDocuments({ category: cat.name });
+            return {
+                ...cat.toObject(),
+                courseCount: count
+            };
+        }));
+
+        return NextResponse.json({ success: true, data: categoriesWithCount }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
