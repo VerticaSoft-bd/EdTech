@@ -1382,7 +1382,7 @@ export default function EditCoursePage() {
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
                                                 <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider">Background Image</label>
-                                                <span className="text-xs text-purple-400 font-medium">Recommended ratio:(293x164px)| JPG, PNG, WEBP (Max 2MB)</span>
+                                                <span className="text-xs text-purple-400 font-medium">Recommended ratio:(520x480px)| JPG, PNG, WEBP (Max 2MB)</span>
                                             </div>
                                             <div className={`relative border-2 border-dashed ${(aiBannerFile || courseData.aiBannerUrl) ? 'border-transparent' : 'border-purple-200'} rounded-xl hover:border-purple-400 transition-colors bg-white text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
                                                 <input
