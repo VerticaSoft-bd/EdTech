@@ -937,7 +937,7 @@ export default function AddCoursePage() {
                                             AI-Powered Learning Banner details (Top Option)
                                         </h3>
                                         <div className="flex items-center gap-3">
-                                            <span className="text-sm font-bold text-blue-800">Show Banner</span>
+                                            <span className="text-sm font-bold text-blue-800">Show Banner (ব্যানার দেখান)</span>
                                             <button
                                                 type="button"
                                                 role="switch"
@@ -952,7 +952,7 @@ export default function AddCoursePage() {
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Small Badge Text</label>
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Small Badge Text (ছোট ব্যাজ টেক্সট)</label>
                                                 <input
                                                     type="text"
                                                     value={courseData.aiLearningBadge}
@@ -963,7 +963,7 @@ export default function AddCoursePage() {
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Image Badge Line 1</label>
+                                                    <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Image Badge Line 1 (ইমেজ ব্যাজ লাইন ১)</label>
                                                     <input
                                                         type="text"
                                                         value={courseData.aiLearningImageBadge1}
@@ -973,7 +973,7 @@ export default function AddCoursePage() {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Image Badge Line 2</label>
+                                                    <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">Image Badge Line 2 (ইমেজ ব্যাজ লাইন ২)</label>
                                                     <input
                                                         type="text"
                                                         value={courseData.aiLearningImageBadge2}
@@ -1103,7 +1103,7 @@ export default function AddCoursePage() {
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10 text-blue-400">
                                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                                                        <span className="text-sm font-bold text-blue-700">Upload Banner Image</span>
+                                                        <span className="text-sm font-bold text-blue-700">Upload Banner Image (ব্যানার ইমেজ আপলোড করুন)</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -1171,10 +1171,10 @@ export default function AddCoursePage() {
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="font-bold text-purple-900 text-base flex items-center gap-2">
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
-                                            AI Job Ready Banner details (Bottom Option)
+                                            AI Job Ready Banner details (AI জব রেডি ব্যানার - নিচের অপশন)
                                         </h3>
                                         <div className="flex items-center gap-3">
-                                            <span className="text-sm font-bold text-purple-800">Show Banner</span>
+                                            <span className="text-sm font-bold text-purple-800">Show Banner (ব্যানার দেখান)</span>
                                             <button
                                                 type="button"
                                                 role="switch"
@@ -1189,7 +1189,7 @@ export default function AddCoursePage() {
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Small Badge Text</label>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Small Badge Text (ছোট ব্যাজ টেক্সট)</label>
                                                 <input
                                                     type="text"
                                                     value={courseData.aiJobReadyBadge}
@@ -1199,7 +1199,7 @@ export default function AddCoursePage() {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Image Badge Text</label>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Image Badge Text (ইমেজ ব্যাজ টেক্সট)</label>
                                                 <input
                                                     type="text"
                                                     value={courseData.aiJobReadyImageBadge}
@@ -1212,7 +1212,7 @@ export default function AddCoursePage() {
 
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                             <div>
-                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Title Prefix</label>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Title Prefix (শিরোনাম শুরু)</label>
                                                 <input
                                                     type="text"
                                                     value={courseData.aiJobReadyTitle1}
@@ -1222,7 +1222,7 @@ export default function AddCoursePage() {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Highlighted Text</label>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Highlighted Text (হাইলাইট টেক্সট)</label>
                                                 <input
                                                     type="text"
                                                     value={courseData.aiJobReadyHighlight}
@@ -1244,7 +1244,7 @@ export default function AddCoursePage() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Details Text Paragraph</label>
+                                            <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">Details Text Paragraph (বিস্তারিত টেক্সট অনুচ্ছেদ)</label>
                                             <textarea
                                                 value={courseData.aiJobReadyDetails}
                                                 onChange={(e) => handleInputChange('aiJobReadyDetails', e.target.value)}
@@ -1255,7 +1255,7 @@ export default function AddCoursePage() {
                                         </div>
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
-                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider">Background Image</label>
+                                                <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider">Background Image (ব্যাকগ্রাউন্ড ইমেজ)</label>
                                                 <span className="text-xs text-purple-400 font-medium">Recommended ratio:(520x480px)| JPG, PNG, WEBP (Max 2MB)</span>
                                             </div>
                                             <div className={`relative border-2 border-dashed ${(aiBannerFile || courseData.aiBannerUrl) ? 'border-transparent' : 'border-purple-200'} rounded-xl hover:border-purple-400 transition-colors bg-white text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
@@ -1283,7 +1283,7 @@ export default function AddCoursePage() {
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10 text-purple-400">
                                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                                                        <span className="text-sm font-bold text-purple-700">Upload AI Banner Image</span>
+                                                        <span className="text-sm font-bold text-purple-700">Upload AI Banner Image (AI ব্যানার ইমেজ আপলোড করুন)</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -1291,7 +1291,7 @@ export default function AddCoursePage() {
 
                                         {/* LIVE PREVIEW SECTION */}
                                         <div className="mt-8 relative overflow-hidden rounded-[30px] bg-[#050D1F] border border-purple-900/40 pointer-events-none xl:scale-100 origin-top-left transition-all">
-                                            <div className="absolute top-4 left-4 bg-purple-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full z-50 shadow-lg tracking-wider">Live Preview</div>
+                                            <div className="absolute top-4 left-4 bg-purple-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full z-50 shadow-lg tracking-wider">Live Preview (লাইভ প্রিভিউ)</div>
 
                                             {/* Glowing Background Orbs */}
                                             <div className="absolute -top-32 -left-32 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
@@ -1386,7 +1386,7 @@ export default function AddCoursePage() {
                                         ) : (
                                             <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10 text-gray-400">
                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                                                <span className="text-sm font-bold text-gray-700">Upload Banner Image</span>
+                                                <span className="text-sm font-bold text-gray-700">Upload Banner Image (ব্যানার ইমেজ আপলোড করুন)</span>
                                             </div>
                                         )}
                                     </div>
@@ -1398,7 +1398,7 @@ export default function AddCoursePage() {
                             <div className="space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Regular Fee (BDT)</label>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Regular Fee (BDT) (নিয়মিত ফি)</label>
                                         <input
                                             type="number"
                                             value={courseData.regularFee || ''}
@@ -1408,7 +1408,7 @@ export default function AddCoursePage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Discount Percentage (%)</label>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Discount Percentage (%) (ডিসকাউন্ট শতাংশ %)</label>
                                         <input
                                             type="number"
                                             value={courseData.discountPercentage || ''}
@@ -1420,7 +1420,7 @@ export default function AddCoursePage() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Admission/Enrollment URL</label>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Admission/Enrollment URL (ভর্তির ইউআরএল)</label>
                                         <input
                                             type="text"
                                             value={courseData.admissionUrl}
@@ -1430,7 +1430,7 @@ export default function AddCoursePage() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Free Seminar Booking URL</label>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Free Seminar Booking URL (ফ্রি সেমিনার বুকিং ইউআরএল)</label>
                                         <input
                                             type="text"
                                             value={courseData.seminarUrl}
@@ -1450,7 +1450,7 @@ export default function AddCoursePage() {
                                         readOnly
                                         className="w-5 h-5 rounded text-[#6C5DD3] focus:ring-[#6C5DD3] cursor-pointer pointer-events-none"
                                     />
-                                    <span className="text-sm font-medium text-[#1A1D1F]">This is a free course</span>
+                                    <span className="text-sm font-medium text-[#1A1D1F]">This is a free course (এটি একটি ফ্রি কোর্স)</span>
                                 </div>
                             </div>
                         )}
@@ -1840,7 +1840,7 @@ export default function AddCoursePage() {
                                         {courseData.successStories.map((story, index) => (
                                             <div key={index} className="flex gap-2">
                                                 <input type="text" value={story.name} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], name: e.target.value }; handleInputChange('successStories', n); }} placeholder="Student Name" className="w-1/3 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                                <input type="text" value={story.role} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], role: e.target.value }; handleInputChange('successStories', n); }} placeholder="Role at Company" className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                                <input type="text" value={story.role} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], role: e.target.value }; handleInputChange('successStories', n); }} placeholder="Description" className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
                                                 <button onClick={() => handleInputChange('successStories', courseData.successStories.filter((_, i) => i !== index))} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
                                             </div>
                                         ))}

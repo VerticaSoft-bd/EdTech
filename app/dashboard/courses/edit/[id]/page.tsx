@@ -515,16 +515,7 @@ export default function EditCoursePage() {
                                 onClick={() => setActiveTab(tab)}
                                 className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-all ${activeTab === tab ? 'bg-[#6C5DD3] text-white shadow-md' : 'text-gray-500 hover:text-[#1A1D1F]'}`}
                             >
-                                {tab === 'basic' ? 'Basic (বেসিক)' : 
-                                 tab === 'details' ? 'Detailed (বিস্তারিত)' :
-                                 tab === 'curriculum' ? 'Curriculum (কারিকুলাম)' :
-                                 tab === 'media' ? 'Media (মিডিয়া)' :
-                                 tab === 'banners' ? 'Banners (ব্যানার)' :
-                                 tab === 'pricing' ? 'Pricing (প্রাইসিং)' :
-                                 tab === 'teacher' ? 'Teachers (শিক্ষকগণ)' :
-                                 tab === 'career' ? 'Career (ক্যারিয়ার)' :
-                                 tab === 'features' ? 'Features (ফিচারসমূহ)' :
-                                 tab === 'extras' ? 'Extras (অতিরিক্ত)' : tab}
+                                {tab}
                             </button>
                         ))}
                     </div>
@@ -1975,7 +1966,7 @@ export default function EditCoursePage() {
                                         {courseData.successStories.map((story, index) => (
                                             <div key={index} className="flex gap-2">
                                                 <input type="text" value={story.name} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], name: e.target.value }; handleInputChange('successStories', n); }} placeholder="Student Name" className="w-1/3 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                                <input type="text" value={story.role} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], role: e.target.value }; handleInputChange('successStories', n); }} placeholder="Role at Company" className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                                <input type="text" value={story.role} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], role: e.target.value }; handleInputChange('successStories', n); }} placeholder="Description" className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
                                                 <button onClick={() => handleInputChange('successStories', courseData.successStories.filter((_, i) => i !== index))} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
                                             </div>
                                         ))}
