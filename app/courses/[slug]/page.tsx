@@ -179,10 +179,10 @@ export default function CourseDetails() {
                         {/* Statistics Grid */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-[800px]">
                             {[
-                                { icon: "🎥", label: `${course.totalLectures} টি লাইভ ক্লাস` },
-                                { icon: "📂", label: `${course.totalProjects} টি প্রজেক্টসমূহ` },
-                                { icon: "🗓️", label: course.enrollmentDeadline ? `${Math.ceil((new Date(course.enrollmentDeadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} দিন বাকি` : "৫৯ দিন বাকি" },
-                                { icon: "🎬", label: `${course.totalPreRecordedVideos || '২৭৮'} টি প্রি রেকর্ডড ভিডিও` }
+                                { icon: <Video className="w-[18px] h-[18px] text-[#6C5DD3]" strokeWidth={2.5} />, label: `${course.totalLectures} টি লাইভ ক্লাস` },
+                                { icon: <FolderOpen className="w-[18px] h-[18px] text-[#10B981]" strokeWidth={2.5} />, label: `${course.totalProjects} টি প্রজেক্টসমূহ` },
+                                { icon: <CalendarDays className="w-[18px] h-[18px] text-[#F59E0B]" strokeWidth={2.5} />, label: course.enrollmentDeadline ? `${Math.ceil((new Date(course.enrollmentDeadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} দিন বাকি` : "৫৯ দিন বাকি" },
+                                { icon: <Clapperboard className="w-[18px] h-[18px] text-[#EF4444]" strokeWidth={2.5} />, label: `${course.totalPreRecordedVideos || '২৭৮'} টি প্রি রেকর্ডড ভিডিও` }
                             ].map((stat, i) => (
                                 <div key={i} className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-bold text-gray-700">
                                     <span>{stat.icon}</span>
