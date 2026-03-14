@@ -111,6 +111,7 @@ export interface ICourse extends Document {
     aiLearningImageBadge2: string;
     showAiLearningBanner: boolean;
     showAiJobReadyBanner: boolean;
+    aiFeatures: string[];
     status: 'Draft' | 'Active' | 'Archived';
 }
 
@@ -226,6 +227,7 @@ const CourseSchema: Schema<ICourse> = new Schema({
     aiJobReadyImageBadge: { type: String, default: 'Job Ready' },
     showAiLearningBanner: { type: Boolean, default: true },
     showAiJobReadyBanner: { type: Boolean, default: true },
+    aiFeatures: { type: [String], default: [] },
     status: {
         type: String,
         enum: ['Draft', 'Active', 'Archived'],

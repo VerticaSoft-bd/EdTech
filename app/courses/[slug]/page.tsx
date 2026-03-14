@@ -178,18 +178,35 @@ export default function CourseDetails() {
 
                         {/* Statistics Grid */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-[800px]">
-                            {[
-                                { icon: <Video className="w-[18px] h-[18px] text-[#6C5DD3]" strokeWidth={2.5} />, label: `${course.totalLectures} টি লাইভ ক্লাস` },
-                                { icon: <FolderOpen className="w-[18px] h-[18px] text-[#10B981]" strokeWidth={2.5} />, label: `${course.totalProjects} টি প্রজেক্টসমূহ` },
-                                { icon: <CalendarDays className="w-[18px] h-[18px] text-[#F59E0B]" strokeWidth={2.5} />, label: course.enrollmentDeadline ? `${Math.ceil((new Date(course.enrollmentDeadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} দিন বাকি` : "৫৯ দিন বাকি" },
-                                { icon: <Clapperboard className="w-[18px] h-[18px] text-[#EF4444]" strokeWidth={2.5} />, label: `${course.totalPreRecordedVideos || '২৭৮'} টি প্রি রেকর্ডড ভিডিও` }
-                            ].map((stat, i) => (
-                                <div key={i} className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-100 rounded-xl shadow-sm text-sm font-bold text-gray-700">
-                                    <span>{stat.icon}</span>
-                                    <span>{stat.label}</span>
-                                </div>
-                            ))}
+                            <div className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-100 rounded-xl shadow-sm text-gray-700 text-sm font-bold">
+                                <Video className="w-[18px] h-[18px] text-[#6C5DD3]" strokeWidth={2.5} />
+                                {course.totalLectures || '৩৮'} টি লাইভ ক্লাস
+                            </div>
+                            <div className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-100 rounded-xl shadow-sm text-gray-700 text-sm font-bold">
+                                <FolderOpen className="w-[18px] h-[18px] text-[#F59E0B]" strokeWidth={2.5} />
+                                {course.totalProjects || '৫'} টি প্রজেক্টসমূহ
+                            </div>
+                            <div className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-100 rounded-xl shadow-sm text-gray-700 text-sm font-bold">
+                                <CalendarDays className="w-[18px] h-[18px] text-[#10B981]" strokeWidth={2.5} />
+                                {course.duration || '৫৯ দিন'} বাকি
+                            </div>
+                            <div className="flex items-center gap-2 px-6 py-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl text-[#059669] text-sm font-bold">
+                                <FolderArchive className="w-[18px] h-[18px]" strokeWidth={2.5} />
+                                ক্লাস রেকর্ডিং ও লাইফটাইম এক্সেস
+                            </div>
                         </div>
+
+                        {/* Top Banner AI Feature Pills */}
+                        {course.aiFeatures && course.aiFeatures.length > 0 && (
+                            <div className="flex flex-wrap gap-2 pt-2">
+                                <span className="text-xs font-bold text-gray-400 self-center uppercase tracking-wider mr-2">Learn with:</span>
+                                {course.aiFeatures.map((item: string, i: number) => (
+                                    <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/80 border border-blue-100 rounded-lg text-[13px] font-bold text-blue-800 cursor-default">
+                                        <span>{item}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         {/* Benefits Cards */}
                         <div className="flex flex-wrap gap-4">
@@ -322,17 +339,12 @@ export default function CourseDetails() {
 
                                 {/* AI Feature Pills */}
                                 <div className="flex flex-wrap gap-3">
-                                    {[
-                                        { icon: '🤖', label: 'ChatGPT Integration' },
-                                        { icon: '⚡', label: 'GitHub Copilot' },
-                                        { icon: '🧠', label: 'AI Error Handling' },
-                                        { icon: '🔍', label: 'AI Code Review' },
-                                        { icon: '📊', label: 'AI Data Analysis' },
-                                    ].map((item, i) => (
-                                        <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-300 hover:bg-white/10 hover:border-blue-500/30 transition-all cursor-default">
-                                            <span>{item.icon}</span>
-                                            <span>{item.label}</span>
-                                        </div>
+                                    {(course.aiFeatures && course.aiFeatures.length > 0 ? course.aiFeatures : ['🤖 ChatGPT Integration', '⚡ GitHub Copilot', '🧠 AI Error Handling']).map((item: string, i: number) => (
+                                        item ? (
+                                            <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-300 hover:bg-white/10 hover:border-blue-500/30 transition-all cursor-default">
+                                                <span>{item}</span>
+                                            </div>
+                                        ) : null
                                     ))}
                                 </div>
 

@@ -93,7 +93,8 @@ export default function AddCoursePage() {
         aiJobReadyDetails: 'প্রতিটি মডিউলে real-world project, AI-assisted coding, এবং expert mentorship — সবকিছু মিলিয়ে আপনাকে industry-ready করে তুলবে।',
         aiJobReadyImageBadge: 'Job Ready',
         showAiJobReadyBanner: true,
-        status: 'Draft' as 'Draft' | 'Active' | 'Archived'
+        status: 'Draft' as 'Draft' | 'Active' | 'Archived',
+        aiFeatures: ['🤖 ChatGPT Integration', '⚡ GitHub Copilot', '🧠 AI Error Handling'] as string[],
     });
 
     const handleInputChange = (field: string, value: any) => {
@@ -278,6 +279,7 @@ export default function AddCoursePage() {
                 tools: uploadedTools,
                 whatYouWillLearn: uploadedLearnItems,
                 benefits: uploadedBenefits,
+                aiFeatures: courseData.aiFeatures,
                 instructorBannerUrl: uploadedInstructorBannerUrl,
                 aiBannerUrl: uploadedAiBannerUrl,
                 aiLearningBannerUrl: uploadedAiLearningBannerUrl,
@@ -1011,6 +1013,51 @@ export default function AddCoursePage() {
                                                 className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F] resize-y"
                                             />
                                         </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">AI Feature 1</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiFeatures?.[0] || ''}
+                                                    onChange={(e) => {
+                                                        const newFeatures = [...(courseData.aiFeatures || [])];
+                                                        newFeatures[0] = e.target.value;
+                                                        handleInputChange('aiFeatures', newFeatures);
+                                                    }}
+                                                    placeholder="🤖 ChatGPT Integration"
+                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">AI Feature 2</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiFeatures?.[1] || ''}
+                                                    onChange={(e) => {
+                                                        const newFeatures = [...(courseData.aiFeatures || [])];
+                                                        newFeatures[1] = e.target.value;
+                                                        handleInputChange('aiFeatures', newFeatures);
+                                                    }}
+                                                    placeholder="⚡ GitHub Copilot"
+                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">AI Feature 3</label>
+                                                <input
+                                                    type="text"
+                                                    value={courseData.aiFeatures?.[2] || ''}
+                                                    onChange={(e) => {
+                                                        const newFeatures = [...(courseData.aiFeatures || [])];
+                                                        newFeatures[2] = e.target.value;
+                                                        handleInputChange('aiFeatures', newFeatures);
+                                                    }}
+                                                    placeholder="🧠 AI Error Handling"
+                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                />
+                                            </div>
+                                        </div>
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
                                                 <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider">Background Image</label>
@@ -1069,15 +1116,12 @@ export default function AddCoursePage() {
 
                                                     {/* Feature Pills */}
                                                     <div className="flex flex-wrap gap-2">
-                                                        {[
-                                                            { icon: '🤖', label: 'ChatGPT Integration' },
-                                                            { icon: '⚡', label: 'GitHub Copilot' },
-                                                            { icon: '🧠', label: 'AI Error Handling' },
-                                                        ].map((item, i) => (
-                                                            <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-gray-300">
-                                                                <span>{item.icon}</span>
-                                                                <span>{item.label}</span>
-                                                            </div>
+                                                        {(courseData.aiFeatures && courseData.aiFeatures.length > 0 ? courseData.aiFeatures : ['🤖 ChatGPT Integration', '⚡ GitHub Copilot', '🧠 AI Error Handling']).map((item, i) => (
+                                                            item ? (
+                                                                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-gray-300">
+                                                                    <span>{item}</span>
+                                                                </div>
+                                                            ) : null
                                                         ))}
                                                     </div>
 
