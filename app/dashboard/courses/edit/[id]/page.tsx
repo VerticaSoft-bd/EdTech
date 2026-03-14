@@ -1202,7 +1202,7 @@ export default function EditCoursePage() {
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
                                                 <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider">Background Image</label>
-                                                <span className="text-xs text-blue-400 font-medium">Recommended ratio:(293x164px)| JPG, PNG, WEBP (Max 2MB)</span>
+                                                <span className="text-xs text-blue-400 font-medium">Recommended ratio:(520x480px)| JPG, PNG, WEBP (Max 2MB)</span>
                                             </div>
                                             <div className={`relative border-2 border-dashed ${(aiLearningBannerFile || courseData.aiLearningBannerUrl) ? 'border-transparent' : 'border-blue-200'} rounded-xl hover:border-blue-400 transition-colors bg-white text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
                                                 <input

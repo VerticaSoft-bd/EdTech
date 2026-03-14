@@ -833,7 +833,7 @@ export default function AddCoursePage() {
                                 <div>
                                     <div className="flex items-center justify-between mb-2">
                                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Student Projects Gallery (Images or URLs)</label>
-                                        <span className="text-xs text-gray-400 font-medium">Recommended ratio:(293x164px)| JPG, PNG, WEBP (Max 2MB)</span>
+                                        <span className="text-xs text-gray-400 font-medium">Recommended ratio:(520x480px)| JPG, PNG, WEBP (Max 2MB)</span>
                                     </div>
                                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                                         {studentProjectFiles.map((fileOrUrl, index) => (
@@ -1076,7 +1076,7 @@ export default function AddCoursePage() {
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
                                                 <label className="block text-xs font-bold text-blue-700 uppercase tracking-wider">Background Image</label>
-                                                <span className="text-xs text-blue-400 font-medium">Recommended ratio:(293x164px)| JPG, PNG, WEBP (Max 2MB)</span>
+                                                <span className="text-xs text-blue-400 font-medium">Recommended ratio:(520x480px)| JPG, PNG, WEBP (Max 2MB)</span>
                                             </div>
                                             <div className={`relative border-2 border-dashed ${(aiLearningBannerFile || courseData.aiLearningBannerUrl) ? 'border-transparent' : 'border-blue-200'} rounded-xl hover:border-blue-400 transition-colors bg-white text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
                                                 <input
@@ -1256,7 +1256,7 @@ export default function AddCoursePage() {
                                         <div>
                                             <div className="flex items-center justify-between mb-2">
                                                 <label className="block text-xs font-bold text-purple-700 uppercase tracking-wider">Background Image</label>
-                                                <span className="text-xs text-purple-400 font-medium">Recommended ratio:(293x164px)| JPG, PNG, WEBP (Max 2MB)</span>
+                                                <span className="text-xs text-purple-400 font-medium">Recommended ratio:(520x480px)| JPG, PNG, WEBP (Max 2MB)</span>
                                             </div>
                                             <div className={`relative border-2 border-dashed ${(aiBannerFile || courseData.aiBannerUrl) ? 'border-transparent' : 'border-purple-200'} rounded-xl hover:border-purple-400 transition-colors bg-white text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
                                                 <input
