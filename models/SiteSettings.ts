@@ -16,6 +16,31 @@ const SiteSettingsSchema = new mongoose.Schema({
         instagram: { type: String, default: '' },
         linkedin: { type: String, default: '' },
     },
+    freeClasses: [{
+        title: { type: String, required: true },
+        subtitle: { type: String },
+        category: { type: String },
+        time: { type: String },
+        color: { type: String, default: 'from-blue-500 to-indigo-500' },
+        link: { type: String, default: '#' },
+        order: { type: Number, default: 0 }
+    }],
+    testimonials: [{
+        studentName: { type: String, required: true },
+        courseName: { type: String },
+        role: { type: String }, // optional, for backward compatibility or extra info
+        textFeedback: { type: String },
+        videoUrl: { type: String },
+        image: { type: String },
+        avatar: { type: String },
+        order: { type: Number, default: 0 }
+    }],
 }, { timestamps: true });
 
-export default mongoose.models.SiteSettings || mongoose.model('SiteSettings', SiteSettingsSchema);
+if (mongoose.models.SiteSettings) {
+    delete mongoose.models.SiteSettings;
+}
+
+const SiteSettings = mongoose.model('SiteSettings', SiteSettingsSchema);
+
+export default SiteSettings;

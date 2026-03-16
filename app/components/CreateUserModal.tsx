@@ -200,6 +200,16 @@ export default function CreateUserModal({ role, isOpen, onClose, onSuccess, edit
                                         </div>
                                         <span className="text-sm font-medium text-gray-700 group-hover:text-[#1A1D1F] transition-colors">Student Dues</span>
                                     </label>
+                                    <label className="flex items-center gap-3 cursor-pointer group">
+                                        <div className="relative">
+                                            <input type="checkbox" className="peer sr-only"
+                                                checked={staffPermissions.includes('home-settings')}
+                                                onChange={() => handleCheckboxChange('home-settings')} />
+                                            <div className="w-5 h-5 rounded border-2 border-gray-300 bg-white peer-checked:bg-[#6C5DD3] peer-checked:border-[#6C5DD3] transition-all"></div>
+                                            <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        </div>
+                                        <span className="text-sm font-medium text-gray-700 group-hover:text-[#1A1D1F] transition-colors">Home Settings</span>
+                                    </label>
                                 </div>
                             </div>
                         )}

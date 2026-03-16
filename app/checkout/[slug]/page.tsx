@@ -166,7 +166,7 @@ export default function CheckoutPage() {
     const paymentAmount = urlAmount ? parseInt(urlAmount) : discountedPrice;
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
+        <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
             <Header />
             <Toaster position="top-right" />
 

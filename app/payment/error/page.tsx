@@ -13,7 +13,7 @@ function PaymentErrorContent() {
     const invoice = searchParams.get("invoice_number");
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans">
+        <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
             <Header />
 
             <main className="flex-1 w-full max-w-[800px] mx-auto px-4 py-16 flex items-center justify-center">

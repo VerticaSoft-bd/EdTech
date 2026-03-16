@@ -124,7 +124,7 @@ export default function CourseDetails() {
     const discountedPrice = course.regularFee * (1 - course.discountPercentage / 100);
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] font-sans text-[#1A1D1F] flex flex-col">
+        <div className="min-h-screen bg-[#F8FAFC] text-[#1A1D1F] flex flex-col">
             <Header />
 
             <main className="flex-1 w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-12 md:py-16">
@@ -564,7 +564,7 @@ export default function CourseDetails() {
                         {/* Left Content */}
                         <div id="curriculum" className="lg:col-span-2 space-y-12">
                             {activeTab === 'curriculum' ? (
-                                <div className="bg-white p-6 md:p-10 rounded-[32px] border border-gray-100 shadow-sm min-h-[400px] animate-fade-in font-sans">
+                                <div className="bg-white p-6 md:p-10 rounded-[32px] border border-gray-100 shadow-sm min-h-[400px] animate-fade-in">
                                     {/* Section Header */}
                                     <div className="flex items-center gap-4 mb-8">
                                         <div className="w-10 h-[3px] bg-[#6C5DD3] rounded-full"></div>
@@ -823,19 +823,61 @@ export default function CourseDetails() {
                     )
                 }
 
-                {
-                    course.instructorBannerUrl && (
-                        <section className="mt-20 mb-8 max-w-5xl mx-auto px-4">
-                            <div className="w-full rounded-[32px] overflow-hidden shadow-xl border border-gray-100 relative group">
+                {/* Certificate Section */}
+                <section className="mt-20 mb-20 bg-gray-50 py-16">
+                    <div className="container mx-auto px-4 max-w-6xl">
+                        <div className="flex flex-col items-center justify-center mb-12 text-center">
+                            <h2 className="text-4xl md:text-5xl font-extrabold text-[#F59E0B] mb-4">
+                                সার্টিফিকেট
+                            </h2>
+                            <p className="text-xl md:text-2xl text-[#475569] font-semibold">
+                                কোর্স শেষে পেয়ে যান শেয়ারেবল কোর্স কমপ্লিশন এবং এসেসমেন্ট সার্টিফিকেট
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col items-center justify-center">
+                            <div className="relative w-full max-w-[900px] bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-100">
                                 <img
-                                    src={course.instructorBannerUrl}
-                                    alt="Course Instructor Banner"
-                                    className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                                    src="/images/certificate.jpeg"
+                                    alt="Course Certificate"
+                                    className="w-full h-auto object-contain"
                                 />
                             </div>
-                        </section>
-                    )
-                }
+                        </div>
+                    </div>
+                </section>
+
+                {/* Career Opportunities Section */}
+                {course.careerOpportunities && course.careerOpportunities.length > 0 && (
+                    <section className="mt-16 mb-16">
+                        <div className="flex flex-col items-center justify-center mb-12 text-center">
+                            <div className="relative inline-block">
+                                <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1D1F]">
+                                    ক্যারিয়ার <span className="text-[#FBBF24]">সুযোগ</span>
+                                </h2>
+                                <svg className="absolute -bottom-3 right-0 w-36 text-[#FBBF24]" viewBox="0 0 100 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 15Q50 5 95 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {course.careerOpportunities.map((opp: any, idx: number) => (
+                                <div key={idx} className="bg-[#EEF2F6] rounded-2xl p-8 flex flex-col items-start gap-4 hover:shadow-md transition-shadow">
+                                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                        <Briefcase className="w-6 h-6 text-[#6C5DD3]" />
+                                    </div>
+                                    <h3 className="text-[#1A1D1F] font-bold text-xl leading-tight">
+                                        {opp.title}
+                                    </h3>
+                                    <p className="text-gray-600 text-[15px] font-medium leading-relaxed">
+                                        {opp.description}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
 
                 {/* Requirements Section */}
                 <section className="mt-16 mb-16">
@@ -1137,36 +1179,12 @@ export default function CourseDetails() {
                                             {review.name}
                                         </h4>
                                     </div>
-                                    <div className="text-[#FBBF24] opacity-50 text-2xl font-serif leading-none h-4">
+                                    <div className="text-[#FBBF24] opacity-50 text-2xl leading-none h-4">
                                         &rdquo;
                                     </div>
                                 </div>
                             </div>
                         ))}
-                    </div>
-                </section>
-
-                {/* Certificate Section */}
-                <section className="mt-20 mb-20 bg-gray-50 py-16">
-                    <div className="container mx-auto px-4 max-w-6xl">
-                        <div className="flex flex-col items-center justify-center mb-12 text-center">
-                            <h2 className="text-4xl md:text-5xl font-extrabold text-[#F59E0B] mb-4 font-bengali">
-                                সার্টিফিকেট
-                            </h2>
-                            <p className="text-xl md:text-2xl text-[#475569] font-semibold font-bengali">
-                                কোর্স শেষে পেয়ে যান শেয়ারেবল কোর্স কমপ্লিশন এবং এসেসমেন্ট সার্টিফিকেট
-                            </p>
-                        </div>
-
-                        <div className="flex flex-col items-center justify-center">
-                            <div className="relative w-full max-w-[900px] bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-100">
-                                <img
-                                    src="/certificate.jpeg"
-                                    alt="Course Certificate"
-                                    className="w-full h-auto object-contain"
-                                />
-                            </div>
-                        </div>
                     </div>
                 </section>
 

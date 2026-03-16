@@ -7,28 +7,15 @@ import Footer from "@/app/components/Footer";
 import HeroCarousel from "@/app/components/HeroCarousel";
 import SeminarModal from "@/app/components/SeminarModal";
 
-const FREE_CLASSES = [
-    { title: "AI Automation with Python", subtitle: "Workshop", color: "from-blue-500 to-indigo-500" },
-    { title: "JavaScript (MERN) & AI", subtitle: "Crash Course", color: "from-yellow-400 to-orange-500" },
-    { title: "SQA Manual & Automated Testing", subtitle: "Bootcamp", color: "from-emerald-400 to-teal-500" },
-    { title: "AI Engineering Bootcamp", subtitle: "Masterclass", color: "from-blue-400 to-cyan-400" },
-    { title: "Python, Django, React & AI", subtitle: "Workshop", color: "from-indigo-400 to-purple-500" },
-    { title: "Flutter & AI iOS/Android", subtitle: "Seminar", color: "from-sky-400 to-blue-500" },
-    { title: "Digital Marketing Strategy", subtitle: "Bootcamp", color: "from-amber-400 to-yellow-500" },
-    { title: "UI/UX Design Foundations", subtitle: "Workshop", color: "from-rose-400 to-pink-500" }
-];
-
-const TESTIMONIALS = [
-    { name: "Fatema Tuz Zohra", role: "Web Developer", videoImg: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" },
-    { name: "Rafia Khatun", role: "UI/UX Designer", videoImg: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=400&auto=format&fit=crop" },
-    { name: "Sumaiya Akter", role: "Digital Marketer", videoImg: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop" },
-    { name: "Tariqul Islam", role: "Full Stack Dev", videoImg: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop" }
-];
+// Static data removed, fetching from API now.
 
 export default function RootPage() {
     const [isSeminarModalOpen, setIsSeminarModalOpen] = useState(false);
     const [upcomingCourses, setUpcomingCourses] = useState<any[]>([]);
     const [loadingCourses, setLoadingCourses] = useState(true);
+    const [freeClasses, setFreeClasses] = useState<any[]>([]);
+    const [testimonials, setTestimonials] = useState<any[]>([]);
+    const [testimonialIndex, setTestimonialIndex] = useState(0);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -45,11 +32,40 @@ export default function RootPage() {
             }
         };
 
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch("/api/settings");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.data) {
+                        setFreeClasses(data.data.freeClasses || []);
+                        setTestimonials(data.data.testimonials || []);
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching settings", err);
+            }
+        };
+
         fetchCourses();
+        fetchSettings();
     }, []);
 
+    const nextTestimonial = () => {
+        if (testimonials.length === 0) return;
+        const perPage = typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 4;
+        setTestimonialIndex((prev) => (prev + 1) % Math.ceil(testimonials.length / perPage));
+    };
+
+    const prevTestimonial = () => {
+        if (testimonials.length === 0) return;
+        const perPage = typeof window !== 'undefined' && window.innerWidth < 768 ? 1 : 4;
+        const totalPages = Math.ceil(testimonials.length / perPage);
+        setTestimonialIndex((prev) => (prev - 1 + totalPages) % totalPages);
+    };
+
     return (
-        <div className="min-h-screen bg-[#F8FAFC] font-sans text-[#1A1D1F] flex flex-col">
+        <div className="min-h-screen bg-[#F8FAFC] text-[#1A1D1F] flex flex-col">
             <Header />
 
             <main className="flex-1 flex flex-col items-center w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-8 md:py-12 gap-16">
@@ -188,10 +204,12 @@ export default function RootPage() {
                     </div>
 
                     <div className="flex justify-center mt-10">
-                        <button className="px-7 py-3 border-2 border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition text-[15px] flex items-center gap-2 bg-white">
-                            Load More Courses
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50"><path d="m6 9 6 6 6-6" /></svg>
-                        </button>
+                        <Link href="/courses">
+                            <button className="px-7 py-3 border-2 border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition text-[15px] flex items-center gap-2 bg-white">
+                                Load More Courses
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50"><path d="m6 9 6 6 6-6" /></svg>
+                            </button>
+                        </Link>
                     </div>
                 </section>
 
@@ -222,13 +240,13 @@ export default function RootPage() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                            {FREE_CLASSES.map((cls, i) => (
+                            {freeClasses.length > 0 ? freeClasses.map((cls, i) => (
                                 <div key={i} className="group border border-gray-700/50 rounded-[20px] overflow-hidden bg-[#1E232F] flex flex-col p-4 shadow-xl hover:-translate-y-1 transition-transform duration-300 relative">
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                                     <div className="relative h-[130px] rounded-2xl overflow-hidden mb-5 bg-[#141820] border border-gray-700/30 flex items-center justify-center group-hover:border-gray-600/50 transition-colors">
-                                        <div className={`absolute inset-0 opacity-20 bg-gradient-to-br ${cls.color} blur-[30px]`}></div>
+                                        <div className={`absolute inset-0 opacity-20 bg-gradient-to-br ${cls.color || 'from-blue-500 to-indigo-500'} blur-[30px]`}></div>
                                         <div className="text-center relative z-10 px-4">
-                                            <h4 className={`text-xl font-black text-transparent bg-clip-text bg-gradient-to-r ${cls.color} leading-tight drop-shadow-md`}>{cls.title}</h4>
+                                            <h4 className={`text-xl font-black text-transparent bg-clip-text bg-gradient-to-r ${cls.color || 'from-blue-500 to-indigo-500'} leading-tight drop-shadow-md`}>{cls.title}</h4>
                                             <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] mt-2 font-bold">{cls.subtitle}</p>
                                         </div>
                                         <span className="absolute top-2.5 left-2.5 bg-[#EF4444] text-white text-[9px] px-2 py-0.5 rounded uppercase font-black tracking-wider shadow-sm flex items-center gap-1">
@@ -238,16 +256,20 @@ export default function RootPage() {
                                     <div className="flex-1 flex flex-col relative z-10">
                                         <p className="text-[11px] text-gray-400 mb-2 font-medium flex items-center gap-1.5">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                                            Today • 9:00 PM
+                                            {cls.time || "Today • 9:00 PM"}
                                         </p>
-                                        <h3 className="font-bold text-white leading-snug text-[15px] mb-5">Masterclass on {cls.title.split(' ')[0]} Technology & Career.</h3>
-                                        <button className="mt-auto w-full py-2.5 flex items-center justify-center gap-2 bg-white/5 text-white font-bold text-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition group-hover:bg-[#4A72FF] group-hover:border-[#4A72FF] group-hover:shadow-lg group-hover:shadow-blue-500/25">
+                                        <h3 className="font-bold text-white leading-snug text-[15px] mb-5">Masterclass on {cls.category || cls.title.split(' ')[0]} Technology & Career.</h3>
+                                        <a href={cls.link || "#"} className="mt-auto w-full py-2.5 flex items-center justify-center gap-2 bg-white/5 text-white font-bold text-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition group-hover:bg-[#4A72FF] group-hover:border-[#4A72FF] group-hover:shadow-lg group-hover:shadow-blue-500/25">
                                             Enroll Now
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="m9 18 6-6-6-6" /></svg>
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
-                            ))}
+                            )) : (
+                                <div className="col-span-full py-12 text-center text-gray-500 bg-gray-900/50 rounded-2xl border border-dashed border-gray-700">
+                                    No free classes available at the moment.
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex justify-center mt-12">
@@ -301,58 +323,67 @@ export default function RootPage() {
                     </div>
                 </section>
 
-                {/* Testimonials */}
-                <section className="w-full pb-20">
-                    <div className="text-center mb-12">
-                        <h2 className="text-[28px] font-extrabold text-gray-900">See What Our Students Says</h2>
+                <section className="w-full pb-20 overflow-hidden">
+                    <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+                        <h2 className="text-[28px] font-extrabold text-gray-900 border-l-4 border-[#6C5DD3] pl-4">See What Our Students Says</h2>
+                        <div className="flex gap-3">
+                            <button onClick={prevTestimonial} className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center bg-white text-gray-600 hover:bg-[#6C5DD3] hover:text-white hover:border-[#6C5DD3] transition-all shadow-sm group">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                            </button>
+                            <button onClick={nextTestimonial} className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center bg-white text-gray-600 hover:bg-[#6C5DD3] hover:text-white hover:border-[#6C5DD3] transition-all shadow-sm group">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6 6-6" transform="rotate(180 12 12)"/></svg>
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {TESTIMONIALS.map((t, i) => (
-                            <div key={i} className="flex flex-col h-full group/card cursor-pointer">
-                                {/* Video Thumbnail Card */}
-                                <div className="relative rounded-[24px] overflow-hidden aspect-[4/5] shadow-md mb-4 flex-shrink-0">
-                                    <img src={t.videoImg} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" alt={t.name} />
-                                    {/* Gradient Overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#182a26]/90 via-black/20 to-transparent flex flex-col justify-between p-5">
-                                        <div className="flex justify-end">
-                                        </div>
-
-                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                            <button className="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center pointer-events-auto border border-white/40 shadow-xl group-hover/card:bg-white text-white group-hover/card:text-[#182a26] transition-colors duration-300">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="ml-1">
-                                                    <path d="M8 5v14l11-7z" />
-                                                </svg>
-                                            </button>
-                                        </div>
-
-                                        <div className="flex items-center gap-3 mt-auto relative z-10 translate-y-2 group-hover/card:translate-y-0 transition-transform duration-300">
-                                            <div className="w-10 h-10 rounded-[12px] border-2 border-white/80 overflow-hidden shadow-md">
-                                                <img src={`https://i.pravatar.cc/100?img=${i + 15}`} className="w-full h-full object-cover" alt="avatar" />
+                    <div className="relative">
+                        <div className="flex transition-transform duration-500 ease-out gap-6" style={{ transform: `translateX(-${testimonialIndex * 100}%)` }}>
+                            {testimonials.length > 0 ? testimonials.map((t, i) => (
+                                <div key={i} className="flex-shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] flex flex-col h-full group/card cursor-pointer">
+                                    {/* Video Thumbnail Card */}
+                                    <div className="relative rounded-[24px] overflow-hidden aspect-[4/5] shadow-md mb-4 flex-shrink-0">
+                                        <img src={t.image || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop"} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" alt={t.studentName} />
+                                        {/* Gradient Overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-between p-5">
+                                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                                <a href={t.videoUrl} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center pointer-events-auto border border-white/40 shadow-xl group-hover/card:bg-white text-white group-hover/card:text-black transition-colors duration-300">
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="ml-1">
+                                                        <path d="M8 5v14l11-7z" />
+                                                    </svg>
+                                                </a>
                                             </div>
-                                            <div>
-                                                <p className="text-white text-[13px] font-extrabold leading-tight">{t.name}</p>
-                                                <p className="text-white/80 text-[11px] font-bold">{t.role}</p>
+
+                                            <div className="flex items-center gap-3 mt-auto relative z-10 translate-y-2 group-hover/card:translate-y-0 transition-transform duration-300">
+                                                <div className="w-10 h-10 rounded-[12px] border-2 border-white/80 overflow-hidden shadow-md">
+                                                    <img src={t.avatar || `https://ui-avatars.com/api/?name=${t.studentName}&background=random`} className="w-full h-full object-cover" alt="avatar" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-white text-[13px] font-extrabold leading-tight">{t.studentName}</p>
+                                                    <p className="text-white/80 text-[11px] font-bold">{t.courseName}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Text Review Card */}
+                                    <div className={`flex-1 rounded-[20px] p-5 flex flex-col justify-between ${i % 2 === 0 ? 'bg-[#1e2a27] border border-[#2a443b]' : 'bg-[#1c222c] border border-[#2d3846]'} text-white shadow-lg transition-transform duration-300 group-hover/card:-translate-y-1`}>
+                                        <p className="text-[12px] text-gray-300 leading-[1.6] mb-5 font-medium relative z-10 italic">
+                                            <span className={`text-[40px] ${i % 2 === 0 ? 'text-[#386252]' : 'text-[#3d4b60]'} absolute -top-5 -left-1 -z-10`}>"</span>
+                                            {t.textFeedback || "The curriculum is exactly what the industry demands. This course was truly a game changer for my career path!"}
+                                        </p>
+                                        <div className="flex items-center gap-2.5 mt-auto pt-4 border-t border-white/10">
+                                            <div className="flex flex-col">
+                                                <p className="text-[12px] font-bold text-white leading-none">{t.studentName}</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Text Review Card */}
-                                <div className={`flex-1 rounded-[20px] p-5 flex flex-col justify-between ${i % 2 === 0 ? 'bg-[#1e2a27] border border-[#2a443b]' : 'bg-[#1c222c] border border-[#2d3846]'} text-white shadow-lg transition-transform duration-300 group-hover/card:-translate-y-1`}>
-                                    <p className="text-[12px] text-gray-300 leading-[1.6] mb-5 font-medium relative z-10 italic">
-                                        <span className={`text-[40px] ${i % 2 === 0 ? 'text-[#386252]' : 'text-[#3d4b60]'} absolute -top-5 -left-1 font-serif -z-10`}>"</span>
-                                        The curriculum is exactly what the industry demands. The mentors went out of their way to ensure we understood every complex topic. Truly a game changer for my career path!
-                                    </p>
-                                    <div className="flex items-center gap-2.5 mt-auto pt-4 border-t border-white/10">
-                                        <img src={`https://i.pravatar.cc/100?img=${i + 25}`} className="w-7 h-7 rounded-[8px] object-cover" />
-                                        <div className="flex flex-col">
-                                            <p className="text-[12px] font-bold text-white leading-none">{t.name}</p>
-                                        </div>
-                                    </div>
+                            )) : (
+                                <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100 w-full">
+                                    No testimonials available.
                                 </div>
-                            </div>
-                        ))}
+                            )}
+                        </div>
                     </div>
                 </section>
 

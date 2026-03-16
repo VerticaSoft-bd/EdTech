@@ -1,0 +1,145 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from 'next/link';
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
+
+export default function CoursesPage() {
+    const [courses, setCourses] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [filter, setFilter] = useState('All');
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await fetch("/api/courses");
+                if (res.ok) {
+                    const data = await res.json();
+                    setCourses(data.data);
+                }
+            } catch (err) {
+                console.error("Error fetching courses", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, []);
+
+    const filteredCourses = courses.filter(course => 
+        filter === 'All' || course.category === filter
+    );
+
+    const categories = ['All', ...new Set(courses.map(c => c.category))];
+
+    return (
+        <div className="min-h-screen bg-[#F8FAFC] text-[#1A1D1F] flex flex-col">
+            <Header />
+
+            <main className="flex-1 w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-12 md:py-16">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+                    <div>
+                        <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2">আমাদের সকল কোর্সসমূহ</h1>
+                        <p className="text-gray-500 font-medium">আপনার পছন্দের কোর্সটি বেছে নিন এবং আজই শুরু করুন</p>
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                        {categories.map(cat => (
+                            <button
+                                key={cat}
+                                onClick={() => setFilter(cat)}
+                                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
+                                    filter === cat 
+                                    ? 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20' 
+                                    : 'bg-white text-gray-600 border border-gray-100 hover:border-gray-200 hover:bg-gray-50'
+                                }`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    {loading ? (
+                        [...Array(8)].map((_, i) => (
+                            <div key={i} className="animate-pulse bg-white border border-gray-200 rounded-[24px] overflow-hidden flex flex-col h-[380px]">
+                                <div className="bg-gray-200 h-[200px] w-full"></div>
+                                <div className="p-6 flex-1 flex flex-col gap-4">
+                                    <div className="h-5 bg-gray-200 rounded w-3/4"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                                    <div className="mt-auto h-12 bg-gray-200 rounded-xl w-full"></div>
+                                </div>
+                            </div>
+                        ))
+                    ) : filteredCourses.length > 0 ? (
+                        filteredCourses.map((course) => (
+                            <Link 
+                                href={`/courses/${course.slug || course._id}`} 
+                                key={course._id} 
+                                className="bg-white border border-gray-100 rounded-[24px] overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-gray-200 transition-all duration-500 hover:-translate-y-1"
+                            >
+                                <div className="relative h-[200px] bg-gray-100 overflow-hidden">
+                                    <img 
+                                        src={course.thumbnail || "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=400&auto=format&fit=crop"} 
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                        alt={course.title} 
+                                    />
+                                    <div className="absolute top-4 left-4">
+                                        <span className="bg-white/90 backdrop-blur-md text-[#1A1D1F] text-[11px] px-3 py-1.5 rounded-lg font-bold shadow-sm border border-white/50">
+                                            {course.category}
+                                        </span>
+                                    </div>
+                                    {course.courseMode === 'Online Class' && (
+                                        <div className="absolute top-4 right-4 bg-[#EF4444] flex items-center gap-1.5 text-white text-[10px] px-2.5 py-1.5 rounded-lg font-black uppercase tracking-wider shadow-lg">
+                                            <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                                            Live
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                <div className="p-6 flex flex-col flex-1">
+                                    <h3 className="font-bold text-gray-900 text-lg leading-tight mb-4 group-hover:text-[#6C5DD3] transition-colors line-clamp-2">
+                                        {course.title}
+                                    </h3>
+                                    
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs overflow-hidden border border-gray-50">
+                                            {course.assignedTeachers?.[0]?.profileImage ? (
+                                                <img src={course.assignedTeachers[0].profileImage} alt="Teacher" className="w-full h-full object-cover" />
+                                            ) : "🏫"}
+                                        </div>
+                                        <span className="text-sm text-gray-500 font-medium">
+                                            {course.assignedTeachers?.[0]?.name || "V-Soft Ed"}
+                                        </span>
+                                    </div>
+
+                                    <div className="mt-auto pt-5 border-t border-gray-50 flex items-center justify-between">
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Course Fee</span>
+                                            <span className="text-xl font-black text-gray-900">
+                                                {course.isFree ? "Free" : `৳${course.regularFee}`}
+                                            </span>
+                                        </div>
+                                        <div className="w-11 h-11 bg-gray-50 text-[#6C5DD3] rounded-2xl flex items-center justify-center group-hover:bg-[#6C5DD3] group-hover:text-white transition-all duration-300 shadow-inner">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))
+                    ) : (
+                        <div className="col-span-full py-20 text-center bg-white rounded-[32px] border border-dashed border-gray-200">
+                            <p className="text-gray-500 font-bold text-lg">No courses found in this category.</p>
+                            <button onClick={() => setFilter('All')} className="mt-4 text-[#6C5DD3] font-black underline">Show All Courses</button>
+                        </div>
+                    )}
+                </div>
+            </main>
+
+            <Footer />
+        </div>
+    );
+}

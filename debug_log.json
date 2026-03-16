@@ -1,0 +1,334 @@
+{
+  "timestamp": "2026-03-16T10:35:27.763Z",
+  "body": {
+    "freeClasses": [
+      {
+        "title": "FILE LOG TEST",
+        "subtitle": "TEST",
+        "category": "",
+        "time": "",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#",
+        "order": 0
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:35:56.965Z",
+  "body": {
+    "freeClasses": [
+      {
+        "title": "FILE LOG TEST",
+        "subtitle": "TEST",
+        "category": "",
+        "time": "",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#",
+        "order": 0
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:36:38.233Z",
+  "body": {
+    "freeClasses": [
+      {
+        "title": "FILE LOG TEST",
+        "subtitle": "TEST",
+        "category": "TEST CATEGORY",
+        "time": "10:00 AM",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#https://example.com",
+        "order": 0
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:38:18.725Z",
+  "body": {
+    "freeClasses": [
+      {
+        "title": "Test Free Class",
+        "subtitle": "Online Workshop",
+        "category": "Technology",
+        "time": "Tomorrow 5 PM",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#http://example.com",
+        "order": 0
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:38:18.850Z",
+  "result": {
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/youthinstructory",
+      "youtube": "https://www.youtube.com/@YouthIns",
+      "instagram": "",
+      "linkedin": ""
+    },
+    "_id": "69ad44a9b028a44427df10c8",
+    "siteName": "Youth INS",
+    "siteTagline": "Education Platform",
+    "logo": "/images/logo.png",
+    "favicon": "/favicon.ico",
+    "primaryColor": "#3d69f0",
+    "contactEmail": "info@youthins.com",
+    "contactPhone": "+8801322075324",
+    "address": "Khilgaon Chowrasta\n403 Block A, Dhaka",
+    "footerText": "@2026 Youth INS, All Rights Reserved.",
+    "createdAt": "2026-03-08T09:43:05.155Z",
+    "updatedAt": "2026-03-16T10:38:18.731Z",
+    "__v": 0
+  }
+}
+{
+  "timestamp": "2026-03-16T10:38:54.178Z",
+  "body": {
+    "freeClasses": [
+      {
+        "title": "Test Free Class 2",
+        "subtitle": "Online Workshop 2",
+        "category": "Technology 2",
+        "time": "Tomorrow 6 PM",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#http://example2.com",
+        "order": 0
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:38:54.260Z",
+  "result": {
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/youthinstructory",
+      "youtube": "https://www.youtube.com/@YouthIns",
+      "instagram": "",
+      "linkedin": ""
+    },
+    "_id": "69ad44a9b028a44427df10c8",
+    "siteName": "Youth INS",
+    "siteTagline": "Education Platform",
+    "logo": "/images/logo.png",
+    "favicon": "/favicon.ico",
+    "primaryColor": "#3d69f0",
+    "contactEmail": "info@youthins.com",
+    "contactPhone": "+8801322075324",
+    "address": "Khilgaon Chowrasta\n403 Block A, Dhaka",
+    "footerText": "@2026 Youth INS, All Rights Reserved.",
+    "createdAt": "2026-03-08T09:43:05.155Z",
+    "updatedAt": "2026-03-16T10:38:54.196Z",
+    "__v": 0
+  }
+}
+{
+  "timestamp": "2026-03-16T10:42:18.738Z",
+  "body": {
+    "testimonials": [
+      {
+        "studentName": "John Doe",
+        "courseName": "React Mastery",
+        "textFeedback": "Great course!",
+        "videoUrl": "xyzabc123",
+        "image": "",
+        "avatar": "",
+        "order": 0
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:42:18.836Z",
+  "result": {
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/youthinstructory",
+      "youtube": "https://www.youtube.com/@YouthIns",
+      "instagram": "",
+      "linkedin": ""
+    },
+    "_id": "69ad44a9b028a44427df10c8",
+    "siteName": "Youth INS",
+    "siteTagline": "Education Platform",
+    "logo": "/images/logo.png",
+    "favicon": "/favicon.ico",
+    "primaryColor": "#3d69f0",
+    "contactEmail": "info@youthins.com",
+    "contactPhone": "+8801322075324",
+    "address": "Khilgaon Chowrasta\n403 Block A, Dhaka",
+    "footerText": "@2026 Youth INS, All Rights Reserved.",
+    "createdAt": "2026-03-08T09:43:05.155Z",
+    "updatedAt": "2026-03-16T10:42:18.744Z",
+    "__v": 0
+  }
+}
+{
+  "timestamp": "2026-03-16T10:43:13.415Z",
+  "body": {
+    "freeClasses": [
+      {
+        "title": "Final Verify Class",
+        "subtitle": "Final Sub",
+        "category": "Final Cat",
+        "time": "Final Time",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#http://final.com",
+        "order": 0
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:43:13.472Z",
+  "result": {
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/youthinstructory",
+      "youtube": "https://www.youtube.com/@YouthIns",
+      "instagram": "",
+      "linkedin": ""
+    },
+    "_id": "69ad44a9b028a44427df10c8",
+    "siteName": "Youth INS",
+    "siteTagline": "Education Platform",
+    "logo": "/images/logo.png",
+    "favicon": "/favicon.ico",
+    "primaryColor": "#3d69f0",
+    "contactEmail": "info@youthins.com",
+    "contactPhone": "+8801322075324",
+    "address": "Khilgaon Chowrasta\n403 Block A, Dhaka",
+    "footerText": "@2026 Youth INS, All Rights Reserved.",
+    "createdAt": "2026-03-08T09:43:05.155Z",
+    "updatedAt": "2026-03-16T10:43:13.420Z",
+    "__v": 0
+  }
+}
+{
+  "timestamp": "2026-03-16T10:44:57.452Z",
+  "body": {
+    "freeClasses": [
+      {
+        "title": "Test Free Class",
+        "subtitle": "Free Workshop",
+        "category": "Web Development",
+        "time": "Tomorrow ",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#https://example.com/enroll",
+        "order": 0
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:44:57.522Z",
+  "result": {
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/youthinstructory",
+      "youtube": "https://www.youtube.com/@YouthIns",
+      "instagram": "",
+      "linkedin": ""
+    },
+    "_id": "69ad44a9b028a44427df10c8",
+    "siteName": "Youth INS",
+    "siteTagline": "Education Platform",
+    "logo": "/images/logo.png",
+    "favicon": "/favicon.ico",
+    "primaryColor": "#3d69f0",
+    "contactEmail": "info@youthins.com",
+    "contactPhone": "+8801322075324",
+    "address": "Khilgaon Chowrasta\n403 Block A, Dhaka",
+    "footerText": "@2026 Youth INS, All Rights Reserved.",
+    "createdAt": "2026-03-08T09:43:05.155Z",
+    "updatedAt": "2026-03-16T10:44:57.455Z",
+    "__v": 0,
+    "freeClasses": [
+      {
+        "title": "Test Free Class",
+        "subtitle": "Free Workshop",
+        "category": "Web Development",
+        "time": "Tomorrow ",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#https://example.com/enroll",
+        "order": 0,
+        "_id": "69b7df2951c3d0e7ac7b898f"
+      }
+    ],
+    "testimonials": []
+  }
+}
+{
+  "timestamp": "2026-03-16T10:48:39.799Z",
+  "body": {
+    "freeClasses": [
+      {
+        "title": "Test Free Class",
+        "subtitle": "Free Workshop",
+        "category": "Web Development",
+        "time": "Tomorrow ",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#https://example.com/enroll",
+        "order": 0,
+        "_id": "69b7df2951c3d0e7ac7b898f"
+      },
+      {
+        "title": "Another Free Class",
+        "subtitle": "Workshop 2",
+        "category": "Design",
+        "time": "Today 6 PM",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#https://example.com/2",
+        "order": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2026-03-16T10:48:40.107Z",
+  "result": {
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/youthinstructory",
+      "youtube": "https://www.youtube.com/@YouthIns",
+      "instagram": "",
+      "linkedin": ""
+    },
+    "_id": "69ad44a9b028a44427df10c8",
+    "siteName": "Youth INS",
+    "siteTagline": "Education Platform",
+    "logo": "/images/logo.png",
+    "favicon": "/favicon.ico",
+    "primaryColor": "#3d69f0",
+    "contactEmail": "info@youthins.com",
+    "contactPhone": "+8801322075324",
+    "address": "Khilgaon Chowrasta\n403 Block A, Dhaka",
+    "footerText": "@2026 Youth INS, All Rights Reserved.",
+    "createdAt": "2026-03-08T09:43:05.155Z",
+    "updatedAt": "2026-03-16T10:48:39.835Z",
+    "__v": 0,
+    "freeClasses": [
+      {
+        "title": "Test Free Class",
+        "subtitle": "Free Workshop",
+        "category": "Web Development",
+        "time": "Tomorrow ",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#https://example.com/enroll",
+        "order": 0,
+        "_id": "69b7df2951c3d0e7ac7b898f"
+      },
+      {
+        "title": "Another Free Class",
+        "subtitle": "Workshop 2",
+        "category": "Design",
+        "time": "Today 6 PM",
+        "color": "from-blue-500 to-indigo-500",
+        "link": "#https://example.com/2",
+        "order": 1,
+        "_id": "69b7e00751c3d0e7ac7b8998"
+      }
+    ],
+    "testimonials": []
+  }
+}

@@ -174,6 +174,14 @@ export default function CoursesPage() {
                                             </div>
                                             <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <Link
+                                                    href={`/courses/${course.slug || course._id}`}
+                                                    className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-[#6C5DD3] transition-colors shadow-sm"
+                                                    title="View Course"
+                                                    target="_blank"
+                                                >
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                </Link>
+                                                <Link
                                                     href={`/dashboard/courses/edit/${course._id}`}
                                                     className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-[#6C5DD3] transition-colors shadow-sm"
                                                     title="Edit Course"

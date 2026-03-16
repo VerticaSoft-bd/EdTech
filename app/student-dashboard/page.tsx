@@ -29,7 +29,7 @@ export default async function StudentDashboard() {
   const enrolledCourses = await Course.find({ title: { $in: enrolledCourseNames } }).lean();
 
   return (
-    <div className="min-h-screen bg-white font-sans text-[#1A1D1F]">
+    <div className="min-h-screen bg-white text-[#1A1D1F]">
       <Header />
 
       <main className="max-w-[1600px] mx-auto p-6 md:p-8 grid grid-cols-12 gap-8">

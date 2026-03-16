@@ -14,7 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="bn">
+      <head>
+        <link rel="stylesheet" href="https://use.typekit.net/bfh0rnp.css" />
+      </head>
       <body
         className="antialiased"
       >

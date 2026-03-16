@@ -450,6 +450,18 @@ export default function EditCoursePage() {
     };
 
     const tabList = ['basic', 'details', 'curriculum', 'media', 'banners', 'pricing', 'teacher', 'career', 'features', 'extras'];
+    const tabLabels: { [key: string]: string } = {
+        career: 'Career Opportunities',
+        basic: 'Basic',
+        details: 'Details',
+        curriculum: 'Curriculum',
+        media: 'Media',
+        banners: 'Banners',
+        pricing: 'Pricing',
+        teacher: 'Teacher',
+        features: 'Features',
+        extras: 'Extras'
+    };
 
     const handleNextTab = () => {
         const currentIndex = tabList.indexOf(activeTab);
@@ -513,9 +525,9 @@ export default function EditCoursePage() {
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-all ${activeTab === tab ? 'bg-[#6C5DD3] text-white shadow-md' : 'text-gray-500 hover:text-[#1A1D1F]'}`}
+                                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === tab ? 'bg-[#6C5DD3] text-white shadow-md' : 'text-gray-500 hover:text-[#1A1D1F]'}`}
                             >
-                                {tab}
+                                {tabLabels[tab] || tab.charAt(0).toUpperCase() + tab.slice(1)}
                             </button>
                         ))}
                     </div>

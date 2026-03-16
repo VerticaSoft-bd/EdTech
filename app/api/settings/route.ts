@@ -25,16 +25,18 @@ export async function PUT(request: Request) {
         await connectDB();
         const body = await request.json();
 
-        let settings = await SiteSettings.findOne();
-        if (!settings) {
-            settings = await SiteSettings.create(body);
-        } else {
-            Object.assign(settings, body);
-            await settings.save();
-        }
+        // Use findOneAndUpdate to ensure atomic updates and avoid multiple doc issues
+        // We find the first document (empty filter) and apply updates
+        // To handle partial updates while still managing arrays correctly, we use $set
+        const settings = await SiteSettings.findOneAndUpdate(
+            {},
+            { $set: body },
+            { new: true, upsert: true, runValidators: true }
+        );
 
         return NextResponse.json({ success: true, data: settings });
     } catch (error: any) {
+        console.error("Settings Update Error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
