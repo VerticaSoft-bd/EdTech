@@ -38,6 +38,8 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
                 avatar: student.avatar || '',
                 privacyPolicyAccepted: student.privacyPolicyAccepted || false,
                 progress: student.progress || 0,
+                totalClasses: student.totalClasses || 0,
+                attendedClasses: student.attendedClasses || 0,
             });
             fetchCourses();
         }
@@ -79,6 +81,8 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
         avatar: '',
         privacyPolicyAccepted: false,
         progress: 0,
+        totalClasses: 0,
+        attendedClasses: 0,
     });
 
     if (!isOpen) return null;
@@ -154,7 +158,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
 
                 // Reset form
                 setFormData({
-                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', privacyPolicyAccepted: false, progress: 0,
+                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', privacyPolicyAccepted: false, progress: 0, totalClasses: 0, attendedClasses: 0,
                 });
 
                 if (onSuccess) onSuccess();
@@ -413,6 +417,37 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
                                             {formData.progress}%
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Attendance Tracker */}
+                        <div>
+                            <h3 className="text-lg font-bold text-[#1A1D1F] mb-4 pb-2 border-b border-gray-100">Attendance Tracker</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-gray-700">Total Classes <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="number" 
+                                        name="totalClasses" 
+                                        value={formData.totalClasses} 
+                                        onChange={handleChange} 
+                                        required 
+                                        placeholder="e.g. 30" 
+                                        className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" 
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-gray-700">Attended Classes <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="number" 
+                                        name="attendedClasses" 
+                                        value={formData.attendedClasses} 
+                                        onChange={handleChange} 
+                                        required 
+                                        placeholder="e.g. 18" 
+                                        className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" 
+                                    />
                                 </div>
                             </div>
                         </div>

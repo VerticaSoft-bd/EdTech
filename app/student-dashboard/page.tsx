@@ -573,9 +573,8 @@ export default async function StudentDashboard() {
           {/* Attendance Tracker */}
           <div className="h-[340px]">
             <AttendanceChart
-              present={18}
-              limit={24}
-              total={30}
+              present={enrollments.reduce((sum, e: any) => sum + (e.attendedClasses || 0), 0)}
+              limit={enrollments.reduce((sum, e: any) => sum + (e.totalClasses || 0), 0) || 1}
             />
           </div>
 

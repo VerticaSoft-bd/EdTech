@@ -2,16 +2,15 @@ import React from 'react';
 
 interface AttendanceProps {
     present: number;
-    total: number;
     limit: number;
 }
 
-const AttendanceChart: React.FC<AttendanceProps> = ({ present, total, limit }) => {
-    const percentage = Math.min(100, (present / limit) * 100);
+const AttendanceChart: React.FC<AttendanceProps> = ({ present, limit }) => {
+    const percentage = limit > 0 ? Math.min(100, (present / limit) * 100) : 0;
     const isNearLimit = percentage > 80;
 
     return (
-        <div className="bg-white p-6 rounded-[32px] shadow-sm flex flex-col h-full rounded-[32px] bg-white p-6 shadow-sm">
+        <div className="bg-white p-6 rounded-[32px] shadow-sm flex flex-col h-full bg-white shadow-sm">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-[#1A1D1F] flex items-center gap-2">
                     Attendance
