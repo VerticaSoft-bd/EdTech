@@ -4,42 +4,69 @@ import { jwtVerify } from 'jose';
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
-    const authCookie = request.cookies.get('token');
     const { pathname } = request.nextUrl;
+    const authCookie = request.cookies.get('token');
 
-    // 1. Unauthenticated users trying to access dashboard routes
-    if (pathname.startsWith('/dashboard') || pathname.startsWith('/student-dashboard')) {
+    // Handle "My Courses" redirect
+    if (pathname === '/my-courses') {
         if (!authCookie) {
-            console.log(`Middleware: No token cookie, redirecting ${pathname} to /login`);
-            const loginUrl = new URL('/login', request.url);
-            return NextResponse.redirect(loginUrl);
+            return NextResponse.redirect(new URL('/login', request.url));
         }
-
-        // 2. Role-Based Access Control (RBAC)
         try {
-            // Decode the token using `jose` which is Edge-compatible
             const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
             const { payload } = await jwtVerify(authCookie.value, secret);
             const userRole = payload.role as string;
 
-            // If a 'student' or 'teacher' tries to access the main Admin dashboard or any other admin pages
-            if ((userRole === 'student' || userRole === 'teacher') && pathname.startsWith('/dashboard')) {
-                console.log(`Middleware: Student/Teacher role found for /dashboard, redirecting to /student-dashboard`);
-                // Force them to only see their student dashboard
+            if (userRole === 'teacher') {
+                return NextResponse.redirect(new URL('/teacher-dashboard', request.url));
+            } else if (userRole === 'student') {
                 return NextResponse.redirect(new URL('/student-dashboard', request.url));
-            }
-
-            // If an Admin tries to access the student-dashboard, redirect them to the main admin dashboard
-            if (userRole !== 'student' && userRole !== 'teacher' && pathname.startsWith('/student-dashboard')) {
-                console.log(`Middleware: Admin/Other role found for /student-dashboard, redirecting to /dashboard`);
+            } else {
                 return NextResponse.redirect(new URL('/dashboard', request.url));
             }
-
         } catch (error) {
-            // Token is invalid or expired
+            return NextResponse.redirect(new URL('/login', request.url));
+        }
+    }
+
+    // 1. Unauthenticated users trying to access protected dashboard routes
+    const isDashboardPath = pathname.startsWith('/dashboard');
+    const isStudentDashboardPath = pathname.startsWith('/student-dashboard');
+    const isTeacherDashboardPath = pathname.startsWith('/teacher-dashboard');
+
+    if (isDashboardPath || isStudentDashboardPath || isTeacherDashboardPath) {
+        if (!authCookie) {
+            console.log(`Middleware: No token cookie, redirecting ${pathname} to /login`);
+            return NextResponse.redirect(new URL('/login', request.url));
+        }
+
+        // 2. Role-Based Access Control (RBAC)
+        try {
+            const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+            const { payload } = await jwtVerify(authCookie.value, secret);
+            const userRole = payload.role as string;
+
+            // Student Access Logic
+            if (isStudentDashboardPath) {
+                if (userRole === 'teacher') return NextResponse.redirect(new URL('/teacher-dashboard', request.url));
+                if (userRole !== 'student') return NextResponse.redirect(new URL('/dashboard', request.url));
+            }
+
+            // Teacher Access Logic
+            if (isTeacherDashboardPath) {
+                if (userRole === 'student') return NextResponse.redirect(new URL('/student-dashboard', request.url));
+                if (userRole !== 'teacher') return NextResponse.redirect(new URL('/dashboard', request.url));
+            }
+
+            // Admin Dashboard Access Logic
+            if (isDashboardPath) {
+                if (userRole === 'student') return NextResponse.redirect(new URL('/student-dashboard', request.url));
+                if (userRole === 'teacher') return NextResponse.redirect(new URL('/teacher-dashboard', request.url));
+                // Allow admin and staff (no redirect needed here as they are allowed)
+            }
+        } catch (error) {
             console.log(`Middleware: Token invalid/expired, redirecting ${pathname} to /login`);
-            const loginUrl = new URL('/login', request.url);
-            return NextResponse.redirect(loginUrl);
+            return NextResponse.redirect(new URL('/login', request.url));
         }
     }
 
