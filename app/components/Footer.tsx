@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Footer() {
     const [siteSettings, setSiteSettings] = useState<any>(null);
@@ -63,11 +64,11 @@ export default function Footer() {
                     {/* Links Section 2 */}
                     <div>
                         <h4 className="text-white font-bold mb-6">Company</h4>
-                        <ul className="space-y-4">
-                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">About Us</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Careers</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Contact</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Partners</a></li>
+                    <ul className="space-y-4">
+                            <li><Link href="/about-us" className="text-gray-400 hover:text-white transition-colors text-sm">About Us</Link></li>
+                            <li><Link href="/careers" className="text-gray-400 hover:text-white transition-colors text-sm">Careers</Link></li>
+                            <li><Link href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Contact</Link></li>
+                            <li><Link href="/partners" className="text-gray-400 hover:text-white transition-colors text-sm">Partners</Link></li>
                         </ul>
                     </div>
 
@@ -95,9 +96,9 @@ export default function Footer() {
                         {footerText}
                     </p>
                     <div className="flex items-center gap-6">
-                        <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy Policy</a>
-                        <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Terms of Service</a>
-                        <a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Cookies</a>
+                        <Link href="/privacy-policy" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy Policy</Link>
+                        <Link href="/terms-of-service" className="text-gray-500 hover:text-white text-sm transition-colors">Terms of Service</Link>
+                        <Link href="/cookies" className="text-gray-500 hover:text-white text-sm transition-colors">Cookies</Link>
                     </div>
                 </div>
             </div>
