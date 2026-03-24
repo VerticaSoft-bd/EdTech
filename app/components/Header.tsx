@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 export default function Header() {
     const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -15,6 +16,20 @@ export default function Header() {
             }
         }
     }, []);
+
+    // Close mobile menu on bypass or link click
+    const closeMenu = () => setIsMobileMenuOpen(false);
+
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
 
     return (
         <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -90,20 +105,24 @@ export default function Header() {
 
                     {/* Middle: Navigation Tabs (Hidden on mobile) */}
                     <nav className="hidden lg:flex items-center gap-2 shrink-0">
-                        {["Home", "My Courses", "Assesment", "Settings"].map((item, idx) => {
-                            const isMyCourses = item === "My Courses";
+                        {[
+                            { label: "Home", href: "/" },
+                            { label: "Courses", href: "/courses" },
+                            { label: "My Courses", href: user?.role === 'admin' ? '/dashboard' : '/student-dashboard' },
+                            { label: "Settings", href: user?.role === 'admin' ? '/dashboard/settings' : '/student-dashboard' }
+                        ].map((item, idx) => {
                             const commonClasses = `px-5 py-2.5 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 overflow-hidden ${idx === 0
                                 ? "text-[#6C5DD3]"
                                 : "text-gray-500 hover:text-[#1A1D1F]"
                                 }`;
 
-                            const content = (
-                                <>
+                            return (
+                                <Link key={item.label} href={item.href} className={commonClasses}>
                                     {/* Magnetic Glow Background */}
                                     <div className="absolute inset-0 bg-[#6C5DD3]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                     <div className="absolute -inset-1 bg-gradient-to-r from-transparent via-[#6C5DD3]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"></div>
 
-                                    <span className="relative z-10 uppercase tracking-widest">{item}</span>
+                                    <span className="relative z-10 uppercase tracking-widest">{item.label}</span>
 
                                     {/* AI Indicator Dots */}
                                     {idx === 0 ? (
@@ -117,21 +136,7 @@ export default function Header() {
 
                                     {/* Bottom Energy Bar */}
                                     <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-[#6C5DD3] rounded-full transition-all duration-300 ${idx === 0 ? 'w-4' : 'w-0 group-hover:w-3 opacity-50'}`}></span>
-                                </>
-                            );
-
-                            if (isMyCourses) {
-                                return (
-                                    <Link key={item} href="/my-courses" className={commonClasses}>
-                                        {content}
-                                    </Link>
-                                );
-                            }
-
-                            return (
-                                <button key={item} className={commonClasses}>
-                                    {content}
-                                </button>
+                                </Link>
                             );
                         })}
                     </nav>
@@ -173,7 +178,7 @@ export default function Header() {
                                     </button>
                                 </div>
 
-                                <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
+                                <div className="h-8 w-[1px] bg-gray-200 mx-1 hidden md:block"></div>
 
                                 <div className="relative group">
                                     <Link
@@ -244,12 +249,67 @@ export default function Header() {
                             </Link>
                         )}
                         {/* Mobile Menu Toggle (Hamburger) */}
-                        <button className="flex lg:hidden p-2 ml-2 text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50 rounded-lg">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <line x1="4" y1="12" x2="20" y2="12" />
-                                <line x1="4" y1="6" x2="20" y2="6" />
-                                <line x1="4" y1="18" x2="20" y2="18" />
-                            </svg>
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="flex lg:hidden p-2 ml-2 text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50 rounded-lg transition-colors relative z-[60]"
+                        >
+                            {isMobileMenuOpen ? (
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            ) : (
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="4" y1="12" x2="20" y2="12" />
+                                    <line x1="4" y1="6" x2="20" y2="6" />
+                                    <line x1="4" y1="18" x2="20" y2="18" />
+                                </svg>
+                            )}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Menu Drawer */}
+            <div className={`fixed inset-0 bg-white z-50 lg:hidden transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                <div className="flex flex-col h-full pt-20 px-6">
+                    {/* Search in mobile menu */}
+                    <div className="relative mb-8">
+                        <input
+                            type="text"
+                            placeholder="Search courses..."
+                            className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/10 transition-all"
+                        />
+                        <div className="absolute inset-y-0 left-4 flex items-center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A4A4A4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                        </div>
+                    </div>
+
+                    <nav className="flex flex-col gap-2">
+                        {[
+                            { label: "Home", href: "/" },
+                            { label: "Courses", href: "/courses" },
+                            { label: "My Courses", href: user?.role === 'admin' ? '/dashboard' : '/student-dashboard' },
+                            { label: "Settings", href: user?.role === 'admin' ? '/dashboard/settings' : '/student-dashboard' }
+                        ].map((item) => {
+                            return (
+                                <Link
+                                    key={item.label}
+                                    href={item.href}
+                                    onClick={closeMenu}
+                                    className="px-6 py-4 text-lg font-black text-gray-500 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/5 rounded-2xl transition-all uppercase tracking-widest flex items-center justify-between group"
+                                >
+                                    {item.label}
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    <div className="mt-auto pb-10 flex flex-col gap-4">
+                        <button className="w-full py-4 bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] text-white font-black rounded-2xl shadow-xl shadow-[#6C5DD3]/20 flex items-center justify-center gap-3">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L13.8 6.2L18 8L13.8 9.8L12 14L10.2 9.8L6 8L10.2 6.2L12 2Z" fill="white" /><path d="M19 13L20 15.5L22.5 16.5L20 17.5L19 20L18 17.5L15.5 16.5L18 15.5L19 13Z" fill="white" /></svg>
+                            ASK AI ASSISTANT
                         </button>
                     </div>
                 </div>
@@ -257,3 +317,4 @@ export default function Header() {
         </header>
     );
 }
+
