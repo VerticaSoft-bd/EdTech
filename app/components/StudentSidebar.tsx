@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const StudentSidebar: React.FC = () => {
+    const [user, setUser] = useState<{ name: string; role: string; email?: string } | null>(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (error) {
+                console.error("Error parsing user from localStorage:", error);
+            }
+        }
+    }, []);
+
     return (
         <aside className="fixed left-0 top-0 h-screen w-[280px] bg-white border-r border-gray-100 flex flex-col z-50">
             {/* Logo area */}
@@ -16,7 +29,7 @@ const StudentSidebar: React.FC = () => {
             <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
                 <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">Student Menu</div>
 
-                <Link href="/student" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20 group transition-all">
+                <Link href="/student-dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20 group transition-all">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                     <span className="text-sm font-bold">Dashboard</span>
                 </Link>
@@ -51,13 +64,21 @@ const StudentSidebar: React.FC = () => {
 
             {/* Profile Info */}
             <div className="p-4 border-t border-gray-100">
-                <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
-                    <img src="https://i.pravatar.cc/150?u=student" className="w-10 h-10 rounded-full bg-gray-200" alt="Student" />
+                <Link href="/student-dashboard" className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
+                    <img
+                        src={`https://i.pravatar.cc/150?u=${user?.email || 'student'}`}
+                        className="w-10 h-10 rounded-full bg-gray-200 object-cover"
+                        alt={user?.name || 'Student'}
+                    />
                     <div>
-                        <h4 className="text-sm font-bold text-[#1A1D1F]">Alex Smith</h4>
-                        <p className="text-[10px] text-gray-400">Batch A - UX101</p>
+                        <h4 className="text-sm font-bold text-[#1A1D1F] truncate w-[160px]">
+                            {user?.name || 'Loading...'}
+                        </h4>
+                        <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
+                            {user?.role || 'Student'}
+                        </p>
                     </div>
-                </div>
+                </Link>
             </div>
         </aside>
     );

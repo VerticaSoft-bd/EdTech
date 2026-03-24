@@ -47,18 +47,28 @@ export async function getAuthenticatedUser(req?: NextRequest) {
     const payload = await verifyToken(token);
     if (!payload || !payload.id) return null;
 
-    await dbConnect();
-
-    // Ensure ID is a string to prevent CastErrors if token payload is malformed
-    const userId = String(payload.id);
-
     try {
+        await dbConnect();
+
+        // Ensure ID is a string to prevent CastErrors if token payload is malformed
+        const userId = String(payload.id);
+
         const user = await User.findById(userId).select('-password');
-        return user;
+        if (user) return user;
     } catch (error) {
-        console.error('Auth User Fetch Error:', error);
-        return null;
+        console.error('Auth Database/User Fetch Error:', error);
     }
+
+    // Fallback: return payload data from JWT so middleware/pages don't think they are unauthenticated
+    // and cause potential redirect loops to /login if the DB is just temporarily down.
+    return {
+        _id: payload.id,
+        id: payload.id,
+        role: payload.role as string,
+        email: payload.email as string,
+        name: payload.name as string,
+        dbError: true
+    };
 }
 
 export function unauthorizedResponse() {

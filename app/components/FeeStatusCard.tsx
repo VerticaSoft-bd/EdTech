@@ -13,8 +13,8 @@ const FeeStatusCard: React.FC<FeeStatusProps> = ({
     nextDueDate,
     currency = "$"
 }) => {
-    const percentagePaid = Math.min(100, Math.max(0, (paidAmount / totalFee) * 100));
-    const isLocked = percentagePaid < 50; // Example threshold, logically would be based on consumed classes
+    const percentagePaid = totalFee > 0 ? Math.min(100, Math.max(0, (paidAmount / totalFee) * 100)) : 0;
+    const isLocked = totalFee > 0 && paidAmount < totalFee;
 
     return (
         <div className={`rounded-[32px] p-6 text-white relative overflow-hidden shadow-xl transition-all hover:scale-[1.02] ${isLocked ? 'bg-gradient-to-br from-[#FF4C4C] to-[#e43b3b] shadow-[#FF4C4C]/30' : 'bg-gradient-to-br from-[#6C5DD3] to-[#8E8AFF] shadow-[#6C5DD3]/30'}`}>
@@ -26,15 +26,15 @@ const FeeStatusCard: React.FC<FeeStatusProps> = ({
                     <div>
                         <h3 className="text-lg font-bold mb-1 flex items-center gap-2">
                             Fee Status
-                            {isLocked && <span className="bg-white/20 px-2 py-0.5 rounded-lg text-[10px] uppercase font-bold tracking-wider">Locked</span>}
+                            {isLocked && <span className="bg-white/20 px-2 py-0.5 rounded-lg text-[10px] uppercase font-bold tracking-wider">Due</span>}
                         </h3>
                         <p className="text-xs opacity-80 font-medium">
-                            {isLocked ? 'Pay immediately to unlock access' : 'Your account is active'}
+                            {isLocked ? 'Please complete your payment' : 'Your account is active'}
                         </p>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/10">
                         {isLocked ? (
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                         ) : (
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                         )}

@@ -21,6 +21,9 @@ export interface IStudent extends Document {
     guardianMobileNo: string;
     avatar?: string;
     privacyPolicyAccepted: boolean;
+    progress: number;
+    totalClasses: number;
+    attendedClasses: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -59,6 +62,9 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
         guardianMobileNo: { type: String, required: true },
         avatar: { type: String },
         privacyPolicyAccepted: { type: Boolean, required: true, default: false },
+        progress: { type: Number, default: 0 },
+        totalClasses: { type: Number, default: 0 },
+        attendedClasses: { type: Number, default: 0 },
     },
     {
         timestamps: true,
@@ -75,11 +81,9 @@ if (mongoose.models.Student) {
 
 const Student: Model<IStudent> = mongoose.model<IStudent>('Student', StudentSchema);
 
-// Sync indexes to remove any stale unique indexes (e.g., on email alone)
-// that would prevent the same user from enrolling in multiple courses.
-// Only the compound { email, courseName } index should be unique.
-Student.syncIndexes().catch((err) => {
-    console.error('Error syncing Student indexes:', err);
-});
+// Sync indexes only when needed, not on every import which can cause timeouts if DB is not connected
+// Student.syncIndexes().catch((err) => {
+//     console.error('Error syncing Student indexes:', err);
+// });
 
 export default Student;

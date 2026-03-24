@@ -160,7 +160,10 @@ export default function Header() {
                                 <div className="h-8 w-[1px] bg-gray-200 mx-1"></div>
 
                                 <div className="relative group">
-                                    <div className="flex items-center gap-3 pl-1 cursor-pointer block">
+                                    <Link
+                                        href={user.role === 'student' || user.role === 'teacher' ? '/student-dashboard' : '/dashboard'}
+                                        className="flex items-center gap-3 pl-1 cursor-pointer"
+                                    >
                                         <div className="w-10 h-10 bg-[#FFAB7B] rounded-xl flex items-center justify-center text-white font-bold shadow-sm transition-transform group-hover:scale-105">
                                             {user.name ? user.name.substring(0, 2).toUpperCase() : 'SR'}
                                         </div>
@@ -185,13 +188,13 @@ export default function Header() {
                                         >
                                             <path d="m6 9 6 6 6-6" />
                                         </svg>
-                                    </div>
+                                    </Link>
 
                                     {/* Dropdown Menu */}
                                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform origin-top-right scale-95 group-hover:scale-100">
                                         <div className="p-2 space-y-1">
                                             <Link
-                                                href={user.role === 'student' ? '/student-dashboard' : '/dashboard'}
+                                                href={user.role === 'student' || user.role === 'teacher' ? '/student-dashboard' : '/dashboard'}
                                                 className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#1A1D1F] hover:bg-gray-50 rounded-lg transition-colors"
                                             >
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>

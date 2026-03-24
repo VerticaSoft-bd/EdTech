@@ -37,6 +37,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
                 guardianMobileNo: student.guardianMobileNo || '',
                 avatar: student.avatar || '',
                 privacyPolicyAccepted: student.privacyPolicyAccepted || false,
+                progress: student.progress || 0,
             });
             fetchCourses();
         }
@@ -77,6 +78,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
         guardianMobileNo: '',
         avatar: '',
         privacyPolicyAccepted: false,
+        progress: 0,
     });
 
     if (!isOpen) return null;
@@ -152,7 +154,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
 
                 // Reset form
                 setFormData({
-                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', privacyPolicyAccepted: false,
+                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', privacyPolicyAccepted: false, progress: 0,
                 });
 
                 if (onSuccess) onSuccess();
@@ -393,6 +395,24 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
                                         </div>
                                     )}
                                     <p className="text-xs text-gray-500 mt-2">* This field auto-fills with the selected course's regular fee, but you can adjust the deposit amount.</p>
+                                </div>
+
+                                <div className="space-y-2 col-span-1 md:col-span-2">
+                                    <label className="text-sm font-bold text-gray-700">Course Progress (%)</label>
+                                    <div className="flex items-center gap-4">
+                                        <input
+                                            type="range"
+                                            name="progress"
+                                            min="0"
+                                            max="100"
+                                            value={formData.progress}
+                                            onChange={handleChange}
+                                            className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#6C5DD3]"
+                                        />
+                                        <div className="w-12 text-center font-bold text-[#1A1D1F] px-2 py-1 bg-gray-100 rounded-lg text-sm">
+                                            {formData.progress}%
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

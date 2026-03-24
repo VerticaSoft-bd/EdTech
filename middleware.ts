@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     // 1. Unauthenticated users trying to access dashboard routes
     if (pathname.startsWith('/dashboard') || pathname.startsWith('/student-dashboard')) {
         if (!authCookie) {
+            console.log(`Middleware: No token cookie, redirecting ${pathname} to /login`);
             const loginUrl = new URL('/login', request.url);
             return NextResponse.redirect(loginUrl);
         }
@@ -23,17 +24,20 @@ export async function middleware(request: NextRequest) {
 
             // If a 'student' or 'teacher' tries to access the main Admin dashboard or any other admin pages
             if ((userRole === 'student' || userRole === 'teacher') && pathname.startsWith('/dashboard')) {
+                console.log(`Middleware: Student/Teacher role found for /dashboard, redirecting to /student-dashboard`);
                 // Force them to only see their student dashboard
                 return NextResponse.redirect(new URL('/student-dashboard', request.url));
             }
 
             // If an Admin tries to access the student-dashboard, redirect them to the main admin dashboard
             if (userRole !== 'student' && userRole !== 'teacher' && pathname.startsWith('/student-dashboard')) {
+                console.log(`Middleware: Admin/Other role found for /student-dashboard, redirecting to /dashboard`);
                 return NextResponse.redirect(new URL('/dashboard', request.url));
             }
 
         } catch (error) {
             // Token is invalid or expired
+            console.log(`Middleware: Token invalid/expired, redirecting ${pathname} to /login`);
             const loginUrl = new URL('/login', request.url);
             return NextResponse.redirect(loginUrl);
         }

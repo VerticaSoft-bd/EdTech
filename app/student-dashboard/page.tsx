@@ -302,142 +302,137 @@ export default async function StudentDashboard() {
               </a>
             </div>
             <div className="space-y-4">
-              {[
-                {
-                  title: "Mastering UI/UX Design: A Guide...",
-                  subtitle: "Course",
-                  thumbTitle: "Instgram Marketing Hacks",
-                  thumbTag: "A-Z Guideline",
-                  thumbGradient: "from-[#8E8AFF] to-[#B4B1FF]",
-                  materials: "5 Material",
-                  completion: 56,
-                  deadline: "1 Day",
-                  deadlineColor: "text-[#1A1D1F]",
-                  action: "Start",
-                },
-                {
-                  title: "Mastering UI/UX Design: A Guide...",
-                  subtitle: "Course",
-                  thumbTitle: "Hit A Backhand Like Pro",
-                  thumbTag: "A-Z Guideline",
-                  thumbGradient: "from-[#FF9AD5] to-[#FFC2E8]",
-                  materials: "5 Material",
-                  completion: 64,
-                  deadline: "12 Hours",
-                  deadlineColor: "text-[#FF4C4C]",
-                  action: "Continue",
-                },
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow group"
-                >
-                  {/* Thumbnail */}
-                  <div
-                    className={`w-[120px] h-[70px] rounded-[20px] bg-gradient-to-br ${item.thumbGradient} relative p-4 flex flex-col justify-center shrink-0 overflow-hidden`}
-                  >
-                    {/* Noise & Sparkles for Thumbnail */}
-                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30"></div>
-                    <div className="absolute top-2 left-2 text-white/50 text-[8px]">✦</div>
+              {enrolledCourses.length > 0 ? (
+                enrolledCourses.map((course: any, idx) => {
+                  const enrollment = enrollments.find(e => e.courseName === course.title);
+                  const progress = enrollment?.progress || 0;
+                  const materials = course.modules?.length || 0;
 
-                    <div className="relative z-10">
-                      <h4 className="text-[11px] font-bold text-white leading-[1.3] mb-1.5">
-                        {item.thumbTitle}
-                      </h4>
-                      <div className="inline-block px-2 py-0.5 bg-white/20 backdrop-blur-md rounded-lg text-white text-[8px] font-medium border border-white/20">
-                        {item.thumbTag}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-1 grid grid-cols-12 gap-4 items-center">
-                    <div className="col-span-4">
-                      <div className="flex items-center gap-2 mb-1">
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="#FF754C"
-                          strokeWidth="2.5"
-                        >
-                          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                        </svg>
-                        <span className="text-xs font-medium text-gray-500">
-                          Course
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-[#1A1D1F] text-sm truncate pr-4">
-                        {item.title}
-                      </h4>
-                    </div>
+                  const gradients = [
+                    "from-[#8E8AFF] to-[#B4B1FF]",
+                    "from-[#FF9AD5] to-[#FFC2E8]",
+                    "from-[#FFAB7B] to-[#FFCF9D]"
+                  ];
+                  const thumbGradient = gradients[idx % gradients.length];
 
-                    <div className="col-span-2">
-                      <div className="text-[10px] text-gray-400 mb-1">
-                        Content
-                      </div>
-                      <div className="text-xs font-bold text-[#1A1D1F] flex items-center gap-1.5">
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                          <polyline points="14 2 14 8 20 8"></polyline>
-                          <line x1="16" y1="13" x2="8" y2="13"></line>
-                          <line x1="16" y1="17" x2="8" y2="17"></line>
-                          <polyline points="10 9 9 9 8 9"></polyline>
-                        </svg>
-                        {item.materials}
-                      </div>
-                    </div>
+                  return (
+                    <Link
+                      href={`/courses/${course.slug}`}
+                      key={course._id.toString()}
+                      className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow group cursor-pointer"
+                    >
+                      {/* Thumbnail */}
+                      <div
+                        className={`w-[120px] h-[70px] rounded-[20px] bg-gradient-to-br ${thumbGradient} relative p-4 flex flex-col justify-center shrink-0 overflow-hidden`}
+                      >
+                        {/* Noise & Sparkles for Thumbnail */}
+                        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30"></div>
+                        <div className="absolute top-2 left-2 text-white/50 text-[8px]">✦</div>
 
-                    <div className="col-span-2">
-                      <div className="text-[10px] text-gray-400 mb-1">
-                        Completion
+                        <div className="relative z-10">
+                          <h4 className="text-[11px] font-bold text-white leading-[1.3] mb-1.5 line-clamp-2">
+                            {course.title}
+                          </h4>
+                          <div className="inline-block px-2 py-0.5 bg-white/20 backdrop-blur-md rounded-lg text-white text-[8px] font-medium border border-white/20">
+                            {course.category || "Course"}
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs font-bold text-[#1A1D1F] flex items-center gap-1.5">
-                        <div className="w-4 h-4 rounded-full border-2 border-[#4BD37B] border-t-transparent flex items-center justify-center transform -rotate-45"></div>
-                        {item.completion}%
-                      </div>
-                    </div>
+                      <div className="flex-1 grid grid-cols-12 gap-4 items-center w-full">
+                        <div className="col-span-12 md:col-span-4">
+                          <div className="flex items-center gap-2 mb-1">
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#FF754C"
+                              strokeWidth="2.5"
+                            >
+                              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                            </svg>
+                            <span className="text-xs font-medium text-gray-500">
+                              Course
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-[#1A1D1F] text-sm truncate pr-4">
+                            {course.subtitle || course.title}
+                          </h4>
+                        </div>
 
-                    <div className="col-span-2">
-                      <div className="text-[10px] text-gray-400 mb-1">
-                        Deadline
-                      </div>
-                      <div className={`text-xs font-bold flex items-center gap-1.5 ${item.deadlineColor || 'text-[#1A1D1F]'}`}>
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <circle cx="12" cy="12" r="10" />
-                          <polyline points="12 6 12 12 16 14" />
-                        </svg>
-                        {item.deadline}
-                      </div>
-                    </div>
+                        <div className="col-span-4 md:col-span-2">
+                          <div className="text-[10px] text-gray-400 mb-1">
+                            Content
+                          </div>
+                          <div className="text-xs font-bold text-[#1A1D1F] flex items-center gap-1.5">
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                              <polyline points="14 2 14 8 20 8"></polyline>
+                              <line x1="16" y1="13" x2="8" y2="13"></line>
+                              <line x1="16" y1="17" x2="8" y2="17"></line>
+                              <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            {materials} Modules
+                          </div>
+                        </div>
 
-                    <div className="col-span-2 text-right">
-                      <button className="px-4 py-1.5 bg-white border border-gray-200 rounded-[10px] text-xs font-bold text-[#1A1D1F] hover:bg-gray-50 hover:border-gray-300 transition-colors shadow-sm">
-                        {item.action}
-                      </button>
-                    </div>
-                  </div>
+                        <div className="col-span-4 md:col-span-2">
+                          <div className="text-[10px] text-gray-400 mb-1">
+                            Completion
+                          </div>
+                          <div className="text-xs font-bold text-[#1A1D1F] flex items-center gap-1.5">
+                            <div className="w-4 h-4 rounded-full border-2 border-[#4BD37B] border-t-transparent flex items-center justify-center transform -rotate-45"></div>
+                            {progress}%
+                          </div>
+                        </div>
+
+                        <div className="col-span-4 md:col-span-2">
+                          <div className="text-[10px] text-gray-400 mb-1">
+                            Deadline
+                          </div>
+                          <div className={`text-xs font-bold flex items-center gap-1.5 text-[#1A1D1F]`}>
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            {course.duration || "Self-paced"}
+                          </div>
+                        </div>
+
+                        <div className="col-span-12 md:col-span-2 text-right">
+                          <span className="inline-block px-4 py-1.5 bg-white border border-gray-200 rounded-[10px] text-xs font-bold text-[#1A1D1F] group-hover:bg-gray-50 group-hover:border-gray-300 transition-colors shadow-sm">
+                            Continue
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })
+              ) : (
+                <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center text-gray-500 text-sm">
+                  No learning content in progress.
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
           {/* Most View Contents */}
-          <div>
+          {/* <div>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-[#1A1D1F] flex items-center gap-2">
                 Most view contents
@@ -500,10 +495,10 @@ export default async function StudentDashboard() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* To be reviewed */}
-          <div>
+          {/* <div>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xl font-bold text-[#1A1D1F] flex items-center gap-2">
                 To be reviewed
@@ -560,7 +555,7 @@ export default async function StudentDashboard() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
         </div>
 
@@ -569,9 +564,10 @@ export default async function StudentDashboard() {
 
           {/* Fee Status (Critical) */}
           <FeeStatusCard
-            totalFee={enrollments.reduce((sum, e) => sum + (e.totalCourseFee || 0), 0) || 1200}
-            paidAmount={enrollments.reduce((sum, e) => sum + (e.paidAmount || 0), 0) || 450}
-            nextDueDate="Oct 15, 2026"
+            totalFee={enrollments.reduce((sum, e) => sum + (Number(e.totalCourseFee) || 0), 0)}
+            paidAmount={enrollments.reduce((sum, e) => sum + (Number(e.paidAmount) || 0), 0)}
+            nextDueDate={enrollments.some(e => Number(e.dueAmount) > 0) ? "Contact Office" : "Paid"}
+            currency="৳"
           />
 
           {/* Attendance Tracker */}
