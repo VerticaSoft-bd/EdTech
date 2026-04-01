@@ -39,6 +39,7 @@ export async function PUT(req: Request) {
         const { 
             name, 
             password, 
+            currentPassword,
             mobileNo, 
             presentAddress,
             fatherName,
@@ -55,14 +56,28 @@ export async function PUT(req: Request) {
 
         await dbConnect();
 
-        const user = await User.findOne({ email: userSession.email });
+        // Fetch user with password for verification
+        const user = await User.findOne({ email: userSession.email }).select('+password');
         if (!user) {
              return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        // Update User Model (password is handled by mongoose pre-save hook)
+        // Handle security: If password change is requested, verify current password
+        if (password) {
+            if (!currentPassword) {
+                return NextResponse.json({ error: 'Current password is required to set a new password' }, { status: 400 });
+            }
+            
+            const isMatch = await user.comparePassword(currentPassword);
+            if (!isMatch) {
+                return NextResponse.json({ error: 'Current password does not match' }, { status: 401 });
+            }
+            
+            user.password = password; 
+        }
+
+        // Update other User details
         if (name) user.name = name;
-        if (password) user.password = password; 
 
         await user.save();
 

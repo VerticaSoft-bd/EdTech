@@ -26,9 +26,18 @@ export default function StudentProfilePage() {
     residentialStatus: "Resident",
     country: "Bangladesh",
     education: "",
-    password: "",
-    confirmPassword: "",
   });
+
+  // Password Modal State
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [passwordStep, setPasswordStep] = useState(1); // 1 = Verify, 2 = Set New
+  const [passwordInputs, setPasswordInputs] = useState({
+    current: "",
+    new: "",
+    confirm: ""
+  });
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalError, setModalError] = useState("");
 
   useEffect(() => {
     // Basic auth check using localStorage (just visually, API enforces it)
@@ -88,15 +97,10 @@ export default function StudentProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (formData.password && formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
     setSubmitting(true);
     try {
       const { 
-        name, password, mobileNo, presentAddress,
+        name, mobileNo, presentAddress,
         fatherName, motherName, guardianMobileNo,
         dateOfBirth, nidNo, gender, maritalStatus,
         residentialStatus, country, education
@@ -105,7 +109,7 @@ export default function StudentProfilePage() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          name, password, mobileNo, presentAddress,
+          name, mobileNo, presentAddress,
           fatherName, motherName, guardianMobileNo,
           dateOfBirth, nidNo, gender, maritalStatus,
           residentialStatus, country, education
@@ -126,18 +130,78 @@ export default function StudentProfilePage() {
           storedUser.name = name;
           localStorage.setItem("user", JSON.stringify(storedUser));
           
-          // Force event dispatch to trigger Header re-render if using standard events, 
-          // or just reload window for a clean state refresh of the Header
           window.location.reload(); 
       }
-      
-      setFormData((prev) => ({ ...prev, password: "", confirmPassword: "" }));
       
     } catch (error: any) {
       toast.error(error.message);
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handlePasswordModalClose = () => {
+    setIsPasswordModalOpen(false);
+    setPasswordStep(1);
+    setPasswordInputs({ current: "", new: "", confirm: "" });
+    setModalError("");
+  };
+
+  const handleVerifyPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalLoading(true);
+    setModalError("");
+
+    try {
+        const res = await fetch("/api/users/profile/verify-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password: passwordInputs.current })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Verification failed");
+
+        setPasswordStep(2);
+    } catch (error: any) {
+        setModalError(error.message);
+    } finally {
+        setModalLoading(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInputs.new !== passwordInputs.confirm) {
+        setModalError("New passwords do not match.");
+        return;
+    }
+
+    setModalLoading(true);
+    setModalError("");
+
+    try {
+        const res = await fetch("/api/users/profile/change-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                newPassword: passwordInputs.new,
+                confirmPassword: passwordInputs.confirm
+            })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to change password");
+
+        toast.success("Password changed successfully!");
+        handlePasswordModalClose();
+    } catch (error: any) {
+        setModalError(error.message);
+    } finally {
+        setModalLoading(false);
+    }
+  };
+
+  const onPasswordInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordInputs({ ...passwordInputs, [e.target.name]: e.target.value });
   };
 
   if (loading) {
@@ -440,29 +504,20 @@ export default function StudentProfilePage() {
               <p className="text-sm text-gray-500">Change your password here. Leave blank if you don't want to change it.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-bold text-gray-600">New Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent focus:border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-sm font-medium placeholder:text-gray-400"
-                  placeholder="••••••••"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-bold text-gray-600">Confirm New Password</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent focus:border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-sm font-medium placeholder:text-gray-400"
-                  placeholder="••••••••"
-                />
-              </div>
+            <div className="flex flex-col items-center justify-center py-6 px-4 bg-gray-50 rounded-2xl border border-gray-100/50">
+               <div className="w-12 h-12 bg-[#6C5DD3]/10 text-[#6C5DD3] rounded-full flex items-center justify-center mb-4">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+               </div>
+               <h4 className="font-bold text-[#1A1D1F]">Account Password</h4>
+               <p className="text-xs text-center text-gray-500 mt-2 mb-6 max-w-[200px]">Protect your account by regularly updating your secret password.</p>
+               <button 
+                  type="button"
+                  onClick={() => setIsPasswordModalOpen(true)}
+                  className="px-6 py-2.5 bg-[#1A1D1F] hover:bg-black text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-black/10 flex items-center gap-2"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
+                  Update Password
+                </button>
             </div>
 
             <div className="mt-10 flex justify-end">
@@ -488,6 +543,121 @@ export default function StudentProfilePage() {
           </form>
         </div>
       </main>
+
+      {/* Password Change Modal */}
+      {isPasswordModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+            onClick={handlePasswordModalClose}
+          ></div>
+          
+          {/* Modal Content */}
+          <div className="relative bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="px-8 pt-8 pb-10">
+              <div className="flex items-center justify-between mb-8">
+                 <div className="flex items-center gap-3">
+                   <div className="w-10 h-10 bg-[#6C5DD3]/10 text-[#6C5DD3] rounded-2xl flex items-center justify-center font-bold">
+                      {passwordStep}
+                   </div>
+                   <div>
+                     <h3 className="text-lg font-bold text-[#1A1D1F]">
+                       {passwordStep === 1 ? "Verify Identity" : "Set New Password"}
+                     </h3>
+                     <p className="text-xs text-gray-400">Step {passwordStep} of 2</p>
+                   </div>
+                 </div>
+                 <button 
+                  onClick={handlePasswordModalClose}
+                  className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-[#1A1D1F] transition-colors rounded-full hover:bg-gray-100"
+                 >
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                 </button>
+              </div>
+
+              {passwordStep === 1 ? (
+                <form onSubmit={handleVerifyPassword} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-gray-600 block px-1">Current Password</label>
+                    <input 
+                      required
+                      autoFocus
+                      type="password"
+                      name="current"
+                      value={passwordInputs.current}
+                      onChange={onPasswordInputChange}
+                      placeholder="••••••••"
+                      className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 focus:border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#6C5DD3]/5 transition-all text-sm font-medium"
+                    />
+                    <p className="text-[10px] text-gray-400 px-1 italic">Maximum 3 attempts allowed per 24 hours.</p>
+                  </div>
+
+                  {modalError && (
+                    <div className="p-3.5 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold flex items-start gap-2.5 animate-pulse">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="shrink-0 mt-0.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      {modalError}
+                    </div>
+                  )}
+
+                  <button 
+                    disabled={modalLoading}
+                    className="w-full py-4 bg-[#6C5DD3] hover:bg-[#5a4cb5] text-white font-bold rounded-2xl shadow-xl shadow-[#6C5DD3]/20 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {modalLoading ? "Verifying..." : "Verify & Continue"}
+                    {!modalLoading && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="group-hover:translate-x-1 transition-transform"><polyline points="9 18 15 12 9 6" /></svg>}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleChangePassword} className="space-y-6">
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                       <label className="text-sm font-bold text-gray-600 block px-1">New Password</label>
+                       <input 
+                         required
+                         autoFocus
+                         type="password"
+                         name="new"
+                         value={passwordInputs.new}
+                         onChange={onPasswordInputChange}
+                         placeholder="Minimum 6 characters"
+                         className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 focus:border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#6C5DD3]/5 transition-all text-sm font-medium"
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-sm font-bold text-gray-600 block px-1">Confirm New Password</label>
+                       <input 
+                         required
+                         type="password"
+                         name="confirm"
+                         value={passwordInputs.confirm}
+                         onChange={onPasswordInputChange}
+                         placeholder="••••••••"
+                         className="w-full px-5 py-3.5 bg-gray-50 border border-gray-100 focus:border-gray-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#6C5DD3]/5 transition-all text-sm font-medium"
+                       />
+                    </div>
+                  </div>
+
+                  {modalError && (
+                    <div className="p-3.5 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-semibold flex items-start gap-2.5">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="shrink-0 mt-0.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                      {modalError}
+                    </div>
+                  )}
+
+                  <button 
+                    disabled={modalLoading}
+                    className="w-full py-4 bg-[#1A1D1F] hover:bg-black text-white font-bold rounded-2xl shadow-xl shadow-black/10 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {modalLoading ? "Saving..." : "Change Password"}
+                    {!modalLoading && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
