@@ -218,6 +218,13 @@ export default function Header() {
                                                 href={user.role === 'student' || user.role === 'teacher' ? '/student-dashboard' : '/dashboard'}
                                                 className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#1A1D1F] hover:bg-gray-50 rounded-lg transition-colors"
                                             >
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                                Dashboard
+                                            </Link>
+                                            <Link
+                                                href={user.role === 'student' || user.role === 'teacher' ? '/student-dashboard/profile' : '/dashboard/profile'}
+                                                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#1A1D1F] hover:bg-gray-50 rounded-lg transition-colors"
+                                            >
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                                                 Profile
                                             </Link>
