@@ -109,6 +109,7 @@ export default function Header() {
                             { label: "Home", href: "/" },
                             { label: "Courses", href: "/courses" },
                             { label: "My Courses", href: user?.role === 'student' ? '/student-dashboard' : '/dashboard' },
+                            { label: "CV Maker", href: "/cv/list" },
                             { label: "Settings", href: user?.role === 'student' ? '/student-dashboard/profile' : '/dashboard/settings' }
                         ].map((item, idx) => {
                             const commonClasses = `px-5 py-2.5 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 overflow-hidden ${idx === 0
@@ -297,6 +298,7 @@ export default function Header() {
                             { label: "Home", href: "/" },
                             { label: "Courses", href: "/courses" },
                             { label: "My Courses", href: user?.role === 'student' ? '/student-dashboard' : '/dashboard' },
+                            { label: "CV Maker", href: "/cv/list" },
                             { label: "Settings", href: user?.role === 'student' ? '/student-dashboard/profile' : '/dashboard/settings' }
                         ].map((item) => {
                             return (

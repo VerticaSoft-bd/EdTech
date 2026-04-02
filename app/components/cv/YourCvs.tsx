@@ -11,20 +11,34 @@ interface CvSummary { _id: string; fullName: string; titles: string[]; updatedAt
 function YourCvsContent() {
   const [cvs, setCvs] = useState<CvSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [resolvedUserId, setResolvedUserId] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
-  const userId = searchParams.get('userId');
 
   useEffect(() => {
-    const fetchCVs = async () => {
-      if (!userId) {
+    const checkAndFetchUser = async () => {
+      let uid = searchParams.get('userId');
+      if (!uid) {
+        try {
+          const stored = localStorage.getItem('user');
+          if (stored) {
+            const u = JSON.parse(stored);
+            uid = u._id || u.id || null;
+          }
+        } catch (e) {}
+      }
+      
+      setResolvedUserId(uid);
+
+      if (!uid) {
         setLoading(false);
         return;
       }
+
       setLoading(true);
       try {
-        const res = await fetch(`/api/v1/cvs/user/${userId}`, {
-          headers: { 'x-user-id': userId }
+        const res = await fetch(`/api/v1/cvs/user/${uid}`, {
+          headers: { 'x-user-id': uid }
         });
         if (!res.ok) throw new Error('Network response was not ok');
         const data = await res.json();
@@ -35,16 +49,16 @@ function YourCvsContent() {
         setLoading(false);
       }
     };
-    fetchCVs();
-  }, [userId]);
+    checkAndFetchUser();
+  }, [searchParams]);
 
   const handleDelete = async (cvId: string) => {
-    if (!userId) return;
+    if (!resolvedUserId) return;
     if (window.confirm('Are you sure you want to delete this CV?')) {
       try {
         const res = await fetch(`/api/v1/cvs/${cvId}`, {
           method: 'DELETE',
-          headers: { 'x-user-id': userId }
+          headers: { 'x-user-id': resolvedUserId }
         });
         if (!res.ok) throw new Error('Network response was not ok');
         setCvs(prev => prev.filter(cv => cv._id !== cvId));
@@ -56,15 +70,15 @@ function YourCvsContent() {
   };
 
   if (loading) return <CvListSkeleton />;
-  if (!userId) {
-    return <p className="text-center text-red-500 font-semibold">Could not identify user. Please navigate from your dashboard sidebar.</p>;
+  if (!resolvedUserId) {
+    return <p className="text-center text-red-500 font-semibold mt-10">Please Login to view and create your CVs.</p>;
   }
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Your Created CVs</h2>
-        <Link href={`/cv/create?userId=${userId}`} className="bg-black text-white px-4 py-2 rounded-md flex items-center gap-2 text-sm font-semibold cursor-pointer">
+        <Link href={`/cv/create?userId=${resolvedUserId}`} className="bg-[#6C5DD3] hover:bg-[#5b4eb3] text-white px-5 py-2.5 rounded-[12px] shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2 text-[14px] font-bold cursor-pointer transition-all">
           <PlusCircle size={16} /> Create New
         </Link>
       </div>
@@ -81,7 +95,7 @@ function YourCvsContent() {
                 <p className="text-sm text-gray-600">{cv.titles.join(' | ')}</p>
               </div>
               <div className="flex items-center gap-3">
-                <Link href={`/cv/${cv._id}?userId=${userId}`} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full cursor-pointer" title="Edit CV">
+                <Link href={`/cv/${cv._id}?userId=${resolvedUserId}`} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full cursor-pointer" title="Edit CV">
                   <Edit size={18} />
                 </Link>
                 <button onClick={() => handleDelete(cv._id)} className="p-2 text-red-600 hover:bg-red-50 rounded-full cursor-pointer" title="Delete CV">

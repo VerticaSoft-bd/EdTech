@@ -140,8 +140,22 @@ export default function CvBuilder() {
   const params = useParams();
   const searchParams = useSearchParams();
   const cvId = params.cvId as string | undefined;
-  const userId = searchParams.get('userId');
+  const urlUserId = searchParams.get('userId');
+  const [resolvedUserId, setResolvedUserId] = useState<string | null>(urlUserId);
   const cvPreviewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!resolvedUserId) {
+      try {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+          const u = JSON.parse(stored);
+          const uid = u._id || u.id || null;
+          if (uid) setResolvedUserId(uid);
+        }
+      } catch (e) {}
+    }
+  }, [resolvedUserId]);
 
   useEffect(() => {
     if (cvId) {
@@ -163,7 +177,7 @@ export default function CvBuilder() {
   }, [cvId]);
 
   const handleSave = async () => {
-    const ownerId = (cvData.userId as string) || (userId as string | null);
+    const ownerId = (cvData.userId as string) || resolvedUserId;
     if (!ownerId) {
       alert('Could not identify the user for this CV. Please navigate from your dashboard.');
       return;
