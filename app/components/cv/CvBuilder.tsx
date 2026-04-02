@@ -316,7 +316,7 @@ export default function CvBuilder() {
           {/* Mobile Preview Toggle Button */}
           <button
             onClick={() => setShowPreview(!showPreview)}
-            className='lg:hidden w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2 text-sm'
+            className='lg:hidden w-full sm:w-auto px-5 py-2.5 bg-[#1A1D1F] text-white rounded-[16px] font-bold flex items-center justify-center gap-2 text-[14px] transition-all'
           >
             {showPreview ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             <span>{showPreview ? 'Hide Preview' : 'Show Preview'}</span>
@@ -325,18 +325,18 @@ export default function CvBuilder() {
           <button
             onClick={handlePrint}
             disabled={isDownloading}
-            className='w-full sm:w-auto px-4 py-2 bg-gray-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 text-sm cursor-pointer disabled:opacity-50'
+            className='w-full sm:w-auto px-6 py-2.5 bg-white text-[#1A1D1F] border border-gray-200 rounded-[16px] font-bold flex items-center justify-center gap-2 text-[14px] cursor-pointer disabled:opacity-50 hover:bg-[#F4F4F4] transition-all shadow-sm'
           >
-            {isDownloading ? <Spinner /> : <Download size={16} />}
-            <span>Download</span>
+            {isDownloading ? <Spinner /> : <Download size={18} />}
+            <span>Download PDF</span>
           </button>
 
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className='w-full sm:w-auto px-4 py-2 bg-black text-white rounded-lg font-semibold flex items-center justify-center gap-2 text-sm cursor-pointer disabled:opacity-50'
+            className='w-full sm:w-auto px-6 py-2.5 bg-[#6C5DD3] text-white rounded-[16px] font-bold flex items-center justify-center gap-2 text-[14px] cursor-pointer disabled:opacity-50 hover:bg-[#5b4eb3] shadow-lg shadow-[#6C5DD3]/20 transition-all'
           >
-            {isSaving ? <Spinner /> : <Save size={16} />}
+            {isSaving ? <Spinner /> : <Save size={18} />}
             <span>{cvId ? 'Update CV' : 'Save CV'}</span>
           </button>
         </div>

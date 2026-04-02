@@ -14,13 +14,13 @@ const Input = React.memo(({ label, id, ...props }: { label: string } & React.Inp
   const finalId = id || autoId;
   return (
     <div className='w-full'>
-      <label htmlFor={finalId} className='block text-sm font-semibold text-gray-600 mb-1'>
+      <label htmlFor={finalId} className='block text-sm font-bold text-gray-700 mb-1'>
         {label}
       </label>
       <input
         id={finalId}
         {...props}
-        className='w-full px-3 sm:px-4 py-2 bg-gray-100 border border-transparent rounded-md focus:ring-2 focus:ring-black focus:bg-white text-sm sm:text-base transition-colors'
+        className='w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-[16px] focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] text-[#1A1D1F] text-sm transition-all'
       />
     </div>
   );
@@ -32,14 +32,14 @@ const Textarea = React.memo(({ label, id, ...props }: { label: string } & React.
   const finalId = id || autoId;
   return (
     <div className='w-full'>
-      <label htmlFor={finalId} className='block text-sm font-semibold text-gray-600 mb-1'>
+      <label htmlFor={finalId} className='block text-sm font-bold text-gray-700 mb-1'>
         {label}
       </label>
       <textarea
         id={finalId}
         {...props}
         rows={3}
-        className='w-full px-3 sm:px-4 py-2 bg-gray-100 border border-transparent rounded-md focus:ring-2 focus:ring-black focus:bg-white text-sm sm:text-base transition-colors'
+        className='w-full px-4 py-3 bg-[#F4F4F4] border border-transparent rounded-[16px] focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] text-[#1A1D1F] text-sm transition-all'
       />
     </div>
   );
@@ -47,7 +47,7 @@ const Textarea = React.memo(({ label, id, ...props }: { label: string } & React.
 Textarea.displayName = 'Textarea';
 
 const AddButton = ({ onClick, children }: { onClick: () => void; children: React.ReactNode }) => (
-  <button onClick={onClick} className='mt-4 text-sm font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-2 cursor-pointer'>
+  <button type="button" onClick={onClick} className='mt-4 text-[13px] font-bold text-[#6C5DD3] hover:text-[#5b4eb3] flex items-center gap-2 cursor-pointer transition-colors'>
     <PlusCircle size={16} /> {children}
   </button>
 );
@@ -618,12 +618,14 @@ export default function CvForm({ cvData, setCvData }: { cvData: CVData; setCvDat
 
   return (
     <div className='space-y-4'>
-      <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3'>
-        <h3 className='text-base sm:text-lg font-semibold text-gray-800'>Edit your CV</h3>
+      <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-[20px] shadow-sm border border-gray-100'>
+        <h3 className='text-[20px] font-bold text-[#1A1D1F]'>Edit your CV</h3>
         <button
           onClick={() => setIsReorderMode((v) => !v)}
-          className={`w-full sm:w-auto px-3 py-2 rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer ${
-            isReorderMode ? 'bg-green-600 text-white' : 'bg-gray-800 text-white'
+          className={`w-full sm:w-auto px-5 py-2.5 rounded-[12px] text-[13px] font-bold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+            isReorderMode 
+              ? 'bg-green-600 text-white shadow-lg shadow-green-600/20' 
+              : 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20'
           }`}
           title={isReorderMode ? 'Done reordering' : 'Reorder sections'}
         >

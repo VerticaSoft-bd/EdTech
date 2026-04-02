@@ -21,11 +21,11 @@ export default function AccordionItem({ title, icon, children, isOpen, setIsOpen
   };
 
   return (
-    <div className='border border-gray-200 rounded-lg overflow-hidden'>
-      <div role='button' tabIndex={0} onClick={setIsOpen} onKeyDown={onKey} className='w-full flex justify-between items-center p-3 sm:p-4 bg-white hover:bg-gray-50 transition-colors cursor-pointer'>
-        <div className='flex items-center gap-2 sm:gap-3'>
-          <span className='text-black'>{icon}</span>
-          <h3 className='font-semibold text-gray-800 text-sm sm:text-base'>{title}</h3>
+    <div className='border border-gray-100 rounded-[20px] overflow-hidden shadow-sm'>
+      <div role='button' tabIndex={0} onClick={setIsOpen} onKeyDown={onKey} className='w-full flex justify-between items-center p-4 sm:p-5 bg-white hover:bg-[#F8FAFC] transition-colors cursor-pointer'>
+        <div className='flex items-center gap-3'>
+          <span className='text-[#6C5DD3] p-2 bg-[#6C5DD3]/10 rounded-xl'>{icon}</span>
+          <h3 className='font-bold text-[#1A1D1F] text-[15px]'>{title}</h3>
         </div>
         <div className='flex items-center gap-2'>
           {headerExtras && (
@@ -33,10 +33,10 @@ export default function AccordionItem({ title, icon, children, isOpen, setIsOpen
               {headerExtras}
             </div>
           )}
-          <ChevronDown size={18} className={`text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown size={20} className={`text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
         </div>
       </div>
-      {isOpen && <div className='p-3 sm:p-4 border-t border-gray-200 bg-white'>{children}</div>}
+      {isOpen && <div className='p-5 sm:p-6 border-t border-gray-100 bg-[#FAFAFA]'>{children}</div>}
     </div>
   );
 }
