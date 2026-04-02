@@ -1,0 +1,351 @@
+// components/cv/CvBuilder.tsx
+'use client';
+import { useState, useEffect, useRef, useDeferredValue } from 'react';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
+import axios from 'axios';
+import { CVData, CvSectionId } from '@/types/cv';
+import CvForm from './CvForm';
+import CvPreview from './CvPreview';
+import { Save, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import Spinner from '../ui/Spinner';
+import { CvBuilderSkeleton } from '../ui/SkeletonLoader';
+
+const DEFAULT_SECTION_ORDER: CvSectionId[] = ['personal', 'experience', 'education', 'skills', 'accomplishments', 'certifications', 'personalDetails', 'references', 'socials'];
+
+const initialCvData: CVData = {
+  userId: '',
+  photoUrl: '',
+  fullName: '',
+  titles: [],
+  email: '',
+  phone: '',
+  address: '',
+  socialLinks: [],
+  objective: '',
+  experience: [],
+  skills: { keySkills: [], tools: [] },
+  certifications: [],
+  accomplishments: [],
+  academicQualifications: [],
+  personalDetails: {
+    fatherName: '',
+    motherName: '',
+    dob: '',
+    nationality: '',
+    gender: '',
+    maritalStatus: '',
+  },
+  references: [],
+  sectionOrder: DEFAULT_SECTION_ORDER,
+  hiddenSections: [],
+};
+
+const cleanData = (data: Partial<CVData>): CVData => ({
+  ...initialCvData,
+  ...data,
+  skills: {
+    keySkills: Array.isArray(data.skills?.keySkills) ? data.skills.keySkills : [],
+    tools: Array.isArray(data.skills?.tools) ? data.skills.tools : [],
+  },
+  personalDetails: {
+    ...initialCvData.personalDetails,
+    ...data.personalDetails,
+  },
+  titles: Array.isArray(data.titles) ? data.titles : [],
+  socialLinks: Array.isArray(data.socialLinks) ? data.socialLinks : [],
+  experience: Array.isArray(data.experience) ? data.experience : [],
+  accomplishments: Array.isArray(data.accomplishments) ? data.accomplishments : [],
+  academicQualifications: Array.isArray(data.academicQualifications) ? data.academicQualifications : [],
+  certifications: Array.isArray(data.certifications) ? data.certifications : [],
+  references: Array.isArray(data.references) ? data.references : [],
+  sectionOrder: Array.isArray(data.sectionOrder) && data.sectionOrder.length ? (data.sectionOrder as CvSectionId[]) : DEFAULT_SECTION_ORDER,
+  hiddenSections: Array.isArray(data.hiddenSections) ? (data.hiddenSections as CvSectionId[]) : [],
+});
+
+const stripId = <T extends { id?: unknown }>(arr: T[] = []): Array<Omit<T, 'id'>> => {
+  return arr.map((item) => {
+    const result: Record<string, unknown> = {};
+    for (const key in item) {
+      if (key !== 'id') {
+        result[key] = item[key];
+      }
+    }
+    return result as Omit<T, 'id'>;
+  });
+};
+
+const serializeForApi = (data: CVData, ownerId: string) => ({
+  userId: ownerId,
+  photoUrl: data.photoUrl || '',
+  fullName: data.fullName || '',
+  titles: Array.isArray(data.titles) ? data.titles : [],
+  email: data.email || '',
+  phone: data.phone || '',
+  address: data.address || '',
+  socialLinks: stripId(data.socialLinks),
+  objective: data.objective || '',
+  experience: stripId(data.experience),
+  skills: {
+    keySkills: Array.isArray(data.skills?.keySkills) ? data.skills.keySkills : [],
+    tools: Array.isArray(data.skills?.tools) ? data.skills.tools : [],
+  },
+  accomplishments: stripId(data.accomplishments),
+  academicQualifications: stripId(data.academicQualifications),
+  certifications: stripId(data.certifications),
+  personalDetails: {
+    fatherName: data.personalDetails?.fatherName || '',
+    motherName: data.personalDetails?.motherName || '',
+    dob: data.personalDetails?.dob || '',
+    nationality: data.personalDetails?.nationality || '',
+    gender: data.personalDetails?.gender || '',
+    maritalStatus: data.personalDetails?.maritalStatus || '',
+  },
+  references: stripId(data.references),
+  sectionOrder: Array.isArray(data.sectionOrder) && data.sectionOrder.length ? data.sectionOrder : DEFAULT_SECTION_ORDER,
+  hiddenSections: Array.isArray(data.hiddenSections) ? data.hiddenSections : [],
+});
+
+async function waitForAssets(rootEl: HTMLElement) {
+  const imgs = Array.from(rootEl.querySelectorAll('img'));
+  await Promise.all(
+    imgs.map((img) =>
+      img.complete
+        ? Promise.resolve()
+        : new Promise<void>((res) => {
+            img.onload = img.onerror = () => res();
+          })
+    )
+  );
+  const anyDoc = document as Document & { fonts?: { ready?: Promise<void> } };
+  if (anyDoc.fonts && anyDoc.fonts.ready) {
+    try {
+      await anyDoc.fonts.ready;
+    } catch {
+      console.error('Font loading failed');
+    }
+  }
+}
+
+export default function CvBuilder() {
+  const [cvData, setCvData] = useState<CVData>(initialCvData);
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false); // For mobile toggle
+
+  const [isTyping, setIsTyping] = useState(false);
+  const [frozenCvData, setFrozenCvData] = useState<CVData>(initialCvData);
+  const deferredPreviewData = useDeferredValue(frozenCvData);
+
+  const formWrapRef = useRef<HTMLDivElement>(null);
+
+  const router = useRouter();
+  const params = useParams();
+  const searchParams = useSearchParams();
+  const cvId = params.cvId as string | undefined;
+  const userId = searchParams.get('userId');
+  const cvPreviewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (cvId) {
+      setLoading(true);
+      axios
+        .get(`/api/v1/cvs/${cvId}`)
+        .then((response) => setCvData(cleanData(response.data.data)))
+        .catch((err) => console.error('Failed to fetch CV data:', err))
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [cvId]);
+
+  useEffect(() => {
+    if (!isTyping) {
+      setFrozenCvData(cvData);
+    }
+  }, [cvData, isTyping]);
+
+  const handleSave = async () => {
+    const ownerId = (cvData.userId as string) || (userId as string | null);
+    if (!ownerId) {
+      alert('Could not identify the user for this CV. Please navigate from your dashboard.');
+      return;
+    }
+    setIsSaving(true);
+
+    const payload = serializeForApi(cvData, ownerId);
+    const config = { headers: { 'x-user-id': ownerId } };
+
+    try {
+      if (cvId) {
+        await axios.put(`/api/v1/cvs/${cvId}`, payload, config);
+      } else {
+        await axios.post('/api/v1/cvs', payload, config);
+      }
+      router.push(`/cv/list?userId=${ownerId}`);
+      router.refresh();
+    } catch (error) {
+      console.error('Failed to save CV:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        const msg = (error.response.data as { error?: string })?.error || 'Server Error';
+        alert(`Save failed: ${msg}`);
+      } else {
+        alert('An unexpected error occurred while saving the CV.');
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handlePrint = async () => {
+    setIsDownloading(true);
+    const elementToPrint = cvPreviewRef.current;
+    if (!elementToPrint) {
+      alert('Could not find the CV preview to print.');
+      setIsDownloading(false);
+      return;
+    }
+
+    await waitForAssets(elementToPrint);
+
+    const clone = elementToPrint.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll('.cv-watermark').forEach((wm) => wm.remove());
+
+    const styles = Array.from(document.styleSheets)
+      .map((sheet) => {
+        try {
+          return Array.from((sheet as CSSStyleSheet).cssRules)
+            .map((rule) => (rule as CSSRule).cssText)
+            .join('\n');
+        } catch {
+          return '';
+        }
+      })
+      .join('\n');
+
+    const printWindow = window.open('', '_blank', 'width=900,height=1200');
+    if (!printWindow) {
+      alert('Popup blocked! Please allow popups for this site.');
+      setIsDownloading(false);
+      return;
+    }
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${cvData.fullName || 'CV'} - Print</title>
+          <style>${styles}</style>
+          <style>
+            @page { size: A4; margin: 0; }
+            html, body {
+              margin: 0;
+              padding: 0;
+              background: #fff;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .a4-sheet {
+              width: 210mm;
+              min-height: 297mm;
+              margin: 0 auto;
+              padding: 20px;
+              box-sizing: border-box;
+              page-break-after: always;
+              position: relative;
+            }
+            .a4-sheet:last-child {
+              page-break-after: avoid;
+            }
+          </style>
+        </head>
+        <body>
+          ${clone.innerHTML}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+
+    await waitForAssets(printWindow.document.body as unknown as HTMLElement);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    printWindow.focus();
+    printWindow.print();
+    printWindow.onafterprint = () => {
+      printWindow.close();
+      setIsDownloading(false);
+    };
+  };
+
+  if (loading) {
+    return <CvBuilderSkeleton />;
+  }
+
+  return (
+    <div className='flex flex-col lg:grid lg:grid-cols-10 min-h-screen'>
+      {/* FORM SECTION */}
+      <div className='w-full lg:col-span-4 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-col'>
+        <div
+          ref={formWrapRef}
+          className='flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8'
+          onFocusCapture={() => setIsTyping(true)}
+          onBlurCapture={(e) => {
+            const next = e.relatedTarget as Node | null;
+            if (formWrapRef.current && next && formWrapRef.current.contains(next)) {
+              return;
+            }
+            setIsTyping(false);
+          }}
+        >
+          <CvForm cvData={cvData} setCvData={setCvData} />
+        </div>
+
+        {/* Action Buttons - Sticky on mobile, fixed on desktop */}
+        <div className='sticky bottom-0 z-10 bg-white p-3 sm:p-4 flex flex-col sm:flex-row justify-end gap-2 sm:gap-4 border-t shadow-lg lg:shadow-none'>
+          {/* Mobile Preview Toggle Button */}
+          <button
+            onClick={() => setShowPreview(!showPreview)}
+            className='lg:hidden w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2 text-sm'
+          >
+            {showPreview ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            <span>{showPreview ? 'Hide Preview' : 'Show Preview'}</span>
+          </button>
+
+          <button
+            onClick={handlePrint}
+            disabled={isDownloading}
+            className='w-full sm:w-auto px-4 py-2 bg-gray-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 text-sm cursor-pointer disabled:opacity-50'
+          >
+            {isDownloading ? <Spinner /> : <Download size={16} />}
+            <span>Download</span>
+          </button>
+
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className='w-full sm:w-auto px-4 py-2 bg-black text-white rounded-lg font-semibold flex items-center justify-center gap-2 text-sm cursor-pointer disabled:opacity-50'
+          >
+            {isSaving ? <Spinner /> : <Save size={16} />}
+            <span>{cvId ? 'Update CV' : 'Save CV'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* PREVIEW SECTION */}
+      <div
+        className={`
+        w-full lg:col-span-6 bg-gray-50 
+        ${showPreview ? 'block' : 'hidden'} 
+        lg:block 
+        overflow-y-auto 
+        relative
+        max-h-screen
+      `}
+      >
+        <div ref={cvPreviewRef} className='w-full'>
+          <CvPreview cvData={deferredPreviewData} />
+        </div>
+      </div>
+    </div>
+  );
+}
