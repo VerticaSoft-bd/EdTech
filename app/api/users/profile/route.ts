@@ -78,6 +78,18 @@ export async function PUT(req: Request) {
 
         // Update other User details
         if (name) user.name = name;
+        if (mobileNo !== undefined) user.mobileNo = mobileNo;
+        if (presentAddress !== undefined) user.presentAddress = presentAddress;
+        if (fatherName !== undefined) user.fatherName = fatherName;
+        if (motherName !== undefined) user.motherName = motherName;
+        if (guardianMobileNo !== undefined) user.guardianMobileNo = guardianMobileNo;
+        if (dateOfBirth !== undefined) user.dateOfBirth = dateOfBirth;
+        if (nidNo !== undefined) user.nidNo = nidNo;
+        if (gender !== undefined) user.gender = gender;
+        if (maritalStatus !== undefined) user.maritalStatus = maritalStatus;
+        if (residentialStatus !== undefined) user.residentialStatus = residentialStatus;
+        if (country !== undefined) user.country = country;
+        if (education !== undefined) user.education = education;
 
         await user.save();
 

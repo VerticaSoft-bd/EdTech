@@ -1,11 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { jwtVerify } from 'jose';
 import dbConnect from '@/lib/db';
 import Transaction from '@/models/Transaction';
 import Student from '@/models/Student';
+import Course from '@/models/Course';
 
 export async function GET(req: NextRequest) {
     try {
         await dbConnect();
+
+        // 1. Authenticate & Determine Role
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+        let userRole = 'admin';
+        let userId = null;
+
+        if (token) {
+            try {
+                const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+                const { payload } = await jwtVerify(token, secret);
+                userRole = payload.role as string;
+                userId = payload.id;
+            } catch (err) {
+                console.error("Admin Enrollments API: Invalid token", err);
+            }
+        }
 
         const { searchParams } = new URL(req.url);
         const limit = parseInt(searchParams.get('limit') || '0');
@@ -14,6 +34,23 @@ export async function GET(req: NextRequest) {
         const status = searchParams.get('status') || '';
 
         const filter: any = { type: 'course_purchase' };
+        if (status) filter.status = status;
+
+        if (userRole === 'teacher' && userId) {
+            // Teacher mode: restrict to their own courses
+            const myCourses = await Course.find({ assignedTeachers: userId }).select('_id title').lean();
+            const teacherCourseIds = myCourses.map((c: any) => c._id.toString());
+            const teacherCourseTitles = myCourses.map((c: any) => c.title);
+
+            if (teacherCourseIds.length > 0) {
+                 filter.$or = [
+                     { 'metadata.courseId': { $in: teacherCourseIds } },
+                     { 'metadata.courseName': { $in: teacherCourseTitles } }
+                 ];
+            } else {
+                 filter._id = null; // Forces empty result if teacher has zero assigned courses
+            }
+        }
         if (status) filter.status = status;
 
         let query = Transaction.find(filter)

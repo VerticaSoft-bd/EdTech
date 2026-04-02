@@ -45,7 +45,7 @@ export default function LoginPage() {
                 window.dispatchEvent(new Event('auth-change'));
 
                 // Check role and redirect accordingly
-                if (data.data?.role === 'student' || data.data?.role === 'teacher') {
+                if (data.data?.role === 'student') {
                     router.push('/student-dashboard');
                 } else {
                     router.push('/dashboard');

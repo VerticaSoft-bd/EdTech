@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import CreateUserModal from "@/app/components/CreateUserModal";
 import UsersTable from "@/app/components/UsersTable";
 
 export default function TeacherUsersPage() {
+    const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -39,7 +41,12 @@ export default function TeacherUsersPage() {
                 </button>
             </div>
 
-            <UsersTable users={users} loading={loading} role="teacher" />
+            <UsersTable 
+                users={users} 
+                loading={loading} 
+                role="teacher" 
+                onEdit={(user) => router.push(`/dashboard/users/teacher/${user._id}`)} 
+            />
 
             <CreateUserModal
                 role="teacher"

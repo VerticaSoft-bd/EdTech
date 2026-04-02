@@ -63,8 +63,9 @@ const Sidebar: React.FC = () => {
 
     const role = user?.role || 'admin'; // Default to admin if not found (safer for dev, but usually would be restricted)
     const isStaff = role === 'staff';
+    const isTeacher = role === 'teacher';
     const staffPermissions = (user as any)?.staffPermissions || [];
-    const hasAccountsAccess = !isStaff || (isStaff && staffPermissions.length > 0);
+    const hasAccountsAccess = (!isStaff && !isTeacher) || (isStaff && staffPermissions.length > 0);
 
     return (
         <aside className="fixed left-0 top-0 h-screen w-[280px] bg-white border-r border-gray-100 flex flex-col z-50">
@@ -98,12 +99,15 @@ const Sidebar: React.FC = () => {
                     <span className="text-sm font-bold">Enrollments</span>
                 </Link>
 
-                <Link href="/dashboard/categories" className={getLinkClasses('/dashboard/categories')}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 12 12 17 22 12"></polyline><polyline points="2 17 12 22 22 17"></polyline></svg>
-                    <span className="text-sm font-bold">Categories</span>
-                </Link>
+                {!isTeacher && (
+                    <Link href="/dashboard/categories" className={getLinkClasses('/dashboard/categories')}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 12 12 17 22 12"></polyline><polyline points="2 17 12 22 22 17"></polyline></svg>
+                        <span className="text-sm font-bold">Categories</span>
+                    </Link>
+                )}
 
                 {/* Users Accordion Menu */}
+                {!isTeacher && (
                 <div className="pt-1 pb-1">
                     <button
                         onClick={() => setIsUsersOpen(!isUsersOpen)}
@@ -149,6 +153,7 @@ const Sidebar: React.FC = () => {
                         </div>
                     )}
                 </div>
+                )}
 
                 {hasAccountsAccess && (
                     <Link href="/dashboard/accounts" className={getLinkClasses('/dashboard/accounts')}>
@@ -157,7 +162,7 @@ const Sidebar: React.FC = () => {
                     </Link>
                 )}
 
-                {!isStaff && (
+                {!isStaff && !isTeacher && (
                     <>
                         <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -225,7 +230,7 @@ const Sidebar: React.FC = () => {
 
             {/* Profile Info */}
             <div className="p-4 border-t border-gray-100">
-                <Link href="/dashboard" className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
+                <Link href="/dashboard/profile" className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
                     <img src={`https://i.pravatar.cc/150?u=${(user as any)?.email || 'admin'}`} className="w-10 h-10 rounded-full bg-gray-200" alt="Admin" />
                     <div>
                         <h4 className="text-sm font-bold text-[#1A1D1F]">{(user as any)?.name || 'Admin User'}</h4>

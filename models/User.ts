@@ -9,6 +9,18 @@ export interface IUser extends Document {
     staffPermissions?: string[];
     passwordChangeAttempts: number;
     lastPasswordAttemptAt?: Date;
+    mobileNo?: string;
+    presentAddress?: string;
+    fatherName?: string;
+    motherName?: string;
+    guardianMobileNo?: string;
+    dateOfBirth?: string;
+    nidNo?: string;
+    gender?: string;
+    maritalStatus?: string;
+    residentialStatus?: string;
+    country?: string;
+    education?: string;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -50,7 +62,19 @@ const UserSchema: Schema<IUser> = new Schema({
     },
     lastPasswordAttemptAt: {
         type: Date,
-    }
+    },
+    mobileNo: { type: String, trim: true },
+    presentAddress: { type: String, trim: true },
+    fatherName: { type: String, trim: true },
+    motherName: { type: String, trim: true },
+    guardianMobileNo: { type: String, trim: true },
+    dateOfBirth: { type: String, trim: true },
+    nidNo: { type: String, trim: true },
+    gender: { type: String, trim: true },
+    maritalStatus: { type: String, trim: true },
+    residentialStatus: { type: String, trim: true },
+    country: { type: String, trim: true },
+    education: { type: String, trim: true },
 }, { timestamps: true });
 
 // Pre-save hook to hash the password before saving to the database

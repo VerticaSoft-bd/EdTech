@@ -64,7 +64,7 @@ const StudentSidebar: React.FC = () => {
 
             {/* Profile Info */}
             <div className="p-4 border-t border-gray-100">
-                <Link href="/student-dashboard" className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
+                <Link href="/student-dashboard/profile" className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
                     <img
                         src={`https://i.pravatar.cc/150?u=${user?.email || 'student'}`}
                         className="w-10 h-10 rounded-full bg-gray-200 object-cover"

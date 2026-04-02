@@ -17,9 +17,7 @@ export async function middleware(request: NextRequest) {
             const { payload } = await jwtVerify(authCookie.value, secret);
             const userRole = payload.role as string;
 
-            if (userRole === 'teacher') {
-                return NextResponse.redirect(new URL('/teacher-dashboard', request.url));
-            } else if (userRole === 'student') {
+            if (userRole === 'student') {
                 return NextResponse.redirect(new URL('/student-dashboard', request.url));
             } else {
                 return NextResponse.redirect(new URL('/dashboard', request.url));
@@ -52,17 +50,10 @@ export async function middleware(request: NextRequest) {
                 if (userRole !== 'student') return NextResponse.redirect(new URL('/dashboard', request.url));
             }
 
-            // Teacher Access Logic
-            if (isTeacherDashboardPath) {
-                if (userRole === 'student') return NextResponse.redirect(new URL('/student-dashboard', request.url));
-                if (userRole !== 'teacher') return NextResponse.redirect(new URL('/dashboard', request.url));
-            }
-
-            // Admin Dashboard Access Logic
+            // Admin/Teacher Dashboard Access Logic
             if (isDashboardPath) {
                 if (userRole === 'student') return NextResponse.redirect(new URL('/student-dashboard', request.url));
-                if (userRole === 'teacher') return NextResponse.redirect(new URL('/teacher-dashboard', request.url));
-                // Allow admin and staff (no redirect needed here as they are allowed)
+                // Allow admin, staff, and teacher (no redirect needed here as they are allowed)
             }
         } catch (error) {
             console.log(`Middleware: Token invalid/expired, redirecting ${pathname} to /login`);
@@ -77,7 +68,7 @@ export async function middleware(request: NextRequest) {
                 const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
                 const { payload } = await jwtVerify(authCookie.value, secret);
 
-                if (payload.role === 'student' || payload.role === 'teacher') {
+                if (payload.role === 'student') {
                     return NextResponse.redirect(new URL('/student-dashboard', request.url));
                 } else {
                     return NextResponse.redirect(new URL('/dashboard', request.url));
