@@ -1,7 +1,6 @@
-// app/api/v1/cvs/[cvId]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongo from '@/lib/db';
-import CvModel from '../../../../models/Cv';
+import CvModel from '@/models/cv';
 import mongoose from 'mongoose';
 
 type WithId<T> = T & { id?: unknown };

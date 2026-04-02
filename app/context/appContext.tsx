@@ -20,7 +20,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`/api/v1/users/me`, {
+        const response = await fetch(`/api/users/me`, {
           credentials: 'same-origin'
         });
         

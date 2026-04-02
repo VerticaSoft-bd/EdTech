@@ -1,7 +1,6 @@
-// app/api/v1/cvs/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongo from '@/lib/db';
-import CvModel from '../../../models/Cv';
+import CvModel from '@/models/cv';
 
 type WithId<T> = T & { id?: unknown };
 
@@ -65,7 +64,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, data: newCv }, { status: 201 });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'An unknown server error occurred.';
-    console.error('❌ [API ERROR] /api/v1/cvs POST:', error);
+    console.error('❌ [API ERROR] /api/cvs POST:', error);
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }

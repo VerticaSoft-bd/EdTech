@@ -6,8 +6,8 @@ import { CVData, CvSectionId } from '@/types/cv';
 import CvForm from './CvForm';
 import CvPreview from './CvPreview';
 import { Save, Download, ChevronDown, ChevronUp } from 'lucide-react';
-import Spinner from '../ui/Spinner';
-import { CvBuilderSkeleton } from '../ui/SkeletonLoader';
+import Spinner from '@/app/components/ui/Spinner';
+import { CvBuilderSkeleton } from '@/app/components/ui/SkeletonLoader';
 
 const DEFAULT_SECTION_ORDER: CvSectionId[] = ['personal', 'experience', 'education', 'skills', 'accomplishments', 'certifications', 'personalDetails', 'references', 'socials'];
 
@@ -160,7 +160,7 @@ export default function CvBuilder() {
   useEffect(() => {
     if (cvId) {
       setLoading(true);
-      fetch(`/api/v1/cvs/${cvId}`)
+      fetch(`/api/cvs/${cvId}`)
         .then((res) => res.json())
         .then((data) => {
            if (data.data) {
@@ -187,7 +187,7 @@ export default function CvBuilder() {
     const payload = serializeForApi(cvData, ownerId);
     
     try {
-      const url = cvId ? `/api/v1/cvs/${cvId}` : '/api/v1/cvs';
+      const url = cvId ? `/api/cvs/${cvId}` : '/api/cvs';
       const method = cvId ? 'PUT' : 'POST';
       
       const res = await fetch(url, {

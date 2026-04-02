@@ -243,42 +243,58 @@ const CvPreview = React.forwardRef<HTMLDivElement, { cvData: CVData }>(({ cvData
   }, [cvData.sectionOrder, sectionNodes]);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
     const measure = async () => {
       if (!measurementRef.current || orderedSections.length === 0) return;
 
       try {
         await document.fonts?.ready;
-      } catch {
-        // ignore
-      }
+      } catch { /* ignore */ }
 
+      // Performance Optimization: Batch DOM reads to prevent layout thrashing
       const A4_PAGE_HEIGHT_PX = 1050;
+      const headerElement = measurementRef.current.querySelector('#header-measure') as HTMLElement;
+      const headerHeight = headerElement ? headerElement.offsetHeight + 20 : 0;
+
+      // Group all measurements together
+      const sectionMeasurements = orderedSections.map(section => {
+        const el = measurementRef.current?.querySelector(`#measure-${section.id}`) as HTMLElement | null;
+        return {
+          id: section.id,
+          element: section.element,
+          height: el ? el.offsetHeight + 20 : 0
+        };
+      });
+
       const newPages: React.ReactNode[][] = [[]];
       let currentPageIndex = 0;
-      let currentHeight = 0;
+      let currentHeight = headerHeight;
 
-      const headerElement = measurementRef.current.querySelector('#header-measure') as HTMLElement;
-      if (headerElement) {
-        currentHeight += headerElement.offsetHeight + 20;
-      }
-
-      for (const section of orderedSections) {
-        const sectionElement = measurementRef.current?.querySelector(`#measure-${section.id}`) as HTMLElement | null;
-        if (sectionElement) {
-          const sectionHeight = sectionElement.offsetHeight + 20;
-          if (currentHeight + sectionHeight > A4_PAGE_HEIGHT_PX && newPages[currentPageIndex].length > 0) {
-            currentPageIndex++;
-            newPages[currentPageIndex] = [];
-            currentHeight = 0;
-          }
-          newPages[currentPageIndex].push(section.element);
-          currentHeight += sectionHeight;
+      for (const meas of sectionMeasurements) {
+        if (currentHeight + meas.height > A4_PAGE_HEIGHT_PX && newPages[currentPageIndex].length > 0) {
+          currentPageIndex++;
+          newPages[currentPageIndex] = [];
+          currentHeight = 0;
         }
+        newPages[currentPageIndex].push(meas.element);
+        currentHeight += meas.height;
       }
 
-      setPages(newPages);
+      // Only update state if pages have actually changed to reduce re-renders
+      setPages(prev => {
+        if (JSON.stringify(prev.length) === JSON.stringify(newPages.length) && 
+            prev.every((p, i) => p.length === newPages[i]?.length)) {
+          return prev;
+        }
+        return newPages;
+      });
     };
-    measure();
+
+    // Debounce measurement to reduce CPU load during rapid typing
+    timeoutId = setTimeout(measure, 150);
+
+    return () => clearTimeout(timeoutId);
   }, [orderedSections]);
 
   const socialsHidden = isHidden('socials');

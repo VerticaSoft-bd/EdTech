@@ -37,7 +37,7 @@ function YourCvsContent() {
 
       setLoading(true);
       try {
-        const res = await fetch(`/api/v1/cvs/user/${uid}`, {
+        const res = await fetch(`/api/cvs/user/${uid}`, {
           headers: { 'x-user-id': uid }
         });
         if (!res.ok) throw new Error('Network response was not ok');
@@ -56,7 +56,7 @@ function YourCvsContent() {
     if (!resolvedUserId) return;
     if (window.confirm('Are you sure you want to delete this CV?')) {
       try {
-        const res = await fetch(`/api/v1/cvs/${cvId}`, {
+        const res = await fetch(`/api/cvs/${cvId}`, {
           method: 'DELETE',
           headers: { 'x-user-id': resolvedUserId }
         });
@@ -83,24 +83,55 @@ function YourCvsContent() {
         </Link>
       </div>
       {cvs.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed rounded-lg">
-          <p className="text-gray-500">You haven&apos;t created any CVs yet.</p>
+        <div className="text-center py-16 bg-white border-2 border-dashed border-gray-100 rounded-[24px]">
+          <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <PlusCircle size={32} className="text-gray-300" />
+          </div>
+          <p className="text-gray-500 font-medium">You haven&apos;t created any CVs yet.</p>
+          <p className="text-sm text-gray-400 mt-1">Start by creating your first professional resume</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
           {cvs.map(cv => (
-            <div key={cv._id} className="p-4 border rounded-lg flex justify-between items-center bg-white hover:shadow-md transition-shadow">
-              <div>
-                <h3 className="font-bold text-lg text-gray-800">{cv.fullName || "Untitled CV"}</h3>
-                <p className="text-sm text-gray-600">{cv.titles.join(' | ')}</p>
+            <div key={cv._id} className="group relative bg-white p-6 rounded-[24px] border border-gray-100 hover:border-[#6C5DD3]/30 hover:shadow-xl hover:shadow-[#6C5DD3]/5 transition-all duration-300 flex flex-col">
+              <div className="flex-1">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="w-12 h-12 bg-[#6C5DD3]/10 rounded-2xl flex items-center justify-center text-[#6C5DD3] font-bold text-xl">
+                    {cv.fullName ? cv.fullName.charAt(0).toUpperCase() : 'CV'}
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Link 
+                      href={`/cv/${cv._id}?userId=${resolvedUserId}`} 
+                      className="p-2.5 text-gray-400 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/5 rounded-xl transition-all"
+                      title="Edit CV"
+                    >
+                      <Edit size={18} />
+                    </Link>
+                    <button 
+                      onClick={() => handleDelete(cv._id)} 
+                      className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                      title="Delete CV"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+                <h3 className="font-bold text-lg text-[#1A1D1F] line-clamp-1 mb-1">{cv.fullName || "Untitled CV"}</h3>
+                <p className="text-sm text-gray-500 line-clamp-2 min-h-[2.5rem]">
+                  {cv.titles && cv.titles.length > 0 ? cv.titles.join(' | ') : 'No titles added yet'}
+                </p>
               </div>
-              <div className="flex items-center gap-3">
-                <Link href={`/cv/${cv._id}?userId=${resolvedUserId}`} className="p-2 text-gray-600 hover:bg-gray-100 rounded-full cursor-pointer" title="Edit CV">
-                  <Edit size={18} />
+              
+              <div className="mt-6 pt-6 border-t border-gray-50 flex items-center justify-between">
+                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+                  Updated {new Date(cv.updatedAt).toLocaleDateString()}
+                </span>
+                <Link 
+                  href={`/cv/${cv._id}?userId=${resolvedUserId}`}
+                  className="text-[#6C5DD3] text-sm font-bold flex items-center gap-1 hover:gap-2 transition-all"
+                >
+                  Edit <Edit size={14} />
                 </Link>
-                <button onClick={() => handleDelete(cv._id)} className="p-2 text-red-600 hover:bg-red-50 rounded-full cursor-pointer" title="Delete CV">
-                  <Trash2 size={18} />
-                </button>
               </div>
             </div>
           ))}
