@@ -1,7 +1,7 @@
 // app/api/v1/cvs/user/[userId]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongo from '@/lib/db';
-import CvModel from '../../../../../models/CV';
+import CvModel from '../../../../../models/Cv';
 
 export async function GET(req: NextRequest, context: { params: Promise<{ userId: string }> }) {
   await connectMongo();

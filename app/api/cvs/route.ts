@@ -1,7 +1,7 @@
 // app/api/v1/cvs/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongo from '@/lib/db';
-import CvModel from '../../../models/CV';
+import CvModel from '../../../models/Cv';
 
 type WithId<T> = T & { id?: unknown };
 
