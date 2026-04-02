@@ -4,13 +4,10 @@ import { CVData, Experience, SocialLink, AcademicQualification, Reference, Accom
 import { PlusCircle, Trash2, User, Briefcase, GraduationCap, Award, Link as LinkIcon, Puzzle, Info, GripVertical, EyeOff, Eye, Move, Check } from 'lucide-react';
 import React, { useMemo, useState, useId } from 'react';
 import AccordionItem from './AccordionItem';
-import { uploadImage } from '@/app/utils/uploadImage';
 
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-
-type UploadImageResult = { url: string; error?: never } | { error: string; url?: never };
 
 const Input = React.memo(({ label, id, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) => {
   const autoId = useId();
@@ -149,15 +146,20 @@ export default function CvForm({ cvData, setCvData }: { cvData: CVData; setCvDat
       setPhotoError(null);
 
       try {
-        const result: UploadImageResult = await uploadImage(file, 'NUSDF/profile-pictures', {
-          validateSize: true,
-        });
+        const formData = new FormData();
+        formData.append('file', file);
 
-        if (result.url) {
-          setCvData((prev) => ({ ...prev, photoUrl: result.url }));
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        const data = await res.json();
+        
+        if (data.success && data.url) {
+          setCvData((prev) => ({ ...prev, photoUrl: data.url }));
         } else {
-          const errMsg = result.error || 'Upload failed. Please try again.';
-          setPhotoError(errMsg);
+          setPhotoError(data.message || 'Upload failed. Please try again.');
         }
       } catch (err: unknown) {
         const errMsg = err instanceof Error ? err.message : 'Upload failed.';

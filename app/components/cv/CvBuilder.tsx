@@ -2,7 +2,6 @@
 'use client';
 import { useState, useEffect, useRef, useDeferredValue } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import axios from 'axios';
 import { CVData, CvSectionId } from '@/types/cv';
 import CvForm from './CvForm';
 import CvPreview from './CvPreview';
@@ -149,9 +148,15 @@ export default function CvBuilder() {
   useEffect(() => {
     if (cvId) {
       setLoading(true);
-      axios
-        .get(`/api/v1/cvs/${cvId}`)
-        .then((response) => setCvData(cleanData(response.data.data)))
+      fetch(`/api/v1/cvs/${cvId}`)
+        .then((res) => res.json())
+        .then((data) => {
+           if (data.data) {
+             setCvData(cleanData(data.data));
+           } else {
+             throw new Error(data.error || 'Invalid response');
+           }
+        })
         .catch((err) => console.error('Failed to fetch CV data:', err))
         .finally(() => setLoading(false));
     } else {
@@ -174,24 +179,30 @@ export default function CvBuilder() {
     setIsSaving(true);
 
     const payload = serializeForApi(cvData, ownerId);
-    const config = { headers: { 'x-user-id': ownerId } };
-
+    
     try {
-      if (cvId) {
-        await axios.put(`/api/v1/cvs/${cvId}`, payload, config);
-      } else {
-        await axios.post('/api/v1/cvs', payload, config);
+      const url = cvId ? `/api/v1/cvs/${cvId}` : '/api/v1/cvs';
+      const method = cvId ? 'PUT' : 'POST';
+      
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': ownerId
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.error || 'Server Error');
       }
+      
       router.push(`/cv/list?userId=${ownerId}`);
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save CV:', error);
-      if (axios.isAxiosError(error) && error.response) {
-        const msg = (error.response.data as { error?: string })?.error || 'Server Error';
-        alert(`Save failed: ${msg}`);
-      } else {
-        alert('An unexpected error occurred while saving the CV.');
-      }
+      alert(`Save failed: ${error.message || 'An unexpected error occurred while saving the CV.'}`);
     } finally {
       setIsSaving(false);
     }

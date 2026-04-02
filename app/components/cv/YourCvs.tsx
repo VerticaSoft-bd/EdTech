@@ -1,7 +1,6 @@
 // components/cv/YourCvs.tsx
 'use client';
 import { useEffect, useState, Suspense } from 'react';
-import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import { Edit, Trash2, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -24,10 +23,12 @@ function YourCvsContent() {
       }
       setLoading(true);
       try {
-        const res = await axios.get(`/api/v1/cvs/user/${userId}`, {
+        const res = await fetch(`/api/v1/cvs/user/${userId}`, {
           headers: { 'x-user-id': userId }
         });
-        setCvs(res.data.data);
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        setCvs(data.data);
       } catch (error) {
         console.error("Failed to fetch user's CVs:", error);
       } finally {
@@ -41,9 +42,11 @@ function YourCvsContent() {
     if (!userId) return;
     if (window.confirm('Are you sure you want to delete this CV?')) {
       try {
-        await axios.delete(`/api/v1/cvs/${cvId}`, {
+        const res = await fetch(`/api/v1/cvs/${cvId}`, {
+          method: 'DELETE',
           headers: { 'x-user-id': userId }
         });
+        if (!res.ok) throw new Error('Network response was not ok');
         setCvs(prev => prev.filter(cv => cv._id !== cvId));
       } catch (error) {
         console.error('Failed to delete CV', error);
