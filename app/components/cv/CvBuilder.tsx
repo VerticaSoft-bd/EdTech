@@ -132,9 +132,7 @@ export default function CvBuilder() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showPreview, setShowPreview] = useState(false); // For mobile toggle
 
-  const [isTyping, setIsTyping] = useState(false);
-  const [frozenCvData, setFrozenCvData] = useState<CVData>(initialCvData);
-  const deferredPreviewData = useDeferredValue(frozenCvData);
+  const deferredPreviewData = useDeferredValue(cvData);
 
   const formWrapRef = useRef<HTMLDivElement>(null);
 
@@ -163,12 +161,6 @@ export default function CvBuilder() {
       setLoading(false);
     }
   }, [cvId]);
-
-  useEffect(() => {
-    if (!isTyping) {
-      setFrozenCvData(cvData);
-    }
-  }, [cvData, isTyping]);
 
   const handleSave = async () => {
     const ownerId = (cvData.userId as string) || (userId as string | null);
@@ -299,14 +291,6 @@ export default function CvBuilder() {
         <div
           ref={formWrapRef}
           className='flex-grow overflow-y-auto p-4 sm:p-6 lg:p-8'
-          onFocusCapture={() => setIsTyping(true)}
-          onBlurCapture={(e) => {
-            const next = e.relatedTarget as Node | null;
-            if (formWrapRef.current && next && formWrapRef.current.contains(next)) {
-              return;
-            }
-            setIsTyping(false);
-          }}
         >
           <CvForm cvData={cvData} setCvData={setCvData} />
         </div>
