@@ -20,6 +20,16 @@ export async function POST(request: Request) {
             return NextResponse.json({ success: false, error: 'Missing course or date information.' }, { status: 400 });
         }
 
+        // --- Date Validation: Only allow check-in for today ---
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (date !== todayStr) {
+            return NextResponse.json({ 
+                success: false, 
+                error: `Attendance can only be marked for the current date (${todayStr}). This link is for ${date}.` 
+            }, { status: 400 });
+        }
+        // ----------------------------------------------------
+
         // 1. Verify Enrollment via Transactions
         const enrollment = await Transaction.findOne({
             user: user._id,

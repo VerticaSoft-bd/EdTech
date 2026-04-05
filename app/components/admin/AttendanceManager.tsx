@@ -18,6 +18,7 @@ const AttendanceManager: React.FC = () => {
     const [courses, setCourses] = useState<any[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<string>('');
     const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+    const isToday = useMemo(() => selectedDate === new Date().toISOString().split('T')[0], [selectedDate]);
     const [students, setStudents] = useState<StudentEnrollment[]>([]);
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -174,16 +175,17 @@ const AttendanceManager: React.FC = () => {
                                 type="date" 
                                 className="pl-10 pr-4 py-2.5 bg-gray-50 border-none rounded-xl text-sm font-bold text-[#1A1D1F] focus:ring-2 focus:ring-[#6C5DD3] outline-none"
                                 value={selectedDate}
+                                max={new Date().toISOString().split('T')[0]}
                                 onChange={(e) => setSelectedDate(e.target.value)}
                             />
                         </div>
                         <button 
                             onClick={handleSave}
-                            disabled={saving || loading || students.length === 0}
-                            className="flex items-center gap-2 bg-[#6C5DD3] text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] disabled:opacity-50 transition-all text-sm"
+                            disabled={saving || loading || students.length === 0 || !isToday}
+                            className={`flex items-center gap-2 bg-[#6C5DD3] text-white px-6 py-2.5 rounded-xl font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] disabled:opacity-50 transition-all text-sm ${!isToday ? 'grayscale opacity-70 cursor-not-allowed' : ''}`}
                         >
                             {saving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
-                            Save
+                            {isToday ? 'Save' : 'View Only'}
                         </button>
                     </div>
                 </div>
@@ -208,6 +210,14 @@ const AttendanceManager: React.FC = () => {
 
                 {activeTab === 'daily' ? (
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        {!isToday && (
+                            <div className="mb-6 p-4 bg-amber-50 border border-amber-100 rounded-2xl flex items-center gap-3">
+                                <Filter size={18} className="text-amber-500" />
+                                <p className="text-xs font-bold text-amber-700">
+                                    History View: You are viewing records for {new Date(selectedDate).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}. Marking is disabled.
+                                </p>
+                            </div>
+                        )}
                         {/* Bulk Actions Bar */}
                         <div className="flex flex-col md:flex-row md:items-center justify-between p-4 bg-gray-50 rounded-2xl gap-4 mb-8 border border-gray-100">
                             <div className="flex flex-wrap items-center gap-2">
@@ -217,12 +227,14 @@ const AttendanceManager: React.FC = () => {
                                     label="Mark All Present" 
                                     onClick={() => markAllStatus('Present')}
                                     variant="green"
+                                    disabled={!isToday}
                                 />
                                 <BulkActionButton 
                                     icon={<XSquare size={16} />} 
                                     label="Mark All Absent" 
                                     onClick={() => markAllStatus('Absent')}
                                     variant="red"
+                                    disabled={!isToday}
                                 />
                             </div>
                             <button 
@@ -307,18 +319,21 @@ const AttendanceManager: React.FC = () => {
                                                             onClick={() => updateStatus(students.indexOf(student), 'Present')} 
                                                             color="green" 
                                                             icon={<CheckCircle size={16} />} 
+                                                            disabled={!isToday}
                                                         />
                                                         <ActionButton 
                                                             active={student.status === 'Absent'} 
                                                             onClick={() => updateStatus(students.indexOf(student), 'Absent')} 
                                                             color="red" 
                                                             icon={<XCircle size={16} />} 
+                                                            disabled={!isToday}
                                                         />
                                                         <ActionButton 
                                                             active={student.status === 'Late'} 
                                                             onClick={() => updateStatus(students.indexOf(student), 'Late')} 
                                                             color="amber" 
                                                             icon={<Clock size={16} />} 
+                                                            disabled={!isToday}
                                                         />
                                                     </div>
                                                 </td>
@@ -379,7 +394,7 @@ const StatCard = ({ icon, label, value, color }: { icon: React.ReactNode, label:
     </div>
 );
 
-const BulkActionButton = ({ icon, label, onClick, variant }: { icon: React.ReactNode, label: string, onClick: () => void, variant: 'green' | 'red' }) => {
+const BulkActionButton = ({ icon, label, onClick, variant, disabled }: { icon: React.ReactNode, label: string, onClick: () => void, variant: 'green' | 'red', disabled?: boolean }) => {
     const colors = {
         green: 'bg-green-50 text-green-600 border-green-100 hover:bg-green-100',
         red: 'bg-red-50 text-red-600 border-red-100 hover:bg-red-100'
@@ -387,7 +402,8 @@ const BulkActionButton = ({ icon, label, onClick, variant }: { icon: React.React
     return (
         <button 
             onClick={onClick}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all active:scale-95 ${colors[variant]}`}
+            disabled={disabled}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all active:scale-95 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed ${colors[variant]}`}
         >
             {icon}
             {label}
@@ -395,7 +411,7 @@ const BulkActionButton = ({ icon, label, onClick, variant }: { icon: React.React
     );
 };
 
-const ActionButton = ({ active, onClick, color, icon }: { active: boolean, onClick: () => void, color: 'green' | 'red' | 'amber', icon: React.ReactNode }) => {
+const ActionButton = ({ active, onClick, color, icon, disabled }: { active: boolean, onClick: () => void, color: 'green' | 'red' | 'amber', icon: React.ReactNode, disabled?: boolean }) => {
     const activeColors = {
         green: 'bg-green-500 text-white shadow-md shadow-green-200',
         red: 'bg-red-500 text-white shadow-md shadow-red-200',
@@ -409,7 +425,8 @@ const ActionButton = ({ active, onClick, color, icon }: { active: boolean, onCli
     return (
         <button 
             onClick={onClick}
-            className={`p-2 rounded-xl transition-all ${active ? activeColors[color] : `bg-gray-50 text-gray-400 ${hoverColors[color]}`}`}
+            disabled={disabled}
+            className={`p-2 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed ${active ? activeColors[color] : `bg-gray-50 text-gray-400 ${!disabled ? hoverColors[color] : ''}`}`}
         >
             {icon}
         </button>

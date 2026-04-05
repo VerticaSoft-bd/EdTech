@@ -31,6 +31,15 @@ export async function POST(req: NextRequest) {
         }
 
         await dbConnect();
+        
+        // --- Date Validation: Only allow marking for today ---
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (date !== todayStr) {
+            return NextResponse.json({ 
+                error: `Attendance can only be marked for the current date (${todayStr}). You provided ${date}.` 
+            }, { status: 400 });
+        }
+        // ---------------------------------------------------
 
         // Normalize date to midnight to ensure consistency
         const attendanceDate = new Date(date);
