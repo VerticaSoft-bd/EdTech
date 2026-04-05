@@ -89,24 +89,37 @@ export async function POST(req: NextRequest) {
         // 1. Perform bulk write for attendance records
         await Attendance.bulkWrite(operations);
 
-        // 2. Sync attendedClasses count in Student model
+        // 2. Sync attendedClasses and totalClasses count in Student model
         // We sync based on email + courseName to be extra safe
-        for (const email of affectedStudentEmails) {
-            const count = await Attendance.countDocuments({
+        await Promise.all(affectedStudentEmails.map(async (email) => {
+            // Count total classes where this student was marked (Present, Absent, or Late)
+            const totalHeld = await Attendance.countDocuments({
+                studentEmail: email,
+                courseName
+            });
+
+            // Count only Present records
+            const attended = await Attendance.countDocuments({
                 studentEmail: email,
                 courseName,
                 status: 'Present'
             });
             
+            // Sync both fields to the Student model
             await Student.updateOne(
                 { email, courseName },
-                { $set: { attendedClasses: count } }
+                { 
+                    $set: { 
+                        attendedClasses: attended,
+                        totalClasses: totalHeld 
+                    } 
+                }
             );
-        }
+        }));
 
         return NextResponse.json({ 
             success: true, 
-            message: `Attendance marked for ${operations.length} students` 
+            message: `Attendance saved and updated for ${affectedStudentEmails.length} students` 
         });
 
     } catch (error: any) {
