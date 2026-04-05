@@ -6,6 +6,7 @@ export interface IAttendance extends Document {
     courseName: string;
     date: Date;
     status: 'Present' | 'Absent' | 'Late';
+    attendedAt: Date;
     markedBy: mongoose.Types.ObjectId;
     method: 'Manual' | 'Self';
     deviceInfo?: Record<string, any>;
@@ -40,6 +41,10 @@ const AttendanceSchema: Schema<IAttendance> = new mongoose.Schema(
             enum: ['Present', 'Absent', 'Late'],
             default: 'Present',
             required: true,
+        },
+        attendedAt: {
+            type: Date,
+            default: Date.now,
         },
         markedBy: {
             type: mongoose.Schema.Types.ObjectId,

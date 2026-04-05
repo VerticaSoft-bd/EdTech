@@ -38,19 +38,17 @@ export default function AttendanceMonthlyReport({ courseName, students }: Props)
         } catch (error) {
             toast.error('Failed to fetch monthly report');
         } finally {
-            setLoading(true);
             // Smaller delay for smooth UI
             setTimeout(() => setLoading(false), 500);
         }
     };
 
-    const getStatus = (studentId: string, email: string, date: Date) => {
+    const getRecord = (studentId: string, email: string, date: Date) => {
         const dateStr = format(date, 'yyyy-MM-dd');
-        const record = attendanceData.find(d => 
+        return attendanceData.find(d => 
             (d.student?._id === studentId || d.student === studentId || d.studentEmail === email) && 
             format(new Date(d.date), 'yyyy-MM-dd') === dateStr
         );
-        return record?.status;
     };
 
     const exportToCSV = () => {
@@ -61,8 +59,8 @@ export default function AttendanceMonthlyReport({ courseName, students }: Props)
         students.forEach(s => {
             csv += `"${s.name}","${s.email}",`;
             csv += daysInMonth.map(d => {
-                const status = getStatus(s.studentId, s.email, d);
-                return status || '-';
+                const record = getRecord(s.studentId, s.email, d);
+                return record?.status || '-';
             }).join(',') + '\n';
         });
 
@@ -103,6 +101,14 @@ export default function AttendanceMonthlyReport({ courseName, students }: Props)
                 </div>
 
                 <div className="flex items-center gap-2">
+                    <button 
+                        onClick={fetchMonthlyData}
+                        disabled={loading}
+                        className="p-2.5 bg-white border border-gray-200 rounded-xl text-gray-400 hover:text-[#6C5DD3] hover:border-[#6C5DD3] transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                        title="Refresh Report"
+                    >
+                        <Loader2 className={loading ? 'animate-spin' : ''} size={20} />
+                    </button>
                     <button 
                         onClick={exportToCSV}
                         className="flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold shadow-lg shadow-gray-200 hover:bg-gray-800 transition-all active:scale-[0.98]"
@@ -152,9 +158,14 @@ export default function AttendanceMonthlyReport({ courseName, students }: Props)
                                     </div>
                                 </td>
                                 {daysInMonth.map(day => {
-                                    const status = getStatus(student.studentId, student.email, day);
+                                    const record = getRecord(student.studentId, student.email, day);
+                                    const status = record?.status;
                                     let colorClass = "bg-gray-50 text-gray-200 border-gray-100";
                                     let label = "";
+                                    
+                                    // Fallback to updatedAt for older records
+                                    const timeSource = record?.attendedAt || record?.updatedAt || record?.createdAt;
+                                    const timeStr = timeSource ? format(new Date(timeSource), 'hh:mm a') : '';
 
                                     if (status === 'Present') {
                                         colorClass = "bg-green-100 text-green-600 border-green-200 shadow-sm shadow-green-100";
@@ -168,9 +179,40 @@ export default function AttendanceMonthlyReport({ courseName, students }: Props)
                                     }
 
                                     return (
-                                        <td key={day.toString()} className="p-2 text-center border-r border-gray-50/30">
-                                            <div className={`w-8 h-8 rounded-[10px] flex items-center justify-center mx-auto text-[10px] font-black border transition-all hover:scale-110 cursor-default ${colorClass}`}>
-                                                {label || "•"}
+                                        <td key={day.toString()} className="p-2 text-center border-r border-gray-50/30 relative">
+                                            <div className="flex flex-col items-center gap-1 group/item">
+                                                <div 
+                                                    className={`w-8 h-8 rounded-[10px] flex items-center justify-center mx-auto text-[10px] font-black border transition-all hover:scale-110 cursor-default ${colorClass}`}
+                                                >
+                                                    {label || "•"}
+                                                </div>
+                                                
+                                                {/* Premium Floating Tooltip */}
+                                                {status && (
+                                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 pointer-events-none opacity-0 group-hover/item:opacity-100 transition-all duration-200 translate-y-2 group-hover/item:translate-y-0">
+                                                        <div className="bg-[#1A1D1F] text-white p-3 rounded-2xl shadow-2xl shadow-black/20 border border-white/10 min-w-[120px] backdrop-blur-md">
+                                                            <div className="flex flex-col items-center gap-1">
+                                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Marked at</span>
+                                                                <span className="text-lg font-black tracking-tight text-white whitespace-nowrap">
+                                                                    {timeStr || '--:--'}
+                                                                </span>
+                                                                {record?.markedBy?.name && (
+                                                                    <div className="mt-1 pt-1 border-t border-white/5 w-full text-center">
+                                                                        <span className="text-[8px] text-gray-500 font-bold uppercase tracking-tighter block">By {record.markedBy.name}</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                            {/* Tooltip Arrow */}
+                                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-[#1A1D1F]"></div>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {timeStr && (
+                                                    <span className="text-[7px] font-bold text-gray-300 transition-colors leading-none tracking-tighter">
+                                                        {timeStr.split(' ')[0]}
+                                                    </span>
+                                                )}
                                             </div>
                                         </td>
                                     );

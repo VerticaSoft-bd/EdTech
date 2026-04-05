@@ -11,6 +11,7 @@ interface StudentEnrollment {
     fullName: string;
     email: string;
     status: 'Present' | 'Absent' | 'Late';
+    attendedAt?: string;
 }
 
 const AttendanceManager: React.FC = () => {
@@ -59,14 +60,24 @@ const AttendanceManager: React.FC = () => {
                 const historyData = await historyRes.json();
                 const existingAttendance = historyData.data || [];
 
-                const attendanceMap = new Map(existingAttendance.map((a: any) => [a.studentEmail, a.status]));
+                const attendanceMap = new Map<string, { status: string, attendedAt?: string }>(
+                    existingAttendance.map((a: any) => [
+                        a.studentEmail, 
+                        { status: a.status, attendedAt: a.attendedAt || a.updatedAt }
+                    ])
+                );
 
-                const studentList: StudentEnrollment[] = filtered.map((e: any) => ({
-                    studentId: e.user?._id || e.metadata?.studentId,
-                    fullName: e.user?.name || 'Unknown Student',
-                    email: e.metadata?.email || e.user?.email,
-                    status: attendanceMap.get(e.metadata?.email || e.user?.email) || 'Present'
-                }));
+                const studentList: StudentEnrollment[] = filtered.map((e: any) => {
+                    const email = e.metadata?.email || e.user?.email || '';
+                    const record = attendanceMap.get(email);
+                    return {
+                        studentId: e.user?._id || e.metadata?.studentId || '',
+                        fullName: e.user?.name || e.metadata?.fullName || e.metadata?.name || 'Unknown Student',
+                        email: email,
+                        status: (record?.status as any) || 'Present',
+                        attendedAt: record?.attendedAt
+                    };
+                });
 
                 setStudents(studentList);
             }
@@ -80,11 +91,13 @@ const AttendanceManager: React.FC = () => {
     const updateStatus = (index: number, status: 'Present' | 'Absent' | 'Late') => {
         const newStudents = [...students];
         newStudents[index].status = status;
+        newStudents[index].attendedAt = new Date().toISOString(); // Local optimistic update
         setStudents(newStudents);
     };
 
     const markAllStatus = (status: 'Present' | 'Absent' | 'Late') => {
-        const newStudents = students.map(s => ({ ...s, status }));
+        const now = new Date().toISOString();
+        const newStudents = students.map(s => ({ ...s, status, attendedAt: now }));
         setStudents(newStudents);
         toast.success(`All marked as ${status}`);
     };
@@ -284,7 +297,7 @@ const AttendanceManager: React.FC = () => {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center justify-center">
-                                                        <StatusBadge status={student.status} />
+                                                        <StatusBadge status={student.status} attendedAt={student.attendedAt} />
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -403,18 +416,49 @@ const ActionButton = ({ active, onClick, color, icon }: { active: boolean, onCli
     );
 };
 
-const StatusBadge = ({ status }: { status: string }) => {
+const StatusBadge = ({ status, attendedAt }: { status: string, attendedAt?: string }) => {
     const styles = {
         Present: 'bg-green-100 text-green-600',
         Absent: 'bg-red-100 text-red-600',
         Late: 'bg-amber-100 text-amber-600'
     };
+    
+    // Using simple approach to avoid complex imports in helper
+    const timeSource = attendedAt;
+    const timeStr = timeSource ? new Date(timeSource).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
     return (
-        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${(styles as any)[status]}`}>
-            {status === 'Present' && <CheckCircle size={10} />}
-            {status === 'Absent' && <XCircle size={10} />}
-            {status === 'Late' && <Clock size={10} />}
-            {status}
+        <div className="flex flex-col items-center gap-1 relative group/badge">
+            <div 
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider cursor-default transition-transform group-hover/badge:scale-110 ${(styles as any)[status]}`}
+            >
+                {status === 'Present' && <CheckCircle size={10} />}
+                {status === 'Absent' && <XCircle size={10} />}
+                {status === 'Late' && <Clock size={10} />}
+                {status}
+            </div>
+
+            {/* Premium Floating Tooltip */}
+            {timeStr && (
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 pointer-events-none opacity-0 group-hover/badge:opacity-100 transition-all duration-200 translate-y-2 group-hover/badge:translate-y-0">
+                    <div className="bg-[#1A1D1F] text-white p-3 rounded-2xl shadow-2xl shadow-black/20 border border-white/10 min-w-[140px] backdrop-blur-md">
+                        <div className="flex flex-col items-center gap-1">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Marked at</span>
+                            <span className="text-xl font-black tracking-tight text-white whitespace-nowrap">
+                                {timeStr}
+                            </span>
+                        </div>
+                        {/* Tooltip Arrow */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-[#1A1D1F]"></div>
+                    </div>
+                </div>
+            )}
+
+            {timeStr && (
+                <span className="text-[8px] font-bold text-gray-300 transition-colors leading-none tracking-tighter opacity-60">
+                    {timeStr}
+                </span>
+            )}
         </div>
     );
 };

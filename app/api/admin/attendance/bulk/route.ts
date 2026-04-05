@@ -14,15 +14,13 @@ export async function POST(req: NextRequest) {
     try {
         const user = await getAuthenticatedUser(req);
         
-        // As requested by the user to "unprotected koro" (since token might not be passing correctly)
-        // We will allow the request but log if the user was found.
-        // In a production environment, this should be strictly protected.
+        // Lenient Auth check as requested
         if (!user && process.env.NODE_ENV === 'production') {
             console.error("Bulk Attendance: No authenticated user found in production.");
             return unauthorizedResponse();
         }
 
-        // Fallback user ID if not authenticated (using a placeholder or the first admin found)
+        // Fallback user ID if not authenticated
         const markedBy = (user?._id || new mongoose.Types.ObjectId("000000000000000000000000")) as any;
 
         const body = await req.json();
@@ -38,48 +36,77 @@ export async function POST(req: NextRequest) {
         const attendanceDate = new Date(date);
         attendanceDate.setHours(0, 0, 0, 0);
 
-        const operations = students.map(s => ({
-            updateOne: {
-                filter: {
-                    student: new mongoose.Types.ObjectId(s.studentId),
-                    courseName,
-                    date: attendanceDate
-                },
-                update: {
-                    $set: {
-                        studentEmail: s.email,
-                        status: s.status,
-                        markedBy: markedBy,
-                        method: 'Manual' as const
-                    }
-                },
-                upsert: true
+        const now = new Date();
+        const operations: any[] = [];
+        const affectedStudentEmails: string[] = [];
+
+        // Prepare operations with resilience for invalid ObjectIds
+        for (const s of students) {
+            let studentObjectId: mongoose.Types.ObjectId | null = null;
+            
+            // Validate ObjectId
+            if (mongoose.Types.ObjectId.isValid(s.studentId)) {
+                studentObjectId = new mongoose.Types.ObjectId(s.studentId);
+            } else {
+                // Fallback: Find student by email and courseName 
+                // This handles cases like "std2" where ID might be a display string
+                const foundStudent = await Student.findOne({ email: s.email, courseName });
+                if (foundStudent) {
+                    studentObjectId = foundStudent._id as mongoose.Types.ObjectId;
+                }
             }
-        }));
+
+            if (studentObjectId) {
+                operations.push({
+                    updateOne: {
+                        filter: {
+                            student: studentObjectId,
+                            courseName,
+                            date: attendanceDate
+                        },
+                        update: {
+                            $set: {
+                                studentEmail: s.email,
+                                status: s.status,
+                                markedBy: markedBy,
+                                attendedAt: now, // NEW: Capture the exact time of marking
+                                method: 'Manual' as const
+                            }
+                        },
+                        upsert: true
+                    }
+                });
+                affectedStudentEmails.push(s.email);
+            } else {
+                console.warn(`Bulk Attendance: Could not resolve student for email ${s.email}`);
+            }
+        }
+
+        if (operations.length === 0) {
+            return NextResponse.json({ error: 'No valid students found to mark attendance' }, { status: 400 });
+        }
 
         // 1. Perform bulk write for attendance records
         await Attendance.bulkWrite(operations);
 
-        // 2. Sync attendedClasses count in Student model for each student touched
-        // This is done to ensure the dashboard charts stay performant
-        const studentIds = students.map(s => new mongoose.Types.ObjectId(s.studentId));
-        
-        for (const sId of studentIds) {
+        // 2. Sync attendedClasses count in Student model
+        // We sync based on email + courseName to be extra safe
+        for (const email of affectedStudentEmails) {
             const count = await Attendance.countDocuments({
-                student: sId,
+                studentEmail: email,
                 courseName,
                 status: 'Present'
             });
             
             await Student.updateOne(
-                { _id: sId },
+                { email, courseName },
                 { $set: { attendedClasses: count } }
             );
         }
 
         return NextResponse.json({ 
             success: true, 
-            message: `Attendance marked for ${students.length} students` 
+            message: `Attendance marked for ${operations.length} students` 
         });
 
     } catch (error: any) {
