@@ -8,10 +8,11 @@ import dbConnect from "@/lib/db";
 import Student from "@/models/Student";
 import Course from "@/models/Course";
 import Attendance from "@/models/Attendance";
+import Transaction from "@/models/Transaction";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
-import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Download, FileText } from "lucide-react";
 
 export default async function StudentDashboard() {
   const user = await getAuthenticatedUser();
@@ -37,8 +38,14 @@ export default async function StudentDashboard() {
     .limit(5)
     .lean();
 
+  // Fetch recent transaction history
+  const transactions = await Transaction.find({ user: user._id })
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .lean();
+
   return (
-    <div className="min-h-screen bg-white text-[#1A1D1F]">
+    <div className="min-h-screen bg-white text-[#1A1D1F] scroll-smooth">
       <Header />
 
       <main className="max-w-[1600px] mx-auto p-6 md:p-8 grid grid-cols-12 gap-8">
@@ -53,73 +60,50 @@ export default async function StudentDashboard() {
                 </span>
               </h1>
               <p className="text-gray-500 mt-2 text-sm">
-                Welcome to Streva, Check your priority learning.
+                Welcome to Youth Ins, Check your priority learning.
               </p>
             </div>
             <div className="flex items-center gap-3 text-white text-xs font-semibold">
               <div className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#6C5DD3] to-[#8F85EA] shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2">
                 <div className="p-1 bg-white/20 rounded-full">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 6v6l4 2" />
-                  </svg>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                 </div>
                 <div className="flex flex-col leading-none gap-0.5">
                   <span className="text-[13px]">100</span>
-                  <span className="opacity-80 text-[10px] font-normal">
-                    Point
-                  </span>
+                  <span className="opacity-80 text-[10px] font-normal">Point</span>
                 </div>
               </div>
               <div className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FFAB7B] to-[#FFCF9D] shadow-lg shadow-[#FFAB7B]/20 flex items-center gap-2">
                 <div className="p-1 bg-white/20 rounded-full">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  >
-                    <path d="M12 2l3 7h7l-5 5 2 7-7-4-7 4 2-7-5-5h7z" />
-                  </svg>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 2l3 7h7l-5 5 2 7-7-4-7 4 2-7-5-5h7z" /></svg>
                 </div>
                 <div className="flex flex-col leading-none gap-0.5">
                   <span className="text-[13px]">24</span>
-                  <span className="opacity-80 text-[10px] font-normal">
-                    Badge
-                  </span>
+                  <span className="opacity-80 text-[10px] font-normal">Badge</span>
                 </div>
               </div>
               <div className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF9AD5] to-[#FFC2E8] shadow-lg shadow-[#FF9AD5]/20 flex items-center gap-2">
                 <div className="p-1 bg-white/20 rounded-full">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                  >
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  </svg>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /></svg>
                 </div>
                 <div className="flex flex-col leading-none gap-0.5">
                   <span className="text-[13px]">08</span>
-                  <span className="opacity-80 text-[10px] font-normal">
-                    Certificates
-                  </span>
+                  <span className="opacity-80 text-[10px] font-normal">Certificates</span>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Global Payment History Shortcut */}
+        <div className="col-span-12 -mt-4 mb-2 flex justify-end">
+            <a 
+                href="#payment-history"
+                className="text-xs font-bold text-[#6C5DD3] flex items-center gap-1.5 hover:bg-[#6C5DD3]/5 px-3 py-1.5 rounded-lg transition-all"
+            >
+                <FileText size={14} />
+                Billing History
+            </a>
         </div>
 
         {/* Feature Banner */}
@@ -439,132 +423,81 @@ export default async function StudentDashboard() {
               )}
             </div>
           </div>
-
-          {/* Most View Contents */}
-          {/* <div>
-            <div className="flex items-center justify-between mb-5">
+          
+          {/* Payment History & Invoices */}
+          <div id="payment-history" className="mt-12 mb-12">
+            <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-[#1A1D1F] flex items-center gap-2">
-                Most view contents
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#A4A4A4"
-                  strokeWidth="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 16v-4" />
-                  <path d="M12 8h.01" />
-                </svg>
+                Payment History
+                <span className="text-[10px] text-gray-400 font-normal uppercase tracking-widest bg-gray-100 px-2 py-0.5 rounded-lg">Billing</span>
               </h2>
             </div>
-
-            <div className="space-y-3">
-              <div className="bg-[#F0F2F4] p-3 rounded-[16px] flex items-center justify-between group hover:bg-gray-50 transition-colors cursor-pointer">
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-[#FFAB7B]/10 flex items-center justify-center text-[#FFAB7B]">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
-                  </div>
-                  <span className="text-sm font-bold text-[#1A1D1F]">Mobile & Desktop Screen Pattern</span>
-                  <span className="px-2 py-0.5 bg-gray-100 rounded-md text-[10px] font-medium text-gray-500">Course</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-[180px] h-6 bg-[#EFEFEF] rounded-full overflow-hidden relative">
-                    <div className="absolute top-0 left-0 h-full w-[80%] bg-[#D5D2FF]"></div>
-                    <span className="absolute inset-0 flex items-center justify-end px-2 text-[10px] font-medium text-gray-600">80% (25 hrs)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-[#F0F2F4] p-3 rounded-[16px] flex items-center justify-between group hover:bg-gray-50 transition-colors cursor-pointer">
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-[#FF9AD5]/10 flex items-center justify-center text-[#FF9AD5]">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                  </div>
-                  <span className="text-sm font-bold text-[#1A1D1F]">Creating Engaging Learning Journeys: UI/UX Best Practices in LMS Design</span>
-                  <span className="px-2 py-0.5 bg-gray-100 rounded-md text-[10px] font-medium text-gray-500">Page</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-[180px] h-6 bg-[#EFEFEF] rounded-full overflow-hidden relative">
-                    <div className="absolute top-0 left-0 h-full w-[15%] bg-[#F2F2F2]"></div>
-                    <span className="absolute inset-0 flex items-center justify-end px-2 text-[10px] font-medium text-gray-600">15% (15 hrs)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-[#F0F2F4] p-3 rounded-[16px] flex items-center justify-between opacity-60">
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-bold text-[#1A1D1F] ml-12">Other Task</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-[180px] h-6 bg-[#EFEFEF] rounded-full overflow-hidden relative">
-                    <span className="absolute inset-0 flex items-center justify-end px-2 text-[10px] font-medium text-gray-600">5% (5 hrs)</span>
-                  </div>
-                </div>
+            
+            <div className="bg-white rounded-[24px] border border-gray-100 overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-100 bg-gray-50/50">
+                      <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
+                      <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Method</th>
+                      <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
+                      <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Status</th>
+                      <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Invoice</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 text-sm">
+                    {transactions && transactions.length > 0 ? (
+                      transactions.map((txn: any) => (
+                        <tr key={txn._id.toString()} className="hover:bg-gray-50 transition-colors group">
+                          <td className="p-4 text-gray-600 font-medium">
+                            {format(new Date(txn.createdAt), "MMM dd, yyyy")}
+                          </td>
+                          <td className="p-4">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-[#6C5DD3]/40"></span>
+                              <span className="text-[#1A1D1F] font-bold capitalize">{txn.method || 'Online'}</span>
+                            </div>
+                          </td>
+                          <td className="p-4 font-black text-[#1A1D1F]">
+                            ৳{txn.amount.toLocaleString()}
+                          </td>
+                          <td className="p-4 text-center">
+                            <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase ${
+                              txn.status === 'completed' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' :
+                              txn.status === 'pending' ? 'bg-amber-100 text-amber-600' :
+                              'bg-red-50 text-red-500'
+                            }`}>
+                              {txn.status}
+                            </span>
+                          </td>
+                          <td className="p-4 text-right">
+                            <Link 
+                              href={`/invoice/${txn.transactionId}`}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-[#6C5DD3] hover:bg-[#6C5DD3] hover:text-white hover:border-[#6C5DD3] transition-all shadow-sm active:scale-95"
+                            >
+                              <FileText size={14} />
+                              View
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="p-10 text-center text-gray-400 italic bg-gray-50/30">
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-2">
+                              <Download size={20} className="text-gray-300" />
+                            </div>
+                            <span>No payment records found yet.</span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
-          </div> */}
-
-          {/* To be reviewed */}
-          {/* <div>
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold text-[#1A1D1F] flex items-center gap-2">
-                To be reviewed
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#A4A4A4"
-                  strokeWidth="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 16v-4" />
-                  <path d="M12 8h.01" />
-                </svg>
-              </h2>
-              <button className="text-sm font-bold text-[#1A1D1F] flex items-center gap-1 hover:bg-gray-100 px-2 py-1 rounded-lg transition-colors">
-                Last 7 Day
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6" /></svg>
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { type: "Quiz", color: "text-[#FFAB7B]", bg: "bg-[#FFAB7B]/10", icon: "message-square" },
-                { type: "Quiz", color: "text-[#8E8AFF]", bg: "bg-[#8E8AFF]/10", icon: "compass" },
-                { type: "Assignment", color: "text-[#FF4C4C]", bg: "bg-[#FF4C4C]/10", icon: "file-text" },
-                { type: "Assignment", color: "text-[#4BD37B]", bg: "bg-[#4BD37B]/10", icon: "bar-chart" },
-              ].map((item, idx) => (
-                <div key={idx} className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex items-center justify-between hover:scale-[1.02] transition-transform cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl ${item.bg} flex items-center justify-center ${item.color}`}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        {item.icon === "message-square" && <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />}
-                        {item.icon === "compass" && <circle cx="12" cy="12" r="10" />}
-                        {item.icon === "file-text" && <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />}
-                        {item.icon === "bar-chart" && <path d="M12 20V10" />}
-                        {item.icon === "bar-chart" && <path d="M18 20V4" />}
-                        {item.icon === "bar-chart" && <path d="M6 20v-4" />}
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-[#1A1D1F]">Mastering UI/UX Design: A Guide...</h4>
-                      <div className="flex items-center gap-3 text-[10px] text-gray-500 mt-1">
-                        <span>{item.type}</span>
-                        <span className="flex items-center gap-1">
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                          15 Question
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1D1F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </div>
-              ))}
-            </div>
-          </div> */}
+          </div>
 
         </div>
 
@@ -631,7 +564,84 @@ export default async function StudentDashboard() {
 
           {/* Job Feed & CV Builder */}
           <JobFeed />
+        </div>
 
+        {/* Global Payment History Section - Spanning full width at bottom */}
+        <div id="payment-history" className="col-span-12 mt-12 mb-20">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-bold text-[#1A1D1F] flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#6C5DD3]/10 rounded-xl flex items-center justify-center text-[#6C5DD3]">
+                    <FileText size={20} />
+                </div>
+                Payment History & Invoices
+                <span className="text-[10px] text-gray-400 font-normal uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-full">Billing Center</span>
+              </h2>
+            </div>
+            
+            <div className="bg-white rounded-[32px] border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-100 bg-gray-50/50">
+                      <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
+                      <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Method</th>
+                      <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
+                      <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Status</th>
+                      <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Invoice</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 text-sm">
+                    {transactions && transactions.length > 0 ? (
+                      transactions.map((txn: any) => (
+                        <tr key={txn._id.toString()} className="hover:bg-gray-50 transition-colors">
+                          <td className="p-6 text-gray-600 font-medium whitespace-nowrap">
+                            {format(new Date(txn.createdAt), "MMMM dd, yyyy")}
+                          </td>
+                          <td className="p-6">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-[#6C5DD3]"></span>
+                              <span className="text-[#1A1D1F] font-bold capitalize">{txn.method || 'Online Payment'}</span>
+                            </div>
+                          </td>
+                          <td className="p-6 font-black text-[#1A1D1F] text-lg">
+                            ৳{txn.amount.toLocaleString()}
+                          </td>
+                          <td className="p-6 text-center">
+                            <span className={`px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase ${
+                              txn.status === 'completed' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' :
+                              txn.status === 'pending' ? 'bg-amber-100 text-amber-600' :
+                              'bg-red-50 text-red-500'
+                            }`}>
+                              {txn.status}
+                            </span>
+                          </td>
+                          <td className="p-6 text-right">
+                            <Link 
+                              href={`/invoice/${txn.transactionId}`}
+                              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-xs font-bold hover:bg-[#5a4cb5] transition-all shadow-lg shadow-[#6C5DD3]/20 active:scale-95"
+                            >
+                              <Download size={14} />
+                              Get Invoice
+                            </Link>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="p-20 text-center text-gray-400 bg-gray-50/20">
+                          <div className="flex flex-col items-center gap-4">
+                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-2">
+                                <FileText size={32} className="text-gray-300" />
+                            </div>
+                            <p className="text-sm font-medium">No transaction history available on this account.</p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
         </div>
       </main>
       {/* Floating AI Assistant Button (SRS) */}

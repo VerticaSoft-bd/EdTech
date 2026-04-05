@@ -66,10 +66,18 @@ const FeeStatusCard: React.FC<FeeStatusProps> = ({
                             <p className="text-xs font-bold">{nextDueDate}</p>
                         </div>
                     </div>
-                    <button className="px-5 py-2.5 bg-white text-[#1A1D1F] rounded-xl text-xs font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-95 flex items-center gap-2">
-                        Pay Now
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <a 
+                            href="#payment-history"
+                            className="px-4 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl text-xs font-bold hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2"
+                        >
+                            History
+                        </a>
+                        <button className="px-5 py-2.5 bg-white text-[#1A1D1F] rounded-xl text-xs font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-95 flex items-center gap-2">
+                            Pay Now
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
