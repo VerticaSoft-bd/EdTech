@@ -30,7 +30,16 @@ export async function GET(req: NextRequest) {
         } else {
             // Admins, Teachers, Staff can see others
             if (studentId) filter.student = studentId;
-            if (date) {
+            
+            const startDate = searchParams.get('startDate');
+            const endDate = searchParams.get('endDate');
+
+            if (startDate && endDate) {
+                filter.date = {
+                    $gte: new Date(new Date(startDate).setHours(0, 0, 0, 0)),
+                    $lte: new Date(new Date(endDate).setHours(23, 59, 59, 999))
+                };
+            } else if (date) {
                 const normalizedDate = new Date(date);
                 normalizedDate.setHours(0, 0, 0, 0);
                 filter.date = normalizedDate;
