@@ -69,12 +69,12 @@ export async function POST(request: Request) {
 
         // 3. Mark Attendance
         const attendance = await Attendance.create({
-            student: user._id,
+            student: user._id as any,
             studentEmail: user.email,
             courseName,
             date: new Date(date),
             status: 'Present',
-            markedBy: user._id, // Self-marked
+            markedBy: user._id as any, // Self-marked
             method: 'Self',
             deviceInfo: deviceInfo || {}
         });

@@ -2,11 +2,19 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
 
+interface Alert {
+    id: string;
+    student: string;
+    issue: string;
+    status: string;
+    type: string;
+}
+
 export async function GET() {
     try {
         await connectToDatabase();
 
-        const alerts = [];
+        const alerts: Alert[] = [];
 
         // 1. Payment Overdue Alerts
         const overdueStudents = await Student.find({ dueAmount: { $gt: 0 } })
