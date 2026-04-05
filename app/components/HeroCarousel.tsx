@@ -83,13 +83,15 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
                 />
             ))}
 
-            {/* Pagination Indicators - Vertical & Smart */}
-            <div className="absolute top-1/2 -translate-y-1/2 left-8 z-20 flex flex-col gap-3">
+            {/* Pagination Indicators - Vertical for Desktop, Bottom for Mobile */}
+            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-8 z-20 flex flex-row md:flex-col gap-3">
                 {slides.map((_, idx) => (
                     <button
                         key={idx}
                         onClick={() => setCurrent(idx)}
-                        className={`transition-all duration-500 rounded-full border ${idx === current ? 'h-10 w-2.5 bg-white border-white' : 'h-2.5 w-2.5 bg-transparent border-white/20 hover:border-white/50'
+                        className={`transition-all duration-500 rounded-full border ${idx === current 
+                            ? 'w-10 h-2.5 md:h-10 md:w-2.5 bg-white border-white' 
+                            : 'h-2.5 w-2.5 bg-transparent border-white/20 hover:border-white/50'
                             }`}
                     />
                 ))}
