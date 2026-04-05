@@ -79,6 +79,30 @@ export default function ViewStudentModal({ isOpen, onClose, student }: ViewStude
                             </div>
 
                             <div>
+                                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Course Progress</h4>
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="font-medium text-gray-500">Overall Progress</span>
+                                        <span className="font-bold text-[#6C5DD3]">{student.progress || 0}%</span>
+                                    </div>
+                                    <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                                        <div 
+                                            className="h-full bg-gradient-to-r from-[#6C5DD3] to-[#8E8AFF] rounded-full transition-all duration-500" 
+                                            style={{ width: `${student.progress || 0}%` }}
+                                        ></div>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
+                                        <span className="text-xs font-bold text-gray-500 uppercase">
+                                            {student.courseMode === 'Offline' ? 'Attendance' : 'Modules'}
+                                        </span>
+                                        <span className="text-sm font-bold text-[#1A1D1F]">
+                                            {student.attendedClasses || 0} / {student.totalClasses || 0} {student.courseMode === 'Offline' ? 'Classes' : 'Modules'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
                                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">System Info</h4>
                                 <div className="space-y-2 text-sm text-[#1A1D1F]">
                                     <p><span className="font-medium text-gray-500">Joined On:</span> {new Date(student.createdAt).toLocaleDateString()}</p>

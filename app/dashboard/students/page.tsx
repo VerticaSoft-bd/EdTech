@@ -137,7 +137,14 @@ export default function StudentsPage() {
                                                     'bg-[#FF4C4C]'
                                                 }`} style={{ width: `${progress}%` }}></div>
                                         </div>
-                                        <span className="text-[10px] text-gray-400 mt-1 block">{progress}%</span>
+                                        <div className="flex items-center justify-between mt-1.5">
+                                            <span className="text-[10px] font-bold text-[#1A1D1F]">{progress}%</span>
+                                            <span className="text-[9px] text-gray-400 font-medium">
+                                                {courseType === 'Offline' 
+                                                    ? `${student.attendedClasses || 0}/${student.totalClasses || 0} Classes` 
+                                                    : `${student.attendedClasses || 0}/${student.totalClasses || 0} Modules`}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td className="p-6 text-right">
                                         <div className="relative inline-block text-left">

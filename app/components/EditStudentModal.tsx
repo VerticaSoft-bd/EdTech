@@ -402,7 +402,7 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
                                 </div>
 
                                 <div className="space-y-2 col-span-1 md:col-span-2">
-                                    <label className="text-sm font-bold text-gray-700">Course Progress (%)</label>
+                                    <label className="text-sm font-bold text-gray-700">Course Progress ({student.courseMode === 'Offline' ? 'Attendance' : 'Completion'}) %</label>
                                     <div className="flex items-center gap-4">
                                         <input
                                             type="range"
@@ -423,29 +423,35 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
 
                         {/* Attendance Tracker */}
                         <div>
-                            <h3 className="text-lg font-bold text-[#1A1D1F] mb-4 pb-2 border-b border-gray-100">Attendance Tracker</h3>
+                            <h3 className="text-lg font-bold text-[#1A1D1F] mb-4 pb-2 border-b border-gray-100">
+                                {student.courseMode === 'Offline' ? 'Attendance Tracker' : 'Module Progress Tracker'}
+                            </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Total Classes <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-bold text-gray-700">
+                                        {student.courseMode === 'Offline' ? 'Total Classes' : 'Total Modules'} <span className="text-red-500">*</span>
+                                    </label>
                                     <input 
                                         type="number" 
                                         name="totalClasses" 
                                         value={formData.totalClasses} 
                                         onChange={handleChange} 
                                         required 
-                                        placeholder="e.g. 30" 
+                                        placeholder={student.courseMode === 'Offline' ? 'e.g. 30' : 'e.g. 12'} 
                                         className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" 
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Attended Classes <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-bold text-gray-700">
+                                        {student.courseMode === 'Offline' ? 'Attended Classes' : 'Completed Modules'} <span className="text-red-500">*</span>
+                                    </label>
                                     <input 
                                         type="number" 
                                         name="attendedClasses" 
                                         value={formData.attendedClasses} 
                                         onChange={handleChange} 
                                         required 
-                                        placeholder="e.g. 18" 
+                                        placeholder={student.courseMode === 'Offline' ? 'e.g. 18' : 'e.g. 8'} 
                                         className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" 
                                     />
                                 </div>

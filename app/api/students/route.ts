@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
+import Course from '@/models/Course';
 
 export async function POST(request: Request) {
     try {
@@ -24,6 +25,10 @@ export async function POST(request: Request) {
 
         await connectToDatabase();
 
+        // Fetch course details to get courseMode
+        const courseData = await Course.findOne({ title: body.courseName });
+        const courseMode = courseData?.courseMode || 'Online';
+
         // Check if student with same email exists
         const existingStudent = await Student.findOne({ email: body.email });
         if (existingStudent) {
@@ -33,7 +38,10 @@ export async function POST(request: Request) {
             );
         }
 
-        const newStudent = await Student.create(body);
+        const newStudent = await Student.create({
+            ...body,
+            courseMode
+        });
 
         return NextResponse.json({
             success: true,

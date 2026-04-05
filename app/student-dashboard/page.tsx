@@ -194,7 +194,7 @@ export default async function StudentDashboard() {
 
                   return (
                     <Link
-                      href={`/courses/${course.slug}`}
+                      href={`/student-dashboard/courses/${course.slug}/progress`}
                       key={course._id.toString()}
                       className="bg-[#F6F8FA] p-2 rounded-[32px] shadow-sm hover:shadow-md transition-shadow group cursor-pointer block"
                     >
@@ -326,7 +326,7 @@ export default async function StudentDashboard() {
 
                   return (
                     <Link
-                      href={`/courses/${course.slug}`}
+                      href={`/student-dashboard/courses/${course.slug}/progress`}
                       key={course._id.toString()}
                       className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow group cursor-pointer"
                     >
@@ -389,7 +389,7 @@ export default async function StudentDashboard() {
                               <line x1="16" y1="17" x2="8" y2="17"></line>
                               <polyline points="10 9 9 9 8 9"></polyline>
                             </svg>
-                            {materials} Modules
+                            {materials} {course.courseMode === 'Offline' ? 'Classes' : 'Modules'}
                           </div>
                         </div>
 
