@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongo from '@/lib/db';
-import CvModel from '@/models/cv';
+import CvModel from '@/models/Cv';
 
 type WithId<T> = T & { id?: unknown };
 
