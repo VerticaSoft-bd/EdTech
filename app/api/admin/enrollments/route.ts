@@ -5,6 +5,7 @@ import dbConnect from '@/lib/db';
 import Transaction from '@/models/Transaction';
 import Student from '@/models/Student';
 import Course from '@/models/Course';
+import User from '@/models/User';
 
 export async function GET(req: NextRequest) {
     try {
