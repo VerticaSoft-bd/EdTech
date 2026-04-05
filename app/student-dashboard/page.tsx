@@ -7,8 +7,11 @@ import { getAuthenticatedUser } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import Student from "@/models/Student";
 import Course from "@/models/Course";
+import Attendance from "@/models/Attendance";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { format } from "date-fns";
+import { CheckCircle, XCircle, Clock } from "lucide-react";
 
 export default async function StudentDashboard() {
   const user = await getAuthenticatedUser();
@@ -27,6 +30,12 @@ export default async function StudentDashboard() {
 
   // Fetch rich course data for the enrolled courses
   const enrolledCourses = await Course.find({ title: { $in: enrolledCourseNames } }).lean();
+
+  // Fetch recent attendance history (last 5 records)
+  const attendanceHistory = await Attendance.find({ studentEmail: user.email })
+    .sort({ date: -1 })
+    .limit(5)
+    .lean();
 
   return (
     <div className="min-h-screen bg-white text-[#1A1D1F]">
@@ -576,6 +585,48 @@ export default async function StudentDashboard() {
               present={enrollments.reduce((sum, e: any) => sum + (e.attendedClasses || 0), 0)}
               limit={enrollments.reduce((sum, e: any) => sum + (e.totalClasses || 0), 0) || 1}
             />
+          </div>
+
+          {/* Attendance History List */}
+          <div className="bg-white p-6 rounded-[32px] shadow-sm border border-gray-50">
+            <h3 className="font-bold text-[#1A1D1F] mb-4 flex items-center justify-between">
+              Recent Attendance
+              <span className="text-[10px] text-gray-400 font-normal uppercase tracking-widest">Last 5 Classes</span>
+            </h3>
+            <div className="space-y-3">
+              {attendanceHistory.length > 0 ? (
+                attendanceHistory.map((record: any) => (
+                  <div key={record._id.toString()} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl hover:bg-gray-100/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg ${
+                        record.status === 'Present' ? 'bg-green-100 text-green-600' :
+                        record.status === 'Absent' ? 'bg-red-100 text-red-600' :
+                        'bg-amber-100 text-amber-600'
+                      }`}>
+                        {record.status === 'Present' ? <CheckCircle size={14} /> :
+                         record.status === 'Absent' ? <XCircle size={14} /> :
+                         <Clock size={14} />}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-[#1A1D1F] line-clamp-1">{record.courseName}</p>
+                        <p className="text-[10px] text-gray-400">{format(new Date(record.date), 'MMM dd, yyyy')}</p>
+                      </div>
+                    </div>
+                    <span className={`text-[10px] font-bold uppercase ${
+                      record.status === 'Present' ? 'text-green-600' :
+                      record.status === 'Absent' ? 'text-red-600' :
+                      'text-amber-600'
+                    }`}>
+                      {record.status}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-6 text-gray-400 text-xs italic">
+                  No attendance records found yet.
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Job Feed & CV Builder */}

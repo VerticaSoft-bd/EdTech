@@ -16,6 +16,7 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
     '/dashboard/users/staff': { title: 'Staff', subtitle: 'Manage staff users' },
     '/dashboard/users/admin': { title: 'Admins', subtitle: 'Manage admin users' },
     '/dashboard/users/group': { title: 'Groups', subtitle: 'Manage user groups' },
+    '/dashboard/attendance': { title: 'Attendance', subtitle: 'Manage and track student daily attendance' },
 };
 
 const DashboardTopBar: React.FC = () => {

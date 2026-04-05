@@ -5,7 +5,7 @@ import dbConnect from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 const JWT_SECRET = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'your-secret-key-at-least-32-characters-long'
+    process.env.JWT_SECRET || ''
 );
 
 export async function signToken(payload: any) {

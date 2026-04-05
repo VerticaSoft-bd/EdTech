@@ -99,6 +99,11 @@ const Sidebar: React.FC = () => {
                     <span className="text-sm font-bold">Enrollments</span>
                 </Link>
 
+                <Link href="/dashboard/attendance" className={getLinkClasses('/dashboard/attendance')}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="M9 14l2 2 4-4"></path></svg>
+                    <span className="text-sm font-bold">Attendance</span>
+                </Link>
+
                 <Link href="/dashboard/profile" className={getLinkClasses('/dashboard/profile')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span className="text-sm font-bold">Account Settings</span>
