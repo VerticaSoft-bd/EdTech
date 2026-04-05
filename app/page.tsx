@@ -387,23 +387,100 @@ export default function RootPage() {
                     </div>
                 </section>
 
-                {/* Full Width Map Section */}
-                <section className="w-full mt-10 mb-8">
-                    <div className="text-center mb-8">
-                        <h2 className="text-[28px] font-extrabold text-gray-900">Our Location</h2>
-                    </div>
-                    <div className="w-full rounded-[24px] overflow-hidden shadow-sm border border-gray-100">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.9650079615135!2d90.42680589999999!3d23.748627199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b9b4c1ff8911%3A0x8d70c5c554d258ee!2sYouth%20Instructory%20-%20Computer%20Training%20Center!5e0!3m2!1sen!2sbd!4v1773306370451!5m2!1sen!2sbd"
-                            width="100%"
-                            height="400"
-                            style={{ border: 0 }}
-                            allowFullScreen={false}
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                            title="Our Location"
-                            className="grayscale-[10%] hover:grayscale-0 transition-all duration-500"
-                        ></iframe>
+                {/* Why We Lead Section (Premium AI Aesthetic) */}
+                <section className="w-full py-24 px-4 relative overflow-hidden">
+                    {/* Background Noise & Glows */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none"></div>
+                    <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#6C5DD3]/10 rounded-full blur-[120px] pointer-events-none"></div>
+                    <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#FF4C4C]/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+                    <div className="flex flex-col lg:flex-row items-stretch gap-8 max-w-[1300px] mx-auto relative z-10">
+                        
+                        {/* Map Column (Left) - Using Premium Card Style */}
+                        <div className="w-full lg:w-[45%] group h-full self-stretch">
+                            <div className="relative h-full">
+                                <div className="absolute -inset-2 bg-gradient-to-r from-[#6C5DD3]/20 to-[#FF4C4C]/10 rounded-[48px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                <div className="relative h-full bg-white/40 backdrop-blur-md p-3 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white overflow-hidden">
+                                    <iframe
+                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.9650079615135!2d90.42680589999999!3d23.748627199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b9b4c1ff8911%3A0x8d70c5c554d258ee!2sYouth%20Instructory%20-%20Computer%20Training%20Center!5e0!3m2!1sen!2sbd!4v1773306370451!5m2!1sen!2sbd"
+                                        width="100%"
+                                        height="100%"
+                                        style={{ border: 0, minHeight: '480px' }}
+                                        allowFullScreen={false}
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        title="Youth Instructory Location"
+                                        className="rounded-[32px] grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 ease-in-out"
+                                    ></iframe>
+                                    
+                                    {/* Map Overlay Card (Mini) */}
+                                    <div className="absolute bottom-8 left-8 right-8 bg-white/90 backdrop-blur-xl p-4 rounded-2xl border border-white/50 shadow-2xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-lg bg-[#6C5DD3] flex items-center justify-center text-white shadow-lg shadow-[#6C5DD3]/20">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            </div>
+                                            <div>
+                                                <p className="text-[13px] font-bold text-[#1A1D1F]">Visit Our Campus</p>
+                                                <p className="text-[10px] text-gray-500">Khilgaon, Dhaka, Bangladesh</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Content Column (Right) - Using Premium AI Aesthetics */}
+                        <div className="w-full lg:w-[55%] flex flex-col justify-center">
+                            <div className="bg-gradient-to-br from-white to-[#F8F9FF] p-10 md:p-14 rounded-[48px] shadow-[0_25px_60px_rgba(108,93,211,0.05)] border border-white relative overflow-hidden group/card h-full">
+                                {/* Decorative Energy Lines */}
+                                <div className="absolute top-0 right-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] pointer-events-none"></div>
+                                <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#6C5DD3]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-1000"></div>
+
+                                <div className="relative z-10 space-y-10">
+                                    <div className="space-y-4">
+                                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#6C5DD3]/10 text-[#6C5DD3] rounded-full text-[10px] font-black uppercase tracking-widest border border-[#6C5DD3]/10">
+                                            <span className="w-1.5 h-1.5 bg-[#6C5DD3] rounded-full animate-pulse"></span>
+                                            Excellence in Training
+                                        </div>
+                                        <h2 className="text-4xl md:text-5xl font-black leading-[1.1] text-[#1A1D1F]">
+                                            Why We Lead As The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6C5DD3] to-[#FF4C4C]">Best Center</span> in Khilgaon
+                                        </h2>
+                                    </div>
+                                    
+                                    <div className="space-y-6 text-gray-500 text-lg md:text-[19px] leading-relaxed font-medium pr-4">
+                                        <p className="hover:text-[#1A1D1F] transition-colors">
+                                            First, <span className="text-[#6C5DD3] font-bold">Youth Instructory</span> sits near Khilgaon and offers computer training. 
+                                            For five years, we teach young learners with care and skill.
+                                        </p>
+                                        <p className="hover:text-[#1A1D1F] transition-colors">
+                                            We start with basics on keyboard and mouse. Then, we guide students through 
+                                            advanced topics and AI in simple steps.
+                                        </p>
+                                        <p className="hover:text-[#1A1D1F] transition-colors">
+                                            Next, we teach unique skills that no other center shares. Our hands-on 
+                                            lessons help students learn by doing. Students type, code, and build real 
+                                            projects from day one.
+                                        </p>
+                                        <p className="hover:text-[#1A1D1F] transition-colors">
+                                            Also, our students say we are the best in Khilgaon. If you can hold a mouse, 
+                                            we shape you into a <span className="text-[#FF4C4C] font-bold underline decoration-2 underline-offset-4">computer pro</span>. Our teachers guide each student step by step.
+                                        </p>
+                                        <p className="bg-[#6C5DD3]/5 p-6 rounded-3xl border border-[#6C5DD3]/10 text-[#1A1D1F] font-bold shadow-sm group-hover/card:shadow-md transition-shadow">
+                                            Finally, come visit Youth Instructory today. Join us and start your computer 
+                                            journey. Unlock your bright future with new skills.
+                                        </p>
+                                    </div>
+
+                                    <div className="pt-6">
+                                        <button className="px-8 py-4 bg-[#1A1D1F] text-white rounded-2xl font-bold flex items-center gap-3 hover:translate-y-[-2px] hover:shadow-xl transition-all group/btn">
+                                            Get Started Now
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="group-hover/btn:translate-x-1 transition-transform"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </section>
             </main>
