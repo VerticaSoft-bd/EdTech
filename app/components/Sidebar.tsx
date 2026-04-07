@@ -61,6 +61,17 @@ const Sidebar: React.FC = () => {
         return `${baseClasses} ${active ? activeClasses : inactiveClasses}`;
     };
 
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/auth/logout', { method: 'POST' });
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+    };
+
     const role = user?.role || 'admin'; // Default to admin if not found (safer for dev, but usually would be restricted)
     const isStaff = role === 'staff';
     const isTeacher = role === 'teacher';
@@ -239,14 +250,24 @@ const Sidebar: React.FC = () => {
             </nav>
 
             {/* Profile Info */}
-            <div className="p-4 border-t border-gray-100">
+            <div className="p-4 border-t border-gray-100 mt-auto">
                 <Link href="/dashboard/profile" className="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 cursor-pointer">
-                    <img src={`https://i.pravatar.cc/150?u=${(user as any)?.email || 'admin'}`} className="w-10 h-10 rounded-full bg-gray-200" alt="Admin" />
-                    <div>
-                        <h4 className="text-sm font-bold text-[#1A1D1F]">{(user as any)?.name || 'Admin User'}</h4>
-                        <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">{(user as any)?.role || 'Super Admin'}</p>
+                    <div className="w-10 h-10 bg-[#6C5DD3] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0">
+                        {user?.name ? user.name.substring(0, 2).toUpperCase() : 'AD'}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-bold text-[#1A1D1F] truncate">{(user as any)?.name || 'Admin User'}</h4>
+                        <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest truncate">{(user as any)?.role || 'Super Admin'}</p>
                     </div>
                 </Link>
+
+                <button
+                    onClick={handleLogout}
+                    className="w-full mt-2 flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all group"
+                >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                    <span className="text-sm font-bold">Logout</span>
+                </button>
             </div>
         </aside>
 
