@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ComingSoonModal from './ComingSoonModal';
 
 export default function Header() {
     const [user, setUser] = useState<{ name: string; role: string } | null>(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isAIModalOpen, setIsAIModalOpen] = useState(false);
     const pathname = usePathname();
 
     useEffect(() => {
@@ -48,7 +50,10 @@ export default function Header() {
                         </Link>
 
                         <div className="flex items-center gap-4">
-                            <button className="hidden sm:block relative group overflow-hidden p-[1px] rounded-[16px] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 bg-gradient-to-br from-[#8E8AFF] via-[#F1F5F9] via-60% to-[#6C5DD3] shrink-0">
+                            <button 
+                                onClick={() => setIsAIModalOpen(true)}
+                                className="hidden sm:block relative group overflow-hidden p-[1px] rounded-[16px] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 bg-gradient-to-br from-[#8E8AFF] via-[#F1F5F9] via-60% to-[#6C5DD3] shrink-0"
+                            >
                                 <div className="relative bg-white rounded-[15px] pl-4 pr-5 py-2.5 flex items-center gap-2.5 bg-[radial-gradient(circle_at_top_left,rgba(142,138,255,0.15),transparent_50%),radial-gradient(circle_at_bottom_right,rgba(108,93,211,0.15),transparent_50%)] bg-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-[#6C5DD3]/0 via-[#6C5DD3]/10 to-[#6C5DD3]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer rounded-[15px]"></div>
                                     <div className="text-[#1A1D1F]">
@@ -352,13 +357,24 @@ export default function Header() {
                     </nav>
 
                     <div className="mt-auto pb-10 flex flex-col gap-4">
-                        <button className="w-full py-4 bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] text-white font-black rounded-2xl shadow-xl shadow-[#6C5DD3]/20 flex items-center justify-center gap-3">
+                        <button 
+                            onClick={() => {
+                                closeMenu();
+                                setIsAIModalOpen(true);
+                            }}
+                            className="w-full py-4 bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] text-white font-black rounded-2xl shadow-xl shadow-[#6C5DD3]/20 flex items-center justify-center gap-3 active:scale-[0.98] transition-transform"
+                        >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L13.8 6.2L18 8L13.8 9.8L12 14L10.2 9.8L6 8L10.2 6.2L12 2Z" fill="white" /><path d="M19 13L20 15.5L22.5 16.5L20 17.5L19 20L18 17.5L15.5 16.5L18 15.5L19 13Z" fill="white" /></svg>
                             ASK AI ASSISTANT
                         </button>
                     </div>
                 </div>
             </div>
+
+            <ComingSoonModal 
+                isOpen={isAIModalOpen} 
+                onClose={() => setIsAIModalOpen(false)} 
+            />
         </header>
     );
 }
