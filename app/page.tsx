@@ -11,9 +11,15 @@ import SeminarModal from "@/app/components/SeminarModal";
 
 export default function RootPage() {
     const [isSeminarModalOpen, setIsSeminarModalOpen] = useState(false);
+    const [allCourses, setAllCourses] = useState<any[]>([]);
     const [upcomingCourses, setUpcomingCourses] = useState<any[]>([]);
     const [loadingCourses, setLoadingCourses] = useState(true);
+    const [allFreeClasses, setAllFreeClasses] = useState<any[]>([]);
     const [freeClasses, setFreeClasses] = useState<any[]>([]);
+    const [selectedBatchCategory, setSelectedBatchCategory] = useState("All");
+    const [selectedFreeCategory, setSelectedFreeCategory] = useState("All Types");
+    const [dynamicBatchCategories, setDynamicBatchCategories] = useState<string[]>(["All"]);
+    const [dynamicFreeCategories, setDynamicFreeCategories] = useState<string[]>(["All Types"]);
     const [testimonials, setTestimonials] = useState<any[]>([]);
     const [testimonialIndex, setTestimonialIndex] = useState(0);
 
@@ -23,12 +29,28 @@ export default function RootPage() {
                 const res = await fetch("/api/courses");
                 if (res.ok) {
                     const data = await res.json();
-                    setUpcomingCourses(data.data.slice(0, 4)); // Get first 4 courses
+                    setAllCourses(data.data || []);
+                    setUpcomingCourses((data.data || []).slice(0, 4)); // Get first 4 courses
                 }
             } catch (err) {
                 console.error("Error fetching courses", err);
             } finally {
                 setLoadingCourses(false);
+            }
+        };
+
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch("/api/categories");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.data) {
+                        const cats = ["All", ...data.data.map((c: any) => c.name)];
+                        setDynamicBatchCategories(cats);
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching categories", err);
             }
         };
 
@@ -38,8 +60,15 @@ export default function RootPage() {
                 if (res.ok) {
                     const data = await res.json();
                     if (data.success && data.data) {
+                        setAllFreeClasses(data.data.freeClasses || []);
                         setFreeClasses(data.data.freeClasses || []);
                         setTestimonials(data.data.testimonials || []);
+
+                        // Extract dynamic categories for free classes
+                        if (data.data.freeClasses) {
+                            const cats = ["All Types", ...Array.from(new Set(data.data.freeClasses.map((c: any) => c.category).filter(Boolean))) as string[]];
+                            setDynamicFreeCategories(cats);
+                        }
                     }
                 }
             } catch (err) {
@@ -48,8 +77,25 @@ export default function RootPage() {
         };
 
         fetchCourses();
+        fetchCategories();
         fetchSettings();
     }, []);
+
+    useEffect(() => {
+        if (selectedBatchCategory === "All") {
+            setUpcomingCourses(allCourses.slice(0, 4));
+        } else {
+            setUpcomingCourses(allCourses.filter(c => c.category === selectedBatchCategory));
+        }
+    }, [selectedBatchCategory, allCourses]);
+
+    useEffect(() => {
+        if (selectedFreeCategory === "All Types") {
+            setFreeClasses(allFreeClasses);
+        } else {
+            setFreeClasses(allFreeClasses.filter(c => c.category === selectedFreeCategory));
+        }
+    }, [selectedFreeCategory, allFreeClasses]);
 
     const nextTestimonial = () => {
         if (testimonials.length === 0) return;
@@ -130,10 +176,18 @@ export default function RootPage() {
                             </div>
                         </h2>
                         <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
-                            <button className="px-5 py-2 bg-[#4A72FF] text-white text-[13px] md:text-sm font-semibold rounded-full shadow-sm">All</button>
-                            <button className="px-5 py-2 bg-white text-gray-600 text-[13px] md:text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Data & AI</button>
-                            <button className="px-5 py-2 bg-white text-gray-600 text-[13px] md:text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Design</button>
-                            <button className="px-5 py-2 bg-white text-gray-600 text-[13px] md:text-sm font-semibold rounded-full border border-gray-200 hover:bg-gray-50 transition">Marketing</button>
+                            {dynamicBatchCategories.map((cat) => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedBatchCategory(cat)}
+                                    className={`px-5 py-2 text-[13px] md:text-sm font-semibold rounded-full transition-all duration-300 ${selectedBatchCategory === cat
+                                            ? "bg-[#4A72FF] text-white shadow-sm"
+                                            : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                                        }`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
                         </div>
                     </div>
 
@@ -230,10 +284,18 @@ export default function RootPage() {
                         </div>
 
                         <div className="flex flex-wrap justify-center items-center gap-2 md:gap-3 mb-10 w-full max-w-4xl mx-auto border-b border-gray-800 pb-8">
-                            <button className="px-4 py-2 md:px-6 md:py-2.5 bg-white text-[#181C25] rounded-full text-[12px] md:text-[14px] font-extrabold shadow-lg">All Types</button>
-                            <button className="px-4 py-2 md:px-6 md:py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[12px] md:text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Data & AI</button>
-                            <button className="px-4 py-2 md:px-6 md:py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[12px] md:text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Web Development</button>
-                            <button className="px-4 py-2 md:px-6 md:py-2.5 bg-[#252A36] text-gray-300 border border-gray-700/50 rounded-full text-[12px] md:text-[14px] font-semibold hover:text-white hover:bg-[#2C3240] transition">Design & Multimedia</button>
+                            {dynamicFreeCategories.map((cat) => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedFreeCategory(cat)}
+                                    className={`px-4 py-2 md:px-6 md:py-2.5 rounded-full text-[12px] md:text-[14px] transition-all duration-300 ${selectedFreeCategory === cat
+                                            ? "bg-white text-[#181C25] font-extrabold shadow-lg"
+                                            : "bg-[#252A36] text-gray-300 border border-gray-700/50 font-semibold hover:text-white hover:bg-[#2C3240]"
+                                        }`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
                             <button className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-lg hover:bg-gray-100 transition md:ml-2 shrink-0">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                             </button>
