@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
     const [user, setUser] = useState<{ name: string; role: string } | null>(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -113,8 +115,13 @@ export default function Header() {
                             { label: "Settings", href: user?.role === 'student' ? '/student-dashboard/profile' : '/dashboard/settings' }
                         ].map((item, idx) => {
                             const isCVMaker = item.label === "CV Maker";
+                            // For nested paths like /courses/some-course, we still want "Courses" to be active
+                            const isActive = item.href === "/" 
+                                ? pathname === "/" 
+                                : pathname.startsWith(item.href);
+
                             const commonClasses = `px-5 py-2.5 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 overflow-hidden ${
-                                idx === 0 ? "text-[#6C5DD3]" 
+                                isActive ? "text-[#6C5DD3]" 
                                 : isCVMaker ? "text-white bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] hover:-translate-y-1 transform active:translate-y-0.5"
                                 : "text-gray-500 hover:text-[#1A1D1F]"
                             }`;
@@ -124,7 +131,7 @@ export default function Header() {
                                     {/* Magnetic Glow Background */}
                                     {!isCVMaker ? (
                                       <>
-                                        <div className="absolute inset-0 bg-[#6C5DD3]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                        <div className={`absolute inset-0 bg-[#6C5DD3]/5 ${isActive ? 'opacity-100' : 'opacity-0'} group-hover:opacity-100 transition-opacity duration-300`}></div>
                                         <div className="absolute -inset-1 bg-gradient-to-r from-transparent via-[#6C5DD3]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"></div>
                                       </>
                                     ) : (
@@ -139,7 +146,7 @@ export default function Header() {
                                     </span>
 
                                     {/* AI Indicator Dots */}
-                                    {idx === 0 ? (
+                                    {isActive ? (
                                         <div className="relative z-10 flex gap-0.5">
                                             <span className="w-1 h-1 rounded-full bg-[#6C5DD3] animate-pulse"></span>
                                             <span className="w-1 h-1 rounded-full bg-[#6C5DD3]/40"></span>
@@ -149,7 +156,7 @@ export default function Header() {
                                     )}
 
                                     {/* Bottom Energy Bar */}
-                                    <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-[#6C5DD3] rounded-full transition-all duration-300 ${idx === 0 ? 'w-4' : 'w-0 group-hover:w-3 opacity-50'}`}></span>
+                                    <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-[#6C5DD3] rounded-full transition-all duration-300 ${isActive ? 'w-4' : 'w-0 group-hover:w-3 opacity-50'}`}></span>
                                 </Link>
                             );
                         })}
@@ -315,21 +322,32 @@ export default function Header() {
                             { label: "Settings", href: user?.role === 'student' ? '/student-dashboard/profile' : '/dashboard/settings' }
                         ].map((item) => {
                             const isCVMaker = item.label === "CV Maker";
+                            const isActive = item.href === "/" 
+                                ? pathname === "/" 
+                                : pathname.startsWith(item.href);
+
                             return (
                                 <Link
                                     key={item.label}
                                     href={item.href}
                                     onClick={closeMenu}
-                                    className={`px-6 py-4 text-lg font-black rounded-2xl transition-all tracking-widest flex items-center justify-between group overflow-hidden relative ${isCVMaker ? 'text-white bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] shadow-lg shadow-[#6C5DD3]/20 hover:-translate-y-1 transform uppercase' : 'text-gray-500 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/5 uppercase'}`}
+                                    className={`px-6 py-4 text-lg font-black rounded-2xl transition-all tracking-widest flex items-center justify-between group overflow-hidden relative ${
+                                        isActive && !isCVMaker ? 'text-[#6C5DD3] bg-[#6C5DD3]/5' : 
+                                        isCVMaker ? 'text-white bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] shadow-lg shadow-[#6C5DD3]/20 hover:-translate-y-1 transform uppercase' : 
+                                        'text-gray-500 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/5 uppercase'
+                                    }`}
                                 >
                                     {isCVMaker && (
                                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer pointer-events-none"></div>
                                     )}
                                     <span className="flex items-center gap-2 relative z-10">
                                       {item.label}
+                                      {isActive && !isCVMaker && (
+                                          <span className="w-1.5 h-1.5 rounded-full bg-[#6C5DD3] animate-pulse"></span>
+                                      )}
                                       {isCVMaker && <span className="bg-white text-[#6C5DD3] text-[9px] px-1.5 py-0.5 rounded shadow-sm">NEW</span>}
                                     </span>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={`${isCVMaker ? 'opacity-100' : 'opacity-0'} group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all`}><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={`${isCVMaker || isActive ? 'opacity-100' : 'opacity-0'} group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all`}><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                                 </Link>
                             );
                         })}

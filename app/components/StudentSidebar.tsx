@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const StudentSidebar: React.FC = () => {
+    const pathname = usePathname();
     const [user, setUser] = useState<{ name: string; role: string; email?: string } | null>(null);
 
     useEffect(() => {
@@ -15,6 +17,21 @@ const StudentSidebar: React.FC = () => {
             }
         }
     }, []);
+
+    const isActive = (path: string) => {
+        if (path === '/student-dashboard' && pathname === '/student-dashboard') return true;
+        if (path !== '#' && path !== '/student-dashboard' && pathname?.startsWith(path)) return true;
+        return false;
+    };
+
+    const getLinkClasses = (path: string) => {
+        const active = isActive(path);
+        const baseClasses = "flex items-center gap-3 px-4 py-3 rounded-xl transition-all group w-full";
+        const activeClasses = "bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20";
+        const inactiveClasses = "text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]";
+
+        return `${baseClasses} ${active ? activeClasses : inactiveClasses}`;
+    };
 
     return (
         <aside className="fixed left-0 top-0 h-screen w-[280px] bg-white border-r border-gray-100 flex flex-col z-50">
@@ -30,34 +47,34 @@ const StudentSidebar: React.FC = () => {
             <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
                 <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-4 mb-2">Student Menu</div>
 
-                <Link href="/student-dashboard" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20 group transition-all">
+                <Link href="/student-dashboard" className={getLinkClasses('/student-dashboard')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                     <span className="text-sm font-bold">Dashboard</span>
                 </Link>
 
-                <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
+                <Link href="/student-dashboard/courses" className={getLinkClasses('/student-dashboard/courses')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                     <span className="text-sm font-bold">My Classes</span>
                 </Link>
 
-                <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
+                <Link href="/student-dashboard/assignments" className={getLinkClasses('/student-dashboard/assignments')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                     <span className="text-sm font-bold">Assignments</span>
                 </Link>
 
-                <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
+                <Link href="/student-dashboard/fees" className={getLinkClasses('/student-dashboard/fees')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                     <span className="text-sm font-bold">Fee Status</span>
                 </Link>
 
-                <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
+                <Link href="/student-dashboard/cv-maker" className={getLinkClasses('/student-dashboard/cv-maker')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span className="text-sm font-bold">AI Resume</span>
                 </Link>
 
                 <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-4 mb-2 mt-6">Settings</div>
 
-                <Link href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] transition-all group">
+                <Link href="/student-dashboard/profile" className={getLinkClasses('/student-dashboard/profile')}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                     <span className="text-sm font-bold">Settings</span>
                 </Link>
