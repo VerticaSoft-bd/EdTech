@@ -22,6 +22,13 @@ export default function RootPage() {
     const [dynamicFreeCategories, setDynamicFreeCategories] = useState<string[]>(["All Types"]);
     const [testimonials, setTestimonials] = useState<any[]>([]);
     const [testimonialIndex, setTestimonialIndex] = useState(0);
+    const freeCategoriesRef = React.useRef<HTMLDivElement>(null);
+
+    const scrollFreeCategories = () => {
+        if (freeCategoriesRef.current) {
+            freeCategoriesRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+        }
+    };
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -45,8 +52,10 @@ export default function RootPage() {
                 if (res.ok) {
                     const data = await res.json();
                     if (data.success && data.data) {
-                        const cats = ["All", ...data.data.map((c: any) => c.name)];
-                        setDynamicBatchCategories(cats);
+                        const batchCats = ["All", ...data.data.map((c: any) => c.name)];
+                        setDynamicBatchCategories(batchCats);
+                        const freeCats = ["All Types", ...data.data.map((c: any) => c.name)];
+                        setDynamicFreeCategories(freeCats);
                     }
                 }
             } catch (err) {
@@ -63,12 +72,6 @@ export default function RootPage() {
                         setAllFreeClasses(data.data.freeClasses || []);
                         setFreeClasses(data.data.freeClasses || []);
                         setTestimonials(data.data.testimonials || []);
-
-                        // Extract dynamic categories for free classes
-                        if (data.data.freeClasses) {
-                            const cats = ["All Types", ...Array.from(new Set(data.data.freeClasses.map((c: any) => c.category).filter(Boolean))) as string[]];
-                            setDynamicFreeCategories(cats);
-                        }
                     }
                 }
             } catch (err) {
@@ -283,20 +286,28 @@ export default function RootPage() {
                             </h2>
                         </div>
 
-                        <div className="flex flex-wrap justify-center items-center gap-2 md:gap-3 mb-10 w-full max-w-4xl mx-auto border-b border-gray-800 pb-8">
-                            {dynamicFreeCategories.map((cat) => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setSelectedFreeCategory(cat)}
-                                    className={`px-4 py-2 md:px-6 md:py-2.5 rounded-full text-[12px] md:text-[14px] transition-all duration-300 ${selectedFreeCategory === cat
-                                            ? "bg-white text-[#181C25] font-extrabold shadow-lg"
-                                            : "bg-[#252A36] text-gray-300 border border-gray-700/50 font-semibold hover:text-white hover:bg-[#2C3240]"
-                                        }`}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
-                            <button className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-lg hover:bg-gray-100 transition md:ml-2 shrink-0">
+                        <div className="flex items-center gap-2 md:gap-3 mb-10 w-full max-w-4xl mx-auto border-b border-gray-800 pb-8 overflow-hidden relative">
+                            <div 
+                                ref={freeCategoriesRef}
+                                className="flex flex-wrap md:flex-nowrap justify-center md:justify-start items-center gap-2 md:gap-3 overflow-x-auto no-scrollbar scroll-smooth pr-12 w-full"
+                            >
+                                {dynamicFreeCategories.map((cat) => (
+                                    <button
+                                        key={cat}
+                                        onClick={() => setSelectedFreeCategory(cat)}
+                                        className={`px-4 py-2 md:px-6 md:py-2.5 rounded-full text-[12px] md:text-[14px] transition-all duration-300 whitespace-nowrap ${selectedFreeCategory === cat
+                                                ? "bg-white text-[#181C25] font-extrabold shadow-lg"
+                                                : "bg-[#252A36] text-gray-300 border border-gray-700/50 font-semibold hover:text-white hover:bg-[#2C3240]"
+                                            }`}
+                                    >
+                                        {cat}
+                                    </button>
+                                ))}
+                            </div>
+                            <button 
+                                onClick={scrollFreeCategories}
+                                className="absolute right-0 top-1/2 -translate-y-[calc(50%+16px)] w-8 h-8 md:w-10 md:h-10 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-lg hover:bg-gray-100 transition shrink-0 z-10"
+                            >
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                             </button>
                         </div>
