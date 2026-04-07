@@ -14,6 +14,7 @@ import {
     BarChart3, Bot, BadgeCheck, MonitorSmartphone, Cpu, Wifi, CheckCircle2,
     MessageSquareQuote, Info
 } from "lucide-react";
+import ContactSection from "@/app/components/ContactSection";
 
 interface IModule {
     _id: string;
