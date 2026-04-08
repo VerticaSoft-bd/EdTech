@@ -8,6 +8,7 @@ import HeroCarousel from "@/app/components/HeroCarousel";
 import SeminarModal from "@/app/components/SeminarModal";
 import ContactSection from "@/app/components/ContactSection";
 import TeacherCarousel from "@/app/components/TeacherCarousel";
+import BrandCarousel from "@/app/components/BrandCarousel";
 
 // Static data removed, fetching from API now.
 
@@ -570,6 +571,9 @@ export default function RootPage() {
 
                 {/* Teacher Profile Section */}
                 <TeacherCarousel />
+
+                {/* Brand Carousel Section */}
+                <BrandCarousel />
             </main>
 
             <Footer />
