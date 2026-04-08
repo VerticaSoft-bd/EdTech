@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 interface HeroSlideProps {
     slide: {
@@ -41,14 +42,15 @@ export default function HeroSlidePreview({ slide, isActive, onOpenModal }: HeroS
                     {slide.description}
                 </p>
                 <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6 md:mb-8 relative z-20">
-                    <button
+                    <Link
+                        href="/courses"
                         className="px-6 py-3 md:px-8 md:py-4 text-white font-bold rounded-xl transition-all text-[14px] md:text-[15px] flex items-center gap-2 hover:scale-105 active:scale-95 duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)] relative group/btn overflow-hidden"
                         style={{ backgroundColor: slide.color }}
                     >
                         <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
-                        <span className="relative z-10">{slide.primaryBtn}</span>
+                        <span className="relative z-10">Browse courses</span>
                         <svg className="relative z-10" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-                    </button>
+                    </Link>
                     <button
                         onClick={onOpenModal}
                         className="px-8 py-4 bg-white/5 backdrop-blur-md text-white font-bold rounded-xl hover:bg-white/10 transition-all text-[15px] border border-white/10 shadow-sm hover:border-white/20"

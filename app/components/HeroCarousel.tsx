@@ -9,7 +9,7 @@ const FALLBACK_SLIDES = [
         title: "Master AI-Driven Development",
         highlight: "AI-Driven",
         description: "Harness the power of Artificial Intelligence to build faster, smarter, and more efficient applications.",
-        primaryBtn: "Start AI Journey",
+        primaryBtn: "Browse Courses",
         secondaryBtn: "Free AI Workshop",
         image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop",
         color: "#6C5DD3"
@@ -29,7 +29,7 @@ const FALLBACK_SLIDES = [
         title: "Expert-Led Tech Career Track",
         highlight: "Career Track",
         description: "Build a professional portfolio and get hired by top tech companies worldwide with our AI-integrated curriculum.",
-        primaryBtn: "View Syllabus",
+        primaryBtn: "Browse Courses",
         secondaryBtn: "Success Stories",
         image: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?q=80&w=1200&auto=format&fit=crop",
         color: "#EF4444"

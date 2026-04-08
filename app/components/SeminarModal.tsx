@@ -71,42 +71,54 @@ export default function SeminarModal({ isOpen, onClose }: SeminarModalProps) {
                     <p className="text-gray-600 mb-6 font-medium">Fill in your details to secure your spot for the upcoming free career guidance masterclass.</p>
 
                     <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); alert('Success! You are registered.'); onClose(); }}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                             <div className="space-y-2">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Full Name</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter your name"
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium text-sm"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Phone Number</label>
+                                <label className="text-sm font-bold text-gray-800 tracking-tight">Mobile Number</label>
                                 <input
                                     type="tel"
-                                    placeholder="01XXX-XXXXXX"
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium text-sm"
+                                    placeholder="ফোন নাম্বার দিন"
+                                    className="w-full px-4 py-3.5 rounded-2xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
+                                    required
+                                />
+                                <p className="text-[10px] text-gray-400 font-bold">*ক্লাসের নোটিফিকেশন পেতে*</p>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-800 tracking-tight">Email</label>
+                                <input
+                                    type="email"
+                                    placeholder="ইমেইল দিন"
+                                    className="w-full px-4 py-3.5 rounded-2xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
+                                    required
+                                />
+                                <p className="text-[10px] text-gray-400 font-bold">*ক্লাস জয়েনিং লিঙ্ক পেতে*</p>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-800 tracking-tight">Name</label>
+                                <input
+                                    type="text"
+                                    placeholder="Your Name"
+                                    className="w-full px-4 py-3.5 rounded-2xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-800 tracking-tight">Profession</label>
+                                <input
+                                    type="text"
+                                    placeholder="Your Profession"
+                                    className="w-full px-4 py-3.5 rounded-2xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
                                     required
                                 />
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Select Interest</label>
-                            <select className="w-full px-4 py-3 rounded-xl border border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium text-sm appearance-none">
-                                <option>Full Stack Web Development</option>
-                                <option>UI/UX Design Track</option>
-                                <option>Digital Marketing & SEO</option>
-                                <option>Data Science & AI</option>
-                            </select>
-                        </div>
 
-                        <div className="pt-4">
+                        <div className="pt-6">
                             <button
                                 type="submit"
-                                className="w-full bg-[#3972CA] hover:bg-[#2d5da8] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-500/25 active:scale-[0.98]"
+                                className="w-full bg-[#FBBC05] hover:bg-[#eaa900] text-gray-900 font-black py-4 rounded-2xl transition-all shadow-lg shadow-yellow-500/20 active:scale-[0.98] flex items-center justify-center gap-3 text-lg"
                             >
-                                Register Now for Free
+                                লাইভ ডেমো ক্লাস বুক করুন
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                             </button>
                             <p className="text-center text-[11px] text-gray-400 mt-4 px-4 leading-relaxed italic">
                                 * Limited seats available. You will receive a confirmation call and an SMS with joining instructions.
