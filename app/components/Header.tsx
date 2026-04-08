@@ -1,14 +1,16 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import ComingSoonModal from './ComingSoonModal';
 
 export default function Header() {
     const [user, setUser] = useState<{ name: string; role: string } | null>(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const pathname = usePathname();
+    const router = useRouter();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -34,6 +36,14 @@ export default function Header() {
             document.body.style.overflow = 'unset';
         };
     }, [isMobileMenuOpen]);
+
+    const handleSearch = (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/courses?search=${encodeURIComponent(searchQuery.trim())}`);
+            setIsMobileMenuOpen(false);
+        }
+    };
 
     return (
         <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -68,7 +78,7 @@ export default function Header() {
                                 </div>
                             </button>
 
-                            <div className="relative w-[280px] hidden xl:block">
+                            <form onSubmit={handleSearch} className="relative w-[280px] hidden xl:block">
                                 <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                                     <svg
                                         width="18"
@@ -86,11 +96,16 @@ export default function Header() {
                                 </div>
                                 <input
                                     type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
                                     className="w-full pl-11 pr-10 py-2.5 bg-[#F8FAFC] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all placeholder:text-[#A4A4A4] border border-transparent focus:border-gray-200"
                                     placeholder="Search..."
                                 />
                                 <div className="absolute inset-y-0 right-2 flex items-center">
-                                    <div className="w-7 h-7 bg-[#6C5DD3] rounded-full flex items-center justify-center cursor-pointer shadow-sm">
+                                    <button 
+                                        type="submit"
+                                        className="w-7 h-7 bg-[#6C5DD3] rounded-full flex items-center justify-center cursor-pointer shadow-sm hover:bg-[#5a4cb5] transition-colors"
+                                    >
                                         <svg
                                             width="12"
                                             height="12"
@@ -104,9 +119,9 @@ export default function Header() {
                                             <circle cx="11" cy="11" r="8" />
                                             <path d="m21 21-4.3-4.3" />
                                         </svg>
-                                    </div>
+                                    </button>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
 
@@ -306,16 +321,18 @@ export default function Header() {
             <div className={`fixed inset-0 bg-white z-50 lg:hidden transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                 <div className="flex flex-col h-full pt-20 px-6">
                     {/* Search in mobile menu */}
-                    <div className="relative mb-8">
+                    <form onSubmit={handleSearch} className="relative mb-8">
                         <input
                             type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search courses..."
                             className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/10 transition-all"
                         />
-                        <div className="absolute inset-y-0 left-4 flex items-center">
+                        <button type="submit" className="absolute inset-y-0 left-4 flex items-center">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A4A4A4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-                        </div>
-                    </div>
+                        </button>
+                    </form>
 
                     <nav className="flex flex-col gap-2">
                         {[

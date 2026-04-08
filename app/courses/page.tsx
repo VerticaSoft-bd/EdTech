@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from 'next/link';
+import { useSearchParams } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
@@ -9,6 +10,8 @@ export default function CoursesPage() {
     const [courses, setCourses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('All');
+    const searchParams = useSearchParams();
+    const searchQuery = searchParams.get("search") || "";
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -28,9 +31,13 @@ export default function CoursesPage() {
         fetchCourses();
     }, []);
 
-    const filteredCourses = courses.filter(course => 
-        filter === 'All' || course.category === filter
-    );
+    const filteredCourses = courses.filter(course => {
+        const matchesCategory = filter === 'All' || course.category === filter;
+        const matchesSearch = !searchQuery || 
+            course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (course.category && course.category.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchesCategory && matchesSearch;
+    });
 
     const categories = ['All', ...new Set(courses.map(c => c.category))];
 
@@ -41,8 +48,14 @@ export default function CoursesPage() {
             <main className="flex-1 w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-12 md:py-16">
                 <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2">আমাদের সকল কোর্সসমূহ</h1>
-                        <p className="text-gray-500 font-medium">আপনার পছন্দের কোর্সটি বেছে নিন এবং আজই শুরু করুন</p>
+                        <h1 className="text-3xl md:text-4xl font-black text-gray-900 mb-2">
+                            {searchQuery ? `"${searchQuery}" এর ফলাফল` : "আমাদের সকল কোর্সসমূহ"}
+                        </h1>
+                        <p className="text-gray-500 font-medium">
+                            {searchQuery 
+                                ? `${filteredCourses.length}টি কোর্স পাওয়া গেছে` 
+                                : "আপনার পছন্দের কোর্সটি বেছে নিন এবং আজই শুরু করুন"}
+                        </p>
                     </div>
                     
                     <div className="flex flex-wrap items-center justify-center gap-2">
@@ -132,8 +145,21 @@ export default function CoursesPage() {
                         ))
                     ) : (
                         <div className="col-span-full py-20 text-center bg-white rounded-[32px] border border-dashed border-gray-200">
-                            <p className="text-gray-500 font-bold text-lg">No courses found in this category.</p>
-                            <button onClick={() => setFilter('All')} className="mt-4 text-[#6C5DD3] font-black underline">Show All Courses</button>
+                            <p className="text-gray-500 font-bold text-lg">
+                                {searchQuery ? "আপনার অনুসন্ধান অনুযায়ী কোনো কোর্স পাওয়া যায়নি।" : "এই ক্যাটাগরিতে কোনো কোর্স পাওয়া যায়নি।"}
+                            </p>
+                            <button 
+                                onClick={() => {
+                                    if (searchQuery) {
+                                        window.location.href = '/courses';
+                                    } else {
+                                        setFilter('All');
+                                    }
+                                }} 
+                                className="mt-4 text-[#6C5DD3] font-black underline"
+                            >
+                                {searchQuery ? "সকল কোর্স দেখুন" : "সকল কোর্স দেখুন"}
+                            </button>
                         </div>
                     )}
                 </div>
