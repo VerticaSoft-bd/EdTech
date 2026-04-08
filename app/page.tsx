@@ -27,6 +27,7 @@ export default function RootPage() {
     const [siteSettings, setSiteSettings] = useState<any>(null);
     const [testimonialIndex, setTestimonialIndex] = useState(0);
     const [selectedMode, setSelectedMode] = useState("All");
+    const [selectedSeminarTitle, setSelectedSeminarTitle] = useState("");
     const freeCategoriesRef = React.useRef<HTMLDivElement>(null);
     const freeClassesSectionRef = React.useRef<HTMLElement>(null);
 
@@ -135,11 +136,13 @@ export default function RootPage() {
             <main className="flex-1 flex flex-col items-center w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-8 md:py-12 gap-16">
 
                 {/* Hero Section */}
-                <HeroCarousel onOpenModal={() => setIsSeminarModalOpen(true)} />
+                <HeroCarousel onOpenModal={() => { setSelectedSeminarTitle("Website Hero Seminar"); setIsSeminarModalOpen(true); }} />
 
+                {/* Registration Modals */}
                 <SeminarModal
                     isOpen={isSeminarModalOpen}
                     onClose={() => setIsSeminarModalOpen(false)}
+                    courseTitle={selectedSeminarTitle}
                 />
 
                 {/* Category Flow Tabs - Centered Below Hero */}
@@ -161,6 +164,7 @@ export default function RootPage() {
                                 key={item.label}
                                 onClick={() => {
                                     if (item.mode === "Seminar") {
+                                        setSelectedSeminarTitle("General Live Seminar");
                                         freeClassesSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
                                     } else {
                                         // Toggle: if clicking active mode, return to "All"
@@ -365,7 +369,10 @@ export default function RootPage() {
                                         </p>
                                         <h3 className="font-bold text-white leading-snug text-[15px] mb-5">Masterclass on {cls.category || cls.title.split(' ')[0]} Technology & Career.</h3>
                                         <button 
-                                            onClick={() => setIsSeminarModalOpen(true)}
+                                            onClick={() => {
+                                                setSelectedSeminarTitle(`Masterclass on ${cls.category || cls.title.split(' ')[0]} Technology & Career`);
+                                                setIsSeminarModalOpen(true);
+                                            }}
                                             className="mt-auto w-full py-2.5 flex items-center justify-center gap-2 bg-white/5 text-white font-bold text-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition group-hover:bg-[#4A72FF] group-hover:border-[#4A72FF] group-hover:shadow-lg group-hover:shadow-blue-500/25"
                                         >
                                             Enroll Now
