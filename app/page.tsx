@@ -26,7 +26,9 @@ export default function RootPage() {
     const [testimonials, setTestimonials] = useState<any[]>([]);
     const [siteSettings, setSiteSettings] = useState<any>(null);
     const [testimonialIndex, setTestimonialIndex] = useState(0);
+    const [selectedMode, setSelectedMode] = useState("All");
     const freeCategoriesRef = React.useRef<HTMLDivElement>(null);
+    const freeClassesSectionRef = React.useRef<HTMLElement>(null);
 
     const scrollFreeCategories = () => {
         if (freeCategoriesRef.current) {
@@ -90,12 +92,20 @@ export default function RootPage() {
     }, []);
 
     useEffect(() => {
-        if (selectedBatchCategory === "All") {
-            setUpcomingCourses(allCourses.slice(0, 4));
-        } else {
-            setUpcomingCourses(allCourses.filter(c => c.category === selectedBatchCategory));
+        let filtered = allCourses;
+        
+        // Filter by Mode
+        if (selectedMode !== "All") {
+            filtered = filtered.filter(c => c.courseMode === selectedMode);
         }
-    }, [selectedBatchCategory, allCourses]);
+
+        // Filter by Category
+        if (selectedBatchCategory !== "All") {
+            filtered = filtered.filter(c => c.category === selectedBatchCategory);
+        }
+
+        setUpcomingCourses(filtered.slice(0, 4));
+    }, [selectedBatchCategory, selectedMode, allCourses]);
 
     useEffect(() => {
         if (selectedFreeCategory === "All Types") {
@@ -136,10 +146,29 @@ export default function RootPage() {
                 <div className="flex justify-center w-full relative z-20 mt-8 lg:mt-12 px-4 pb-8">
                     <div className="bg-white rounded-[24px] p-2 shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-wrap items-center justify-center gap-1 max-w-fit mx-auto backdrop-blur-sm">
 
-                        {["Live Courses", "Recorded Classes", "Offline Campus"].map((item, idx) => (
+                        {[
+                            { label: "Online Course", mode: "Online Class", icon: (
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
+                            )},
+                            { label: "Offline Course", mode: "Offline Class", icon: (
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>
+                            )},
+                            { label: "Free Seminar", mode: "Seminar", icon: (
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
+                            )}
+                        ].map((item, idx) => (
                             <button
-                                key={item}
-                                className={`px-4 py-2.5 md:px-6 md:py-3 text-[11px] md:text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 md:gap-3 overflow-hidden ${idx === 0
+                                key={item.label}
+                                onClick={() => {
+                                    if (item.mode === "Seminar") {
+                                        freeClassesSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+                                    } else {
+                                        // Toggle: if clicking active mode, return to "All"
+                                        setSelectedMode(prev => prev === item.mode ? "All" : item.mode);
+                                    }
+                                }}
+                                className={`px-4 py-2.5 md:px-6 md:py-3 text-[11px] md:text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 md:gap-3 overflow-hidden ${
+                                    (selectedMode === item.mode || (item.mode === "Seminar" && false)) // Seminar is a scroll action, doesn't stay "selected" in mode filter
                                     ? "text-[#6C5DD3]"
                                     : "text-gray-500 hover:text-[#1A1D1F]"
                                     }`}
@@ -148,17 +177,15 @@ export default function RootPage() {
                                 <div className="absolute inset-0 bg-[#6C5DD3]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 <div className="absolute -inset-1 bg-gradient-to-r from-transparent via-[#6C5DD3]/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"></div>
 
-                                {/* Icon based on index */}
+                                {/* Icon */}
                                 <div className="relative z-10 transition-transform group-hover:scale-110 duration-300">
-                                    {idx === 0 && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>}
-                                    {idx === 1 && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>}
-                                    {idx === 2 && <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>}
+                                    {item.icon}
                                 </div>
 
-                                <span className="relative z-10 uppercase tracking-widest">{item}</span>
+                                <span className="relative z-10 uppercase tracking-widest">{item.label}</span>
 
                                 {/* AI Indicator */}
-                                {idx === 0 ? (
+                                {selectedMode === item.mode ? (
                                     <div className="relative z-10 flex gap-0.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-[#6C5DD3] animate-pulse"></span>
                                         <span className="w-1.5 h-1.5 rounded-full bg-[#6C5DD3]/40"></span>
@@ -168,7 +195,7 @@ export default function RootPage() {
                                 )}
 
                                 {/* Bottom Energy Bar */}
-                                <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[3px] bg-[#6C5DD3] rounded-full transition-all duration-300 ${idx === 0 ? 'w-6' : 'w-0 group-hover:w-4 opacity-50'}`}></span>
+                                <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[3px] bg-[#6C5DD3] rounded-full transition-all duration-300 ${selectedMode === item.mode ? 'w-6' : 'w-0 group-hover:w-4 opacity-50'}`}></span>
                             </button>
                         ))}
                     </div>
@@ -276,7 +303,7 @@ export default function RootPage() {
                 </section>
 
                 {/* Free Classes (Dark Theme) */}
-                <section className="w-full bg-[#181C25] rounded-[2.5rem] p-8 md:p-14 shadow-2xl relative overflow-hidden mt-6">
+                <section ref={freeClassesSectionRef} className="w-full bg-[#181C25] rounded-[2.5rem] p-8 md:p-14 shadow-2xl relative overflow-hidden mt-6">
                     {/* Background decoration */}
                     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-900/20 rounded-full blur-[80px] -z-0 pointer-events-none"></div>
 
