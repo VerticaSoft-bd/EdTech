@@ -35,6 +35,11 @@ const SiteSettingsSchema = new mongoose.Schema({
         avatar: { type: String },
         order: { type: Number, default: 0 }
     }],
+    brands: [{
+        name: { type: String, required: true },
+        logo: { type: String, required: true },
+        order: { type: Number, default: 0 }
+    }],
 }, { timestamps: true });
 
 if (mongoose.models.SiteSettings) {

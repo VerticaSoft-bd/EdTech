@@ -20,6 +20,12 @@ interface ISiteSettings {
         instagram: string;
         linkedin: string;
     };
+    brands: Array<{
+        _id?: string;
+        name: string;
+        logo: string;
+        order: number;
+    }>;
 }
 
 const DEFAULT_SETTINGS: ISiteSettings = {
@@ -33,13 +39,14 @@ const DEFAULT_SETTINGS: ISiteSettings = {
     address: '',
     footerText: '',
     socialLinks: { facebook: '', youtube: '', instagram: '', linkedin: '' },
+    brands: [],
 };
 
 export default function SettingsPage() {
     const [settings, setSettings] = useState<ISiteSettings>(DEFAULT_SETTINGS);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [uploading, setUploading] = useState<'logo' | 'favicon' | null>(null);
+    const [uploading, setUploading] = useState<'logo' | 'favicon' | number | null>(null);
 
     useEffect(() => {
         fetchSettings();
@@ -56,7 +63,7 @@ export default function SettingsPage() {
         finally { setLoading(false); }
     };
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'favicon') => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'logo' | 'favicon' | number) => {
         const file = e.target.files?.[0];
         if (!file) return;
         setUploading(field);
@@ -66,13 +73,39 @@ export default function SettingsPage() {
             const res = await fetch('/api/upload', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.success) {
-                setSettings(prev => ({ ...prev, [field]: data.url }));
-                toast.success(`${field === 'logo' ? 'Logo' : 'Favicon'} uploaded!`);
+                if (typeof field === 'number') {
+                    const newBrands = [...settings.brands];
+                    newBrands[field].logo = data.url;
+                    setSettings({ ...settings, brands: newBrands });
+                } else {
+                    setSettings(prev => ({ ...prev, [field]: data.url }));
+                }
+                toast.success(`${typeof field === 'number' ? 'Brand Logo' : (field === 'logo' ? 'Logo' : 'Favicon')} uploaded!`);
             } else {
                 toast.error(data.message || 'Upload failed');
             }
         } catch { toast.error('Error uploading file'); }
         finally { setUploading(null); }
+    };
+
+    const addBrand = () => {
+        setSettings({
+            ...settings,
+            brands: [...settings.brands, { name: '', logo: '', order: settings.brands.length }]
+        });
+    };
+
+    const removeBrand = (index: number) => {
+        setSettings({
+            ...settings,
+            brands: settings.brands.filter((_, i) => i !== index)
+        });
+    };
+
+    const updateBrand = (index: number, name: string) => {
+        const newBrands = [...settings.brands];
+        newBrands[index].name = name;
+        setSettings({ ...settings, brands: newBrands });
     };
 
     const handleSave = async () => {
@@ -301,6 +334,77 @@ export default function SettingsPage() {
                             className={inputClasses} placeholder="https://linkedin.com/..." />
                     </div>
                 </div>
+            </div>
+
+            {/* Brand Logos Management */}
+            <div className={sectionClasses}>
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-[#6C5DD3]/10 rounded-xl flex items-center justify-center">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C5DD3" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-black text-gray-900">Brand Logos</h2>
+                            <p className="text-xs text-gray-400 font-medium">Manage the logos displayed in the homepage carousel</p>
+                        </div>
+                    </div>
+                    <button onClick={addBrand} className="px-5 py-2.5 bg-gray-50 text-[#6C5DD3] rounded-xl text-xs font-black border border-gray-100 hover:bg-white hover:border-[#6C5DD3]/20 transition-all flex items-center gap-2">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        ADD NEW BRAND
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {settings.brands.map((brand, idx) => (
+                        <div key={idx} className="p-5 bg-gray-50/50 rounded-3xl border border-gray-100 group relative">
+                            <button onClick={() => removeBrand(idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-white border border-red-50 text-red-500 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 z-10">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                            </button>
+                            
+                            <div className="space-y-4">
+                                <div className="w-full h-32 bg-white rounded-2xl border border-gray-100 flex items-center justify-center overflow-hidden p-4 relative group/img">
+                                    {brand.logo ? (
+                                        <img src={brand.logo} alt={brand.name} className="max-h-24 max-w-full object-contain" />
+                                    ) : (
+                                        <div className="text-center">
+                                            <div className="w-10 h-10 mx-auto bg-gray-100 rounded-xl flex items-center justify-center text-gray-300 mb-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+                                            </div>
+                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">No Logo</p>
+                                        </div>
+                                    )}
+                                    <label className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                                        <span className="text-white text-[10px] font-bold uppercase tracking-widest border border-white/50 px-3 py-1.5 rounded-lg backdrop-blur-sm">
+                                            {uploading === idx ? 'Uploading...' : 'Change Logo'}
+                                        </span>
+                                        <input type="file" onChange={e => handleFileUpload(e, idx)} className="hidden" accept="image/*" disabled={uploading !== null} />
+                                    </label>
+                                </div>
+                                
+                                <input 
+                                    type="text" 
+                                    value={brand.name} 
+                                    onChange={e => updateBrand(idx, e.target.value)} 
+                                    placeholder="Brand Name"
+                                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-100 focus:ring-2 focus:ring-[#6C5DD3]/10 focus:border-[#6C5DD3] outline-none text-xs font-bold text-[#1A1D1F]"
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {settings.brands.length === 0 && (
+                    <div className="py-20 text-center bg-gray-50/30 rounded-[2rem] border-2 border-dashed border-gray-100">
+                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6C5DD3" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" /></svg>
+                        </div>
+                        <h3 className="text-gray-900 font-black text-sm">No Brands Added</h3>
+                        <p className="text-gray-400 text-xs font-medium mt-1">Add your partner brand logos to show them in the homepage carousel</p>
+                        <button onClick={addBrand} className="mt-6 px-6 py-3 bg-[#6C5DD3] text-white rounded-xl text-xs font-black shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5b4eb3] transition-all">
+                            ADD FIRST BRAND
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Bottom Save */}

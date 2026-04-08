@@ -1,23 +1,36 @@
 "use client";
 
-import React, { useState } from "react";
-
-const BRANDS = [
-    { name: "Google", logo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" },
-    { name: "Microsoft", logo: "https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" },
-    { name: "Meta", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" },
-    { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" },
-    { name: "Netflix", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" },
-    { name: "Spotify", logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_with_text.svg" },
-    { name: "Slack", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg" },
-    { name: "Zoom", logo: "https://upload.wikimedia.org/wikipedia/commons/9/94/Zoom_Video_Communications_logo.svg" }
-];
+import React, { useState, useEffect } from "react";
 
 export default function BrandCarousel() {
+    const [brands, setBrands] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [isPaused, setIsPaused] = useState(false);
 
+    useEffect(() => {
+        const fetchBrands = async () => {
+            try {
+                const res = await fetch("/api/settings");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && data.data.brands) {
+                        setBrands(data.data.brands);
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching brands:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBrands();
+    }, []);
+
+    if (!loading && brands.length === 0) return null;
+
     // Triplicate for seamless looping
-    const displayBrands = [...BRANDS, ...BRANDS, ...BRANDS];
+    const displayBrands = [...brands, ...brands, ...brands];
 
     return (
         <section 
@@ -44,24 +57,32 @@ export default function BrandCarousel() {
             {/* Ticker Container */}
             <div className="relative group/ticker">
                 <div 
-                    className="flex items-center gap-16 w-max animate-ticker-brand"
+                    className={`flex items-center gap-16 w-max ${brands.length > 0 ? 'animate-ticker-brand' : ''}`}
                     style={{ 
                         animationPlayState: isPaused ? 'paused' : 'running',
-                        animationDuration: '30s'
+                        animationDuration: `${Math.max(brands.length * 4, 20)}s`
                     }}
                 >
-                    {displayBrands.map((brand, i) => (
-                        <div 
-                            key={`${brand.name}-${i}`}
-                            className="w-[150px] md:w-[200px] transition-all duration-500 flex items-center justify-center"
-                        >
-                            <img 
-                                src={brand.logo} 
-                                alt={brand.name}
-                                className="h-8 md:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110"
-                            />
+                    {loading ? (
+                        <div className="flex gap-16 px-10">
+                            {[...Array(6)].map((_, i) => (
+                                <div key={i} className="w-[150px] md:w-[200px] h-12 bg-gray-100 rounded-xl animate-pulse"></div>
+                            ))}
                         </div>
-                    ))}
+                    ) : (
+                        displayBrands.map((brand, i) => (
+                            <div 
+                                key={`${brand.name}-${i}`}
+                                className="w-[150px] md:w-[200px] transition-all duration-500 flex items-center justify-center"
+                            >
+                                <img 
+                                    src={brand.logo} 
+                                    alt={brand.name}
+                                    className="h-8 md:h-12 w-auto object-contain transition-transform duration-500 group-hover:scale-110"
+                                />
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
