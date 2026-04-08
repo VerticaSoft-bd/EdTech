@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
+import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
+
+const hindSiliguri = Hind_Siliguri({
+  subsets: ["latin", "bengali"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-hind-siliguri",
+});
 
 export const metadata: Metadata = {
   title: "Youthins",
@@ -14,12 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="bn">
-      <head>
-        <link rel="stylesheet" href="https://use.typekit.net/bfh0rnp.css" />
-      </head>
+    <html lang="bn" className={hindSiliguri.variable}>
       <body
-        className="antialiased"
+        className={`${hindSiliguri.className} antialiased`}
       >
         <Toaster position="top-right" />
         {children}

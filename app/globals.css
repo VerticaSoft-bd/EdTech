@@ -8,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "akhand-bengali", sans-serif;
+  --font-sans: var(--font-hind-siliguri), sans-serif;
   --font-mono: monospace;
 }
 
@@ -20,7 +20,7 @@
 }
 
 * {
-  font-family: "akhand-bengali", "Akhand Bengali", "SolaimanLipi", sans-serif !important;
+  font-family: var(--font-hind-siliguri), "SolaimanLipi", sans-serif !important;
   font-variant-ligatures: common-ligatures !important;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "clig" 1 !important;
 }
