@@ -364,10 +364,13 @@ export default function RootPage() {
                                             {cls.time || "Today • 9:00 PM"}
                                         </p>
                                         <h3 className="font-bold text-white leading-snug text-[15px] mb-5">Masterclass on {cls.category || cls.title.split(' ')[0]} Technology & Career.</h3>
-                                        <a href={cls.link || "#"} className="mt-auto w-full py-2.5 flex items-center justify-center gap-2 bg-white/5 text-white font-bold text-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition group-hover:bg-[#4A72FF] group-hover:border-[#4A72FF] group-hover:shadow-lg group-hover:shadow-blue-500/25">
+                                        <button 
+                                            onClick={() => setIsSeminarModalOpen(true)}
+                                            className="mt-auto w-full py-2.5 flex items-center justify-center gap-2 bg-white/5 text-white font-bold text-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition group-hover:bg-[#4A72FF] group-hover:border-[#4A72FF] group-hover:shadow-lg group-hover:shadow-blue-500/25"
+                                        >
                                             Enroll Now
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="m9 18 6-6-6-6" /></svg>
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             )) : (
