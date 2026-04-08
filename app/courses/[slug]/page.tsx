@@ -317,7 +317,7 @@ export default function CourseDetails() {
 
                 {/* AI Section */}
                 {course.showAiLearningBanner !== false && (
-                    <div className="relative overflow-hidden rounded-[40px] mb-16 bg-[#050D1F]">
+                    <div id="ai-features" className="relative overflow-hidden rounded-[40px] mb-16 bg-[#050D1F]">
                         {/* Glowing Background Orbs */}
                         <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
                         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
@@ -407,42 +407,44 @@ export default function CourseDetails() {
                     </section>
                 )}
 
-                {/* Tabs and Secondary Content */}
-                <div className="space-y-16">
-                    {/* Tabs Navigation */}
-                    <div className="sticky top-[80px] bg-[#F8FAFC] z-10 pt-4 border-b border-gray-200">
-                        <div className="flex items-center justify-between overflow-x-auto no-scrollbar">
-                            {[
-                                { id: 'curriculum', label: 'কারিকুলাম' },
-                                { id: 'benefits', label: 'কোর্স আপনি পাচ্ছেন' },
-                                { id: 'projects', label: 'প্রজেক্টসমূহ' },
-                                { id: 'audience', label: 'কোর্সটি যাদের জন্য' },
-                                { id: 'placements', label: 'জব পেয়েছে যারা' },
-                                { id: 'reviews', label: 'রিভিউ' },
-                                { id: 'faq', label: 'FAQ' },
-                                { id: 'payment', label: 'পেমেন্ট' },
-                            ].map(tab => (
-                                <button
-                                    key={tab.id}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        setActiveTab(tab.id);
-                                        const element = document.getElementById(tab.id);
-                                        if (element) {
-                                            const y = element.getBoundingClientRect().top + window.scrollY - 100;
-                                            window.scrollTo({ top: y, behavior: 'smooth' });
-                                        }
-                                    }}
-                                    className={`px-4 py-6 font-bold text-[15px] whitespace-nowrap transition-all relative ${activeTab === tab.id ? 'text-[#1A1D1F]' : 'text-gray-500 hover:text-gray-900'}`}
-                                >
-                                    {tab.label}
-                                    {activeTab === tab.id && (
-                                        <div className="absolute bottom-0 left-0 w-full h-[3px] bg-[#6C5DD3] rounded-t-full"></div>
-                                    )}
-                                </button>
-                            ))}
-                        </div>
+                {/* Tabs Navigation */}
+                <div className="sticky top-[80px] bg-[#F8FAFC] z-20 pt-4 border-b border-gray-200 mb-16">
+                    <div className="flex items-center justify-between overflow-x-auto no-scrollbar">
+                        {[
+                            { id: 'curriculum', label: 'কারিকুলাম' },
+                            { id: 'ai-features', label: 'AI ফিচার' },
+                            { id: 'benefits', label: 'কোর্স আপনি পাচ্ছেন' },
+                            { id: 'projects', label: 'প্রজেক্টসমূহ' },
+                            { id: 'audience', label: 'কোর্সটি যাদের জন্য' },
+                            { id: 'placements', label: 'জব পেয়েছে যারা' },
+                            { id: 'reviews', label: 'রিভিউ' },
+                            { id: 'faq', label: 'FAQ' },
+                            { id: 'payment', label: 'পেমেন্ট' },
+                        ].map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setActiveTab(tab.id);
+                                    const element = document.getElementById(tab.id);
+                                    if (element) {
+                                        const y = element.getBoundingClientRect().top + window.scrollY - 150;
+                                        window.scrollTo({ top: y, behavior: 'smooth' });
+                                    }
+                                }}
+                                className={`px-4 py-6 font-bold text-[15px] whitespace-nowrap transition-all relative ${activeTab === tab.id ? 'text-[#1A1D1F]' : 'text-gray-500 hover:text-gray-900'}`}
+                            >
+                                {tab.label}
+                                {activeTab === tab.id && (
+                                    <div className="absolute bottom-0 left-0 w-full h-[3px] bg-[#6C5DD3] rounded-t-full"></div>
+                                )}
+                            </button>
+                        ))}
                     </div>
+                </div>
+
+                {/* Main Content Sections */}
+                <div className="space-y-16">
 
                     {/* Demo Class Section */}
                     <section className="text-center space-y-10">
@@ -486,7 +488,7 @@ export default function CourseDetails() {
                     </section>
 
                     {/* Live Demo Class Booking Card */}
-                    <section className="bg-[#0B1221] rounded-[40px] p-6 md:p-12 overflow-hidden relative">
+                    <section id="payment" className="bg-[#0B1221] rounded-[40px] p-6 md:p-12 overflow-hidden relative">
                         {/* Decorative glow */}
                         <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px]"></div>
                         <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px]"></div>
@@ -620,7 +622,7 @@ export default function CourseDetails() {
                                     </div>
 
                                     {/* Tools & Technologies Section */}
-                                    <div className="mt-16 text-center animate-fade-in">
+                                    <div id="projects" className="mt-16 text-center animate-fade-in">
                                         <h2 className="text-2xl md:text-3xl font-black text-[#1A1D1F] mb-10">যেসব টুলস ও টেকনোলজি শিখবেন</h2>
 
                                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
