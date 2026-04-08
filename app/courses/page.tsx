@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from 'next/link';
 import { useSearchParams } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
-export default function CoursesPage() {
+function CoursesContent() {
     const [courses, setCourses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('All');
@@ -167,5 +167,17 @@ export default function CoursesPage() {
 
             <Footer />
         </div>
+    );
+}
+
+export default function CoursesPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-[#6C5DD3] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        }>
+            <CoursesContent />
+        </Suspense>
     );
 }

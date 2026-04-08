@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast, Toaster } from "react-hot-toast";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
     const { slug } = useParams();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -93,7 +93,6 @@ export default function CheckoutPage() {
 
         const discountedPrice = course.regularFee * (1 - course.discountPercentage / 100);
         const paymentAmount = urlAmount ? parseInt(urlAmount) : discountedPrice;
-        const dueAmount = discountedPrice - paymentAmount;
 
         const payload = {
             ...formData,
@@ -321,5 +320,17 @@ export default function CheckoutPage() {
             </main>
             <Footer />
         </div>
+    );
+}
+
+export default function CheckoutPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+                <div className="w-12 h-12 border-4 border-[#6C5DD3] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        }>
+            <CheckoutContent />
+        </Suspense>
     );
 }
