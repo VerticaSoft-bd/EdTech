@@ -32,14 +32,12 @@ export default function HeroSlidePreview({ slide, isActive, onOpenModal }: HeroS
             >
                 <div className="flex items-center gap-2 mb-4 md:mb-6 animate-fade-in relative z-20">
                     <span className="w-2 h-2 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" style={{ backgroundColor: slide.color }}></span>
-                    <span className="text-[10px] md:text-[11px] font-extrabold tracking-[0.2em] uppercase text-white/50">{slide.tag}</span>
+                    <span className="text-[10px] md:text-[11px] font-extrabold tracking-[0.2em] uppercase text-white">{slide.tag}</span>
                 </div>
                 <h1 className="text-[32px] md:text-[40px] lg:text-[52px] xl:text-[60px] font-black leading-[1.05] text-white tracking-tighter mb-4 md:mb-6 italic relative z-20">
-                    {slide.title.split(slide.highlight)[0]}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/80 to-white/40" style={{ WebkitTextStroke: `1px ${slide.color}` }}>{slide.highlight}</span>
-                    {slide.title.split(slide.highlight)[1]}
+                    {slide.title}
                 </h1>
-                <p className="text-[15px] md:text-[17px] text-gray-400 font-medium max-w-[460px] leading-[1.6] mb-6 md:mb-10 relative z-20">
+                <p className="text-[15px] md:text-[17px] text-white font-medium max-w-[460px] leading-[1.6] mb-6 md:mb-10 relative z-20">
                     {slide.description}
                 </p>
                 <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6 md:mb-8 relative z-20">
