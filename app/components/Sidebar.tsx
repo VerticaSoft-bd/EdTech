@@ -129,51 +129,51 @@ const Sidebar: React.FC = () => {
 
                 {/* Users Accordion Menu */}
                 {!isTeacher && (
-                <div className="pt-1 pb-1">
-                    <button
-                        onClick={() => setIsUsersOpen(!isUsersOpen)}
-                        className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all group ${pathname?.startsWith('/dashboard/users') && !isUsersOpen
-                            ? 'bg-[#6C5DD3]/10 text-[#6C5DD3] font-bold'
-                            : 'text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]'
-                            }`}
-                    >
-                        <div className="flex items-center gap-3">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            <span className="text-sm font-bold">Users</span>
-                        </div>
-                        <svg
-                            className={`transition-transform duration-200 ${isUsersOpen ? 'rotate-180 text-[#1A1D1F]' : 'text-gray-400'}`}
-                            width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                    <div className="pt-1 pb-1">
+                        <button
+                            onClick={() => setIsUsersOpen(!isUsersOpen)}
+                            className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all group ${pathname?.startsWith('/dashboard/users') && !isUsersOpen
+                                ? 'bg-[#6C5DD3]/10 text-[#6C5DD3] font-bold'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]'
+                                }`}
                         >
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
+                            <div className="flex items-center gap-3">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                <span className="text-sm font-bold">Users</span>
+                            </div>
+                            <svg
+                                className={`transition-transform duration-200 ${isUsersOpen ? 'rotate-180 text-[#1A1D1F]' : 'text-gray-400'}`}
+                                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                            >
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
 
-                    {/* Nested Sub-links */}
-                    {isUsersOpen && (
-                        <div className="flex flex-col gap-1 mt-1 pl-11 pr-2 animate-in slide-in-from-top-2 duration-200">
-                            <Link href="/dashboard/users/student" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/student' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
-                                Student
-                            </Link>
-                            <Link href="/dashboard/users/teacher" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/teacher' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
-                                Teacher
-                            </Link>
-                            <Link href="/dashboard/users/staff" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/staff' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
-                                Staff
-                            </Link>
-                            {!isStaff && (
-                                <>
-                                    <Link href="/dashboard/users/admin" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/admin' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
-                                        Admin
-                                    </Link>
-                                    <Link href="/dashboard/users/group" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/group' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
-                                        Group
-                                    </Link>
-                                </>
-                            )}
-                        </div>
-                    )}
-                </div>
+                        {/* Nested Sub-links */}
+                        {isUsersOpen && (
+                            <div className="flex flex-col gap-1 mt-1 pl-11 pr-2 animate-in slide-in-from-top-2 duration-200">
+                                <Link href="/dashboard/students" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/students' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
+                                    Student
+                                </Link>
+                                <Link href="/dashboard/users/teacher" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/teacher' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
+                                    Teacher
+                                </Link>
+                                <Link href="/dashboard/users/staff" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/staff' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
+                                    Staff
+                                </Link>
+                                {!isStaff && (
+                                    <>
+                                        <Link href="/dashboard/users/admin" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/admin' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
+                                            Admin
+                                        </Link>
+                                        <Link href="/dashboard/users/group" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/group' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
+                                            Group
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 )}
 
                 {hasAccountsAccess && (

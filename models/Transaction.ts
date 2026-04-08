@@ -4,11 +4,15 @@ const TransactionSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        required: false, // Make optional for offline students without accounts
+    },
+    processedBy: {
+        type: String, // Staff name or ID who processed this (especially for manual entries)
+        required: false,
     },
     type: {
         type: String,
-        enum: ['deposit', 'withdrawal', 'earning', 'job_posting', 'referral_bonus', 'refund', 'service_fee', 'course_purchase'],
+        enum: ['deposit', 'withdrawal', 'earning', 'job_posting', 'referral_bonus', 'refund', 'service_fee', 'course_purchase', 'manual_payment'],
         required: true,
     },
     amount: {

@@ -5,6 +5,7 @@ import EditStudentModal from "@/app/components/EditStudentModal";
 import ViewStudentModal from "@/app/components/ViewStudentModal";
 import TransactionHistoryModal from "@/app/components/TransactionHistoryModal";
 import CoursePurchaseHistoryModal from "@/app/components/CoursePurchaseHistoryModal";
+import AddPaymentModal from "@/app/components/AddPaymentModal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -15,6 +16,7 @@ export default function StudentsPage() {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
     const [isCourseHistoryModalOpen, setIsCourseHistoryModalOpen] = useState(false);
+    const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
     const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
     const [students, setStudents] = useState<any[]>([]);
@@ -173,6 +175,13 @@ export default function StudentsPage() {
                                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                                             Edit
                                                         </button>
+                                                        <button
+                                                            onClick={() => { setSelectedStudent(student); setIsAddPaymentModalOpen(true); setOpenActionMenuId(null); }}
+                                                            className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-[#1A1D1F] rounded-lg transition-colors"
+                                                        >
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                                                            Add Payment
+                                                        </button>
                                                         <div className="h-px bg-gray-100 my-1 mx-2"></div>
                                                         <button
                                                             onClick={() => { setSelectedStudent(student); setIsTransactionModalOpen(true); setOpenActionMenuId(null); }}
@@ -275,6 +284,20 @@ export default function StudentsPage() {
                 <TransactionHistoryModal
                     isOpen={isTransactionModalOpen}
                     onClose={() => { setIsTransactionModalOpen(false); setSelectedStudent(null); }}
+                    student={selectedStudent}
+                    onUpdate={fetchStudents}
+                />
+            )}
+
+            {selectedStudent && (
+                <AddPaymentModal 
+                    isOpen={isAddPaymentModalOpen}
+                    onClose={() => { setIsAddPaymentModalOpen(false); setSelectedStudent(null); }}
+                    onSuccess={() => {
+                        fetchStudents();
+                        setIsAddPaymentModalOpen(false);
+                        setSelectedStudent(null);
+                    }}
                     student={selectedStudent}
                 />
             )}

@@ -52,6 +52,12 @@ export default async function InvoicePage({ params }: { params: Promise<{ transa
                         <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider block mb-1">Status</span>
                         <p className="text-green-600 font-bold uppercase">{transaction.status}</p>
                     </div>
+                    {transaction.processedBy && (
+                        <div className="mt-2">
+                            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1">Processed By</span>
+                            <p className="text-gray-700 font-medium text-xs italic">{transaction.processedBy}</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
