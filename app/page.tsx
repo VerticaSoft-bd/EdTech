@@ -7,6 +7,7 @@ import Footer from "@/app/components/Footer";
 import HeroCarousel from "@/app/components/HeroCarousel";
 import SeminarModal from "@/app/components/SeminarModal";
 import ContactSection from "@/app/components/ContactSection";
+import TeacherCarousel from "@/app/components/TeacherCarousel";
 
 // Static data removed, fetching from API now.
 
@@ -566,6 +567,9 @@ export default function RootPage() {
                         </div>
                     </div>
                 </section>
+
+                {/* Teacher Profile Section */}
+                <TeacherCarousel />
             </main>
 
             <Footer />
