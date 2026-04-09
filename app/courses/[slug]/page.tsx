@@ -590,22 +590,35 @@ export default function CourseDetails() {
                 {/* Detailed Description Section */}
                 {course.fullDetails && (
                     <section className="mb-16">
-                        <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="p-8 md:p-12">
-                                <div className="flex items-center gap-3 mb-8">
-                                    <div className="w-10 h-10 rounded-xl bg-[#6C5DD3]/10 flex items-center justify-center">
-                                        <Info className="w-5 h-5 text-[#6C5DD3]" />
+                        <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden relative group hover:shadow-md transition-all duration-300">
+                            {/* Suburban glass effect background element */}
+                            <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#6C5DD3]/5 rounded-full blur-[80px] pointer-events-none"></div>
+                            
+                            <div className="p-7 md:p-10 relative z-10">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6C5DD3] to-[#8E82EF] flex items-center justify-center shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform duration-300">
+                                        <Info className="w-6 h-6 text-white" />
                                     </div>
-                                    <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1D1F]">কোর্স বিস্তারিত</h2>
+                                    <div>
+                                        <h2 className="text-2xl md:text-[28px] font-black text-[#1A1D1F] tracking-tight">কোর্স বিস্তারিত</h2>
+                                        <div className="h-1 w-10 bg-[#6C5DD3]/20 rounded-full mt-1"></div>
+                                    </div>
                                 </div>
-                                <div className="prose prose-lg max-w-none">
-                                    {course.fullDetails.split('\n').map((paragraph: string, idx: number) => (
-                                        paragraph.trim() ? (
-                                            <p key={idx} className="text-gray-600 text-[16px] leading-[1.9] font-medium mb-4 last:mb-0">
+                                
+                                <div className="flex flex-col gap-3.5">
+                                    {course.fullDetails.split('\n').filter((p: string) => p.trim() !== '').map((paragraph: string, idx: number) => {
+                                        // Detect if it's a list item (starts with an emoji or bullet)
+                                        const isList = /^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2022}\u{25CF}]/u.test(paragraph.trim());
+                                        
+                                        return (
+                                            <p 
+                                                key={idx} 
+                                                className={`text-[#374151] text-[16px] md:text-[17px] leading-[1.6] font-medium ${isList ? 'md:pl-1' : 'mb-1 last:mb-0'}`}
+                                            >
                                                 {paragraph}
                                             </p>
-                                        ) : <br key={idx} />
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
