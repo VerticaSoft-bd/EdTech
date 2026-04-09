@@ -6,7 +6,6 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import HeroCarousel from "@/app/components/HeroCarousel";
 import SeminarModal from "@/app/components/SeminarModal";
-import ContactSection from "@/app/components/ContactSection";
 import TeacherCarousel from "@/app/components/TeacherCarousel";
 import BrandCarousel from "@/app/components/BrandCarousel";
 
@@ -31,9 +30,13 @@ export default function RootPage() {
     const freeCategoriesRef = React.useRef<HTMLDivElement>(null);
     const freeClassesSectionRef = React.useRef<HTMLElement>(null);
 
-    const scrollFreeCategories = () => {
+    const scrollFreeCategories = (direction: "left" | "right") => {
         if (freeCategoriesRef.current) {
-            freeCategoriesRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+            const scrollAmount = 300;
+            freeCategoriesRef.current.scrollBy({ 
+                left: direction === "left" ? -scrollAmount : scrollAmount, 
+                behavior: 'smooth' 
+            });
         }
     };
 
@@ -322,31 +325,48 @@ export default function RootPage() {
                             </h2>
                         </div>
 
-                        <div className="flex items-center gap-2 md:gap-3 mb-10 w-full max-w-4xl mx-auto border-b border-gray-800 pb-8 overflow-hidden relative">
+                        <div className="relative mb-14 w-full max-w-5xl mx-auto flex items-center group/slider">
+                            {/* Left Button */}
+                            <button
+                                onClick={() => scrollFreeCategories("left")}
+                                className="absolute -left-4 md:-left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-[0_20px_50px_-8px_rgba(0,0,0,0.4)] hover:shadow-[0_20px_50px_-5px_rgba(255,255,255,0.4)] hover:scale-110 active:scale-95 transition-all shrink-0 z-30 cursor-pointer border border-white/20"
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                            </button>
+
                             <div
                                 ref={freeCategoriesRef}
-                                className="flex flex-wrap md:flex-nowrap justify-center md:justify-start items-center gap-2 md:gap-3 overflow-x-auto no-scrollbar scroll-smooth pr-12 w-full"
+                                className="flex items-center gap-3 md:gap-5 overflow-x-auto no-scrollbar scroll-smooth w-full px-4 md:px-6 py-2"
+                                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                             >
                                 {dynamicFreeCategories.map((cat) => (
                                     <button
                                         key={cat}
                                         onClick={() => setSelectedFreeCategory(cat)}
-                                        className={`px-4 py-2 md:px-6 md:py-2.5 rounded-full text-[12px] md:text-[14px] transition-all duration-300 whitespace-nowrap ${selectedFreeCategory === cat
-                                            ? "bg-white text-[#181C25] font-extrabold shadow-lg"
-                                            : "bg-[#252A36] text-gray-300 border border-gray-700/50 font-semibold hover:text-white hover:bg-[#2C3240]"
+                                        className={`px-5 py-2.5 md:px-8 md:py-3.5 rounded-full text-[12px] md:text-[14px] transition-all duration-300 whitespace-nowrap cursor-pointer ${selectedFreeCategory === cat
+                                            ? "bg-white text-[#181C25] font-black shadow-[0_15px_30px_-5px_rgba(255,255,255,0.3)] scale-105"
+                                            : "bg-white/5 text-gray-400 border border-white/10 font-bold hover:text-white hover:bg-white/10 hover:border-white/20"
                                             }`}
                                     >
                                         {cat}
                                     </button>
                                 ))}
                             </div>
+
+                            {/* Right Button */}
                             <button
-                                onClick={scrollFreeCategories}
-                                className="absolute right-0 top-1/2 -translate-y-[calc(50%+16px)] w-8 h-8 md:w-10 md:h-10 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-lg hover:bg-gray-100 transition shrink-0 z-10"
+                                onClick={() => scrollFreeCategories("right")}
+                                className="absolute -right-4 md:-right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-[0_20px_50px_-8px_rgba(0,0,0,0.4)] hover:shadow-[0_20px_50px_-5px_rgba(255,255,255,0.4)] hover:scale-110 active:scale-95 transition-all shrink-0 z-30 cursor-pointer border border-white/20"
                             >
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" transform="rotate(180 12 12)" /></svg>
                             </button>
                         </div>
+
+                        <style jsx>{`
+                            .no-scrollbar::-webkit-scrollbar {
+                                display: none !important;
+                            }
+                        `}</style>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                             {freeClasses.length > 0 ? freeClasses.map((cls, i) => (
@@ -399,44 +419,81 @@ export default function RootPage() {
                 </section>
 
                 {/* What You Will Get */}
-                <section className="w-full py-16">
-                    <div className="text-center mb-10">
-                        <h2 className="text-[28px] font-extrabold text-gray-900">What You Will Get</h2>
+                <section className="w-full py-24 relative overflow-hidden">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#6C5DD3]/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+                    <div className="text-center mb-20 relative z-10">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#6C5DD3]/10 text-[#6C5DD3] text-[11px] font-black uppercase tracking-widest mb-4">
+                            Premium Benefits
+                        </div>
+                        <h2 className="text-[32px] md:text-[40px] font-black text-gray-900 leading-tight">What You Will <span className="text-[#6C5DD3]">Get</span></h2>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto border-t border-b border-gray-200 py-10">
-                        {[
-                            {
-                                title: "১০০% জব প্লেসমেন্ট গাইডেন্স",
-                                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>,
-                                color: "text-amber-600",
-                                bg: "bg-amber-50"
-                            },
-                            {
-                                title: "ইন্টারেক্টিভ লাইভ সেশন",
-                                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>,
-                                color: "text-blue-600",
-                                bg: "bg-blue-50"
-                            },
-                            {
-                                title: "ইন্ডাস্ট্রি এক্সপার্টদের মেন্টরশিপ",
-                                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>,
-                                color: "text-emerald-600",
-                                bg: "bg-emerald-50"
-                            },
-                            {
-                                title: "কোর্স সমাপ্তিতে সার্টিফিকেট",
-                                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>,
-                                color: "text-purple-600",
-                                bg: "bg-purple-50"
-                            }
-                        ].map((f, i) => (
-                            <div key={i} className="flex flex-col items-center text-center gap-4 group">
-                                <div className={`w-16 h-16 rounded-[20px] ${f.bg} flex items-center justify-center shadow-sm transform group-hover:-translate-y-2 transition-transform duration-300`}>
-                                    <span className={f.color}>{f.icon}</span>
+
+                    <div className="relative max-w-6xl mx-auto px-4">
+                        {/* Timeline Connector Line */}
+                        <div className="absolute top-[48px] left-[12%] right-[12%] h-[2px] bg-gradient-to-r from-transparent via-gray-200 to-transparent hidden md:block">
+                            <div className="absolute inset-0 bg-gradient-to-r from-[#6C5DD3]/0 via-[#6C5DD3]/40 to-[#6C5DD3]/0 animate-shimmer opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-4 relative z-10">
+                            {[
+                                {
+                                    title: "১০০% জব প্লেসমেন্ট গাইডেন্স",
+                                    step: "01",
+                                    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>,
+                                    color: "text-amber-600",
+                                    bg: "bg-amber-50",
+                                    glow: "group-hover:shadow-amber-500/20"
+                                },
+                                {
+                                    title: "ইন্টারেক্টিভ লাইভ সেশন",
+                                    step: "02",
+                                    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>,
+                                    color: "text-blue-600",
+                                    bg: "bg-blue-50",
+                                    glow: "group-hover:shadow-blue-500/20"
+                                },
+                                {
+                                    title: "ইন্ডাস্ট্রি এক্সপার্টদের মেন্টরশিপ",
+                                    step: "03",
+                                    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>,
+                                    color: "text-emerald-600",
+                                    bg: "bg-emerald-50",
+                                    glow: "group-hover:shadow-emerald-500/20"
+                                },
+                                {
+                                    title: "কোর্স সমাপ্তিতে সার্টিফিকেট",
+                                    step: "04",
+                                    icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>,
+                                    color: "text-purple-600",
+                                    bg: "bg-purple-50",
+                                    glow: "group-hover:shadow-purple-500/20"
+                                }
+                            ].map((f, i) => (
+                                <div key={i} className="flex flex-col items-center text-center group relative">
+                                    {/* Timeline Node Ring */}
+                                    <div className="absolute top-[48px] left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-2 border-gray-100 hidden md:block group-hover:border-[#6C5DD3] group-hover:scale-150 transition-all duration-500 z-20">
+                                        <div className="absolute inset-1 rounded-full bg-gray-50 group-hover:bg-[#6C5DD3] transition-colors"></div>
+                                    </div>
+
+                                    {/* Icon Container */}
+                                    <div className={`w-24 h-24 rounded-[32px] ${f.bg} backdrop-blur-sm flex items-center justify-center border border-white shadow-[0_15px_35px_-10px_rgba(0,0,0,0.05)] transform group-hover:-translate-y-8 transition-all duration-700 relative z-10 ${f.glow} group-hover:shadow-2xl group-hover:bg-white`}>
+                                        <div className="absolute -top-3 -right-3 w-9 h-9 rounded-2xl bg-white shadow-[0_5px_15px_rgba(0,0,0,0.05)] flex items-center justify-center text-[11px] font-black text-gray-400 group-hover:text-[#6C5DD3] transition-all duration-500 group-hover:rotate-12">
+                                            {f.step}
+                                        </div>
+                                        <span className={`${f.color} transform group-hover:scale-110 transition-transform duration-500`}>{f.icon}</span>
+                                    </div>
+
+                                    {/* Text Content */}
+                                    <div className="mt-10 md:mt-16 px-4">
+                                        <p className="font-black text-[#1A1D1F] text-[16px] md:text-[18px] leading-snug transition-all duration-500 group-hover:text-[#6C5DD3] group-hover:translate-y-[-4px]">
+                                            {f.title}
+                                        </p>
+                                        <div className="w-10 h-1 bg-gradient-to-r from-[#6C5DD3]/0 via-[#6C5DD3]/20 to-[#6C5DD3]/0 rounded-full mx-auto mt-5 group-hover:w-20 group-hover:via-[#6C5DD3] transition-all duration-700"></div>
+                                    </div>
                                 </div>
-                                <p className="font-bold text-gray-800 text-[14px] max-w-[140px] leading-snug">{f.title}</p>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </section>
 
@@ -500,108 +557,6 @@ export default function RootPage() {
                                     No testimonials available.
                                 </div>
                             )}
-                        </div>
-                    </div>
-                </section>
-
-                {/* Contact Section (With Map) */}
-                <section className="w-full py-24 px-4 relative overflow-hidden">
-                    {/* Background Noise & Glows */}
-                    <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none"></div>
-                    <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#6C5DD3]/10 rounded-full blur-[120px] pointer-events-none"></div>
-                    <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#FF4C4C]/5 rounded-full blur-[120px] pointer-events-none"></div>
-
-                    <div className="flex flex-col lg:flex-row items-stretch gap-8 max-w-[1300px] mx-auto relative z-10">
-                        {/* Map Column (Left) */}
-                        <div className="w-full lg:w-[45%] group h-full self-stretch">
-                            <div className="relative h-full">
-                                <div className="absolute -inset-2 bg-gradient-to-r from-[#6C5DD3]/20 to-[#FF4C4C]/10 rounded-[48px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                                <div className="relative h-full bg-white/40 backdrop-blur-md p-3 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-white overflow-hidden">
-                                    <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.9650079615135!2d90.42680589999999!3d23.748627199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b9b4c1ff8911%3A0x8d70c5c554d258ee!2sYouth%20Instructory%20-%20Computer%20Training%20Center!5e0!3m2!1sen!2sbd!4v1773306370451!5m2!1sen!2sbd"
-                                        width="100%"
-                                        height="100%"
-                                        style={{ border: 0, minHeight: '480px' }}
-                                        allowFullScreen={false}
-                                        loading="lazy"
-                                        referrerPolicy="no-referrer-when-downgrade"
-                                        title="Youth Instructory Location"
-                                        className="rounded-[32px] grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 ease-in-out"
-                                    ></iframe>
-
-                                    {/* Map Overlay Card (Mini) */}
-                                    <div className="absolute bottom-8 left-8 right-8 bg-white/90 backdrop-blur-xl p-4 rounded-2xl border border-white/50 shadow-2xl transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-lg bg-[#6C5DD3] flex items-center justify-center text-white shadow-lg shadow-[#6C5DD3]/20">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                                            </div>
-                                            <div>
-                                                <p className="text-[13px] font-bold text-[#1A1D1F]">See Our Location</p>
-                                                <p className="text-[10px] text-gray-500">Khilgaon, Dhaka, Bangladesh</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Content Column (Right) */}
-                        <div className="w-full lg:w-[55%] flex flex-col justify-center">
-                            <div className="bg-gradient-to-br from-white to-[#F8F9FF] p-10 md:p-14 rounded-[48px] shadow-[0_25px_60px_rgba(108,93,211,0.05)] border border-white relative overflow-hidden group/card h-full">
-                                {/* Decorative Energy Lines */}
-                                <div className="absolute top-0 right-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] pointer-events-none"></div>
-                                <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[#6C5DD3]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-1000"></div>
-
-                                <div className="relative z-10 space-y-10 group-hover/card:translate-y-[-5px] transition-transform duration-500">
-                                    {/* Company Logo & Title */}
-                                    <div className="flex flex-col items-center gap-4 border-b border-gray-100 pb-8 text-center">
-                                        <div className="w-20 md:w-24 h-auto">
-                                            <img
-                                                src={siteSettings?.logo || "/images/logo.png"}
-                                                alt="Youth Instructory Logo"
-                                                className="w-full h-auto object-contain transition-transform group-hover/card:scale-110 duration-700"
-                                            />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-2xl md:text-3xl font-black text-[#181C25] tracking-tight">Our Information</h2>
-                                            <p className="text-[12px] md:text-[13px] text-gray-500 font-bold uppercase tracking-[0.2em] mt-1.5 opacity-70">Youth Instructory Center</p>
-                                        </div>
-                                    </div>
-
-                                    {/* Contact Information */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="flex items-start gap-3 p-4 rounded-2xl bg-white/50 border border-white hover:border-[#6C5DD3]/20 hover:bg-white transition-colors duration-300 col-span-1 md:col-span-2 group/contact">
-                                            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#4A72FF] group-hover/contact:bg-[#4A72FF] group-hover/contact:text-white transition-colors">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                                            </div>
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Office Address</span>
-                                                <span className="text-[14px] font-bold text-gray-800 leading-relaxed">৪০৩/এ, খিলগাঁও চৌরাস্তা (ফিউচার কমার্স কলেজ এর নীচতলা), ঢাকা-১২১৯</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-start gap-3 p-4 rounded-2xl bg-white/50 border border-white hover:border-[#6C5DD3]/20 hover:bg-white transition-colors duration-300 group/contact">
-                                            <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600 group-hover/contact:bg-green-600 group-hover/contact:text-white transition-colors">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
-                                            </div>
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Email Us</span>
-                                                <a href={`mailto:${siteSettings?.contactEmail || 'info@youthinstructory.com'}`} className="text-[14px] font-bold text-gray-800 hover:text-[#6C5DD3] transition-colors">{siteSettings?.contactEmail || 'info@youthinstructory.com'}</a>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-start gap-3 p-4 rounded-2xl bg-white/50 border border-white hover:border-[#6C5DD3]/20 hover:bg-white transition-colors duration-300 group/contact">
-                                            <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 group-hover/contact:bg-purple-600 group-hover/contact:text-white transition-colors">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
-                                            </div>
-                                            <div className="flex flex-col gap-0.5">
-                                                <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Call Us</span>
-                                                <a href={`tel:${siteSettings?.contactPhone || '+880 1234 567 890'}`} className="text-[14px] font-bold text-gray-800 hover:text-[#4A72FF] transition-colors">{siteSettings?.contactPhone || '+880 1234 567 890'}</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </section>
