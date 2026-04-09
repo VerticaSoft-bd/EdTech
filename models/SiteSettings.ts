@@ -15,6 +15,7 @@ const SiteSettingsSchema = new mongoose.Schema({
         youtube: { type: String, default: '' },
         instagram: { type: String, default: '' },
         linkedin: { type: String, default: '' },
+        whatsapp: { type: String, default: '' },
     },
     freeClasses: [{
         title: { type: String, required: true },

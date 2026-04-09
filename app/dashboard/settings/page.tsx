@@ -19,6 +19,7 @@ interface ISiteSettings {
         youtube: string;
         instagram: string;
         linkedin: string;
+        whatsapp: string;
     };
     brands: Array<{
         _id?: string;
@@ -38,7 +39,7 @@ const DEFAULT_SETTINGS: ISiteSettings = {
     contactPhone: '',
     address: '',
     footerText: '',
-    socialLinks: { facebook: '', youtube: '', instagram: '', linkedin: '' },
+    socialLinks: { facebook: '', youtube: '', instagram: '', linkedin: '', whatsapp: '' },
     brands: [],
 };
 
@@ -332,6 +333,12 @@ export default function SettingsPage() {
                         <label className={labelClasses}>LinkedIn</label>
                         <input type="url" value={settings.socialLinks.linkedin} onChange={e => setSettings({ ...settings, socialLinks: { ...settings.socialLinks, linkedin: e.target.value } })}
                             className={inputClasses} placeholder="https://linkedin.com/..." />
+                    </div>
+                    <div className="space-y-2">
+                        <label className={labelClasses}>WhatsApp Number/Link</label>
+                        <input type="text" value={settings.socialLinks.whatsapp} onChange={e => setSettings({ ...settings, socialLinks: { ...settings.socialLinks, whatsapp: e.target.value } })}
+                            className={inputClasses} placeholder="e.g. +880 1XXX-XXXXXX or https://wa.me/..." />
+                        <p className="text-[10px] text-gray-400 ml-1">Example: +8801700000000 or full wa.me link</p>
                     </div>
                 </div>
             </div>

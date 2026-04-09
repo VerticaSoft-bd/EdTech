@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ContactSection from './ContactSection';
+import WhatsappButton from './WhatsappButton';
 
 export default function Footer() {
     const [siteSettings, setSiteSettings] = useState<any>(null);
@@ -111,6 +112,7 @@ export default function Footer() {
                     </div>
                 </div>
             </footer>
+            {!isDashboard && <WhatsappButton link={siteSettings?.socialLinks?.whatsapp} />}
         </>
     );
 }
