@@ -20,7 +20,6 @@ const SiteSettingsSchema = new mongoose.Schema({
     freeClasses: [{
         title: { type: String, required: true },
         subtitle: { type: String },
-        category: { type: String },
         time: { type: String },
         color: { type: String, default: 'from-blue-500 to-indigo-500' },
         link: { type: String, default: '#' },

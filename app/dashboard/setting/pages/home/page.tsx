@@ -22,7 +22,6 @@ interface IFreeClass {
     _id?: string;
     title: string;
     subtitle: string;
-    category: string;
     time: string;
     color: string;
     link: string;
@@ -257,7 +256,7 @@ export default function HomePageSettings() {
 
     // Free Classes Handlers
     const handleAddFreeClass = () => {
-        setCurrentFreeClass({ title: '', subtitle: '', category: '', time: '', color: 'from-blue-500 to-indigo-500', link: '#', order: freeClasses.length });
+        setCurrentFreeClass({ title: '', subtitle: '', time: '', color: 'from-blue-500 to-indigo-500', link: '#', order: freeClasses.length });
         setFreeClassView('add');
     };
 
@@ -716,16 +715,6 @@ export default function HomePageSettings() {
                                             className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:ring-2 focus:ring-[#6C5DD3]/20 focus:border-[#6C5DD3] outline-none text-sm transition-all font-bold"
                                             placeholder="e.g. Workshop"
                                             required
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-sm font-bold text-gray-700 ml-1">Category</label>
-                                        <input
-                                            type="text"
-                                            value={currentFreeClass?.category}
-                                            onChange={e => setCurrentFreeClass({ ...currentFreeClass!, category: e.target.value })}
-                                            className="w-full px-5 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:bg-white focus:ring-2 focus:ring-[#6C5DD3]/20 focus:border-[#6C5DD3] outline-none text-sm transition-all font-bold"
-                                            placeholder="e.g. Python"
                                         />
                                     </div>
                                     <div className="space-y-2">

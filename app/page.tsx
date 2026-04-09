@@ -20,14 +20,10 @@ export default function RootPage() {
     const [loadingCourses, setLoadingCourses] = useState(true);
     const [allFreeClasses, setAllFreeClasses] = useState<any[]>([]);
     const [freeClasses, setFreeClasses] = useState<any[]>([]);
-    const [selectedBatchCategory, setSelectedBatchCategory] = useState("All");
-    const [selectedFreeCategory, setSelectedFreeCategory] = useState("All Types");
-    const [dynamicBatchCategories, setDynamicBatchCategories] = useState<string[]>(["All"]);
-    const [dynamicFreeCategories, setDynamicFreeCategories] = useState<string[]>(["All Types"]);
+    const [selectedMode, setSelectedMode] = useState("All");
     const [testimonials, setTestimonials] = useState<any[]>([]);
     const [siteSettings, setSiteSettings] = useState<any>(null);
     const [testimonialIndex, setTestimonialIndex] = useState(0);
-    const [selectedMode, setSelectedMode] = useState("All");
     const [selectedSeminarTitle, setSelectedSeminarTitle] = useState("");
     
     // Video Modal State
@@ -63,23 +59,6 @@ export default function RootPage() {
             }
         };
 
-        const fetchCategories = async () => {
-            try {
-                const res = await fetch("/api/categories");
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.success && data.data) {
-                        const batchCats = ["All", ...data.data.map((c: any) => c.name)];
-                        setDynamicBatchCategories(batchCats);
-                        const freeCats = ["All Types", ...data.data.map((c: any) => c.name)];
-                        setDynamicFreeCategories(freeCats);
-                    }
-                }
-            } catch (err) {
-                console.error("Error fetching categories", err);
-            }
-        };
-
         const fetchSettings = async () => {
             try {
                 const res = await fetch("/api/settings");
@@ -98,7 +77,6 @@ export default function RootPage() {
         };
 
         fetchCourses();
-        fetchCategories();
         fetchSettings();
     }, []);
 
@@ -110,21 +88,12 @@ export default function RootPage() {
             filtered = filtered.filter(c => c.courseMode === selectedMode);
         }
 
-        // Filter by Category
-        if (selectedBatchCategory !== "All") {
-            filtered = filtered.filter(c => c.category === selectedBatchCategory);
-        }
-
         setUpcomingCourses(filtered.slice(0, 4));
-    }, [selectedBatchCategory, selectedMode, allCourses]);
+    }, [selectedMode, allCourses]);
 
     useEffect(() => {
-        if (selectedFreeCategory === "All Types") {
-            setFreeClasses(allFreeClasses);
-        } else {
-            setFreeClasses(allFreeClasses.filter(c => c.category === selectedFreeCategory));
-        }
-    }, [selectedFreeCategory, allFreeClasses]);
+        setFreeClasses(allFreeClasses);
+    }, [allFreeClasses]);
 
     const nextTestimonial = () => {
         if (testimonials.length === 0) return;
@@ -217,28 +186,12 @@ export default function RootPage() {
 
                 {/* Upcoming Live Batches */}
                 <section className="w-full pt-4">
-                    <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                         <h2 className="text-[24px] md:text-[28px] text-center md:text-left font-bold flex flex-col md:flex-row items-center gap-3 text-gray-900">
                             <div className="flex items-center gap-3">
                                 <span className="w-5 h-2 bg-[#EF4444] rounded-full inline-block"></span>
                                 Upcoming Live Batches
                             </div>
                         </h2>
-                        <div className="flex flex-wrap items-center justify-center md:justify-end gap-2">
-                            {dynamicBatchCategories.map((cat) => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setSelectedBatchCategory(cat)}
-                                    className={`px-5 py-2 text-[13px] md:text-sm font-semibold rounded-full transition-all duration-300 ${selectedBatchCategory === cat
-                                        ? "bg-[#4A72FF] text-white shadow-sm"
-                                        : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-                                        }`}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {loadingCourses ? (
@@ -267,9 +220,6 @@ export default function RootPage() {
                                             <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
                                             Live
                                         </div>
-                                        <span className="absolute top-3 right-3 bg-black/60 text-white text-[11px] px-2.5 py-1 rounded-md backdrop-blur-md font-medium">
-                                            {course.category}
-                                        </span>
                                     </div>
                                     <div className="p-5 flex flex-col flex-1">
                                         <h3 className="font-bold text-gray-900 text-[17px] leading-[1.3] mb-5 group-hover:text-[#1A62FF] transition-colors line-clamp-2">{course.title}</h3>
@@ -332,49 +282,6 @@ export default function RootPage() {
                             </h2>
                         </div>
 
-                        <div className="relative mb-14 w-full max-w-5xl mx-auto flex items-center group/slider">
-                            {/* Left Button */}
-                            <button
-                                onClick={() => scrollFreeCategories("left")}
-                                className="absolute -left-4 md:-left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-[0_20px_50px_-8px_rgba(0,0,0,0.4)] hover:shadow-[0_20px_50px_-5px_rgba(255,255,255,0.4)] hover:scale-110 active:scale-95 transition-all shrink-0 z-30 cursor-pointer border border-white/20"
-                            >
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-                            </button>
-
-                            <div
-                                ref={freeCategoriesRef}
-                                className="flex items-center gap-3 md:gap-5 overflow-x-auto no-scrollbar scroll-smooth w-full px-4 md:px-6 py-2"
-                                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                            >
-                                {dynamicFreeCategories.map((cat) => (
-                                    <button
-                                        key={cat}
-                                        onClick={() => setSelectedFreeCategory(cat)}
-                                        className={`px-5 py-2.5 md:px-8 md:py-3.5 rounded-full text-[12px] md:text-[14px] transition-all duration-300 whitespace-nowrap cursor-pointer ${selectedFreeCategory === cat
-                                            ? "bg-white text-[#181C25] font-black shadow-[0_15px_30px_-5px_rgba(255,255,255,0.3)] scale-105"
-                                            : "bg-white/5 text-gray-400 border border-white/10 font-bold hover:text-white hover:bg-white/10 hover:border-white/20"
-                                            }`}
-                                    >
-                                        {cat}
-                                    </button>
-                                ))}
-                            </div>
-
-                            {/* Right Button */}
-                            <button
-                                onClick={() => scrollFreeCategories("right")}
-                                className="absolute -right-4 md:-right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white flex items-center justify-center text-[#181C25] shadow-[0_20px_50px_-8px_rgba(0,0,0,0.4)] hover:shadow-[0_20px_50px_-5px_rgba(255,255,255,0.4)] hover:scale-110 active:scale-95 transition-all shrink-0 z-30 cursor-pointer border border-white/20"
-                            >
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" transform="rotate(180 12 12)" /></svg>
-                            </button>
-                        </div>
-
-                        <style jsx>{`
-                            .no-scrollbar::-webkit-scrollbar {
-                                display: none !important;
-                            }
-                        `}</style>
-
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                             {freeClasses.length > 0 ? freeClasses.map((cls, i) => (
                                 <div key={i} className="group border border-gray-700/50 rounded-[20px] overflow-hidden bg-[#1E232F] flex flex-col p-4 shadow-xl hover:-translate-y-1 transition-transform duration-300 relative">
@@ -394,10 +301,10 @@ export default function RootPage() {
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                                             {cls.time || "Today • 9:00 PM"}
                                         </p>
-                                        <h3 className="font-bold text-white leading-snug text-[15px] mb-5">Masterclass on {cls.category || cls.title.split(' ')[0]} Technology & Career.</h3>
+                                        <h3 className="font-bold text-white leading-snug text-[15px] mb-5">Masterclass on {cls.title.split(' ')[0]} Technology & Career.</h3>
                                         <button 
                                             onClick={() => {
-                                                setSelectedSeminarTitle(`Masterclass on ${cls.category || cls.title.split(' ')[0]} Technology & Career`);
+                                                setSelectedSeminarTitle(`Masterclass on ${cls.title.split(' ')[0]} Technology & Career`);
                                                 setIsSeminarModalOpen(true);
                                             }}
                                             className="mt-auto w-full py-2.5 flex items-center justify-center gap-2 bg-white/5 text-white font-bold text-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition group-hover:bg-[#4A72FF] group-hover:border-[#4A72FF] group-hover:shadow-lg group-hover:shadow-blue-500/25"

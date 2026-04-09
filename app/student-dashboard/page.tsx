@@ -205,9 +205,6 @@ export default async function StudentDashboard() {
                           <h3 className="text-xl font-bold text-white mb-4 leading-tight line-clamp-2">
                             {course.title}
                           </h3>
-                          <div className="inline-block px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-medium border border-white/20 uppercase">
-                            {course.level || "Beginner"}
-                          </div>
                         </div>
                       </div>
 
@@ -226,9 +223,6 @@ export default async function StudentDashboard() {
                               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                             </svg>
-                          </span>
-                          <span className="text-sm font-semibold text-gray-500">
-                            {course.category || "Course"}
                           </span>
                         </div>
 
@@ -326,9 +320,6 @@ export default async function StudentDashboard() {
                           <h4 className="text-[11px] font-bold text-white leading-[1.3] mb-1.5 line-clamp-2">
                             {course.title}
                           </h4>
-                          <div className="inline-block px-2 py-0.5 bg-white/20 backdrop-blur-md rounded-lg text-white text-[8px] font-medium border border-white/20">
-                            {course.category || "Course"}
-                          </div>
                         </div>
                       </div>
                       <div className="flex-1 grid grid-cols-12 gap-4 items-center w-full">

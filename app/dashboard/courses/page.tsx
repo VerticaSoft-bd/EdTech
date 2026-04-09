@@ -49,8 +49,7 @@ export default function CoursesPage() {
             (filterType === 'Offline' && course.courseMode === 'Offline Class') ||
             (course.courseMode === filterType);
 
-        const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            course.category.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
 
         return matchesFilter && matchesSearch;
     });
@@ -165,9 +164,6 @@ export default function CoursesPage() {
 
                                         <div className="flex justify-between items-start relative z-10">
                                             <div className="flex gap-2">
-                                                <span className="px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 shadow-sm">
-                                                    {course.category}
-                                                </span>
                                                 <span className={`px-2.5 py-1 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 shadow-sm ${displayType === 'Online' ? 'bg-[#8E8AFF]/40' : 'bg-[#FF754C]/40'}`}>
                                                     {displayType}
                                                 </span>

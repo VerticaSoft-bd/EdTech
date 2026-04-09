@@ -14,16 +14,12 @@ export default function EditCoursePage() {
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
     const [imageError, setImageError] = useState('');
     const [teachers, setTeachers] = useState<any[]>([]);
-    const [categories, setCategories] = useState<any[]>([]);
 
     // Fetch teachers, categories and course data on mount
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                const [teachersRes, categoriesRes] = await Promise.all([
-                    fetch('/api/users?role=teacher'),
-                    fetch('/api/categories')
-                ]);
+                const teachersRes = await fetch('/api/users?role=teacher');
 
                 if (teachersRes.ok) {
                     const data = await teachersRes.json();
@@ -31,15 +27,8 @@ export default function EditCoursePage() {
                         setTeachers(data.data);
                     }
                 }
-
-                if (categoriesRes.ok) {
-                    const data = await categoriesRes.json();
-                    if (data.success && data.data) {
-                        setCategories(data.data);
-                    }
-                }
             } catch (err) {
-                console.error("Failed to fetch teachers or categories:", err);
+                console.error("Failed to fetch teachers:", err);
             }
         };
 
@@ -66,7 +55,6 @@ export default function EditCoursePage() {
                     const cleanData = {
                         title: raw.title || '',
                         subtitle: raw.subtitle || '',
-                        category: raw.category || '',
                         courseMode: raw.courseMode || 'Offline Class',
                         duration: raw.duration || '',
                         batches: cleanSubDocs(raw.batches),
@@ -206,8 +194,8 @@ export default function EditCoursePage() {
         setError('');
         setSuccessMessage('');
 
-        if (!courseData.title || !courseData.category || !courseData.courseMode) {
-            setError('Please fill out the required fields (Course Title, Category, and Mode) before saving.');
+        if (!courseData.title || !courseData.courseMode) {
+            setError('Please fill out the required fields (Course Title and Mode) before saving.');
             setLoading(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
@@ -488,19 +476,6 @@ export default function EditCoursePage() {
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Course Category (কোর্স ক্যাটাগরি)</label>
-                                            <select
-                                                value={courseData.category}
-                                                onChange={(e) => handleInputChange('category', e.target.value)}
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] appearance-none cursor-pointer"
-                                            >
-                                                <option value="">Select Category</option>
-                                                {categories.map((cat: any) => (
-                                                    <option key={cat._id} value={cat.name}>{cat.name}</option>
-                                                ))}
-                                            </select>
-                                        </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Course Mode (কোর্স মোড)</label>
                                             <select

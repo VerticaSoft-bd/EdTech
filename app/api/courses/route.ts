@@ -11,9 +11,9 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         // Perform basic validation, ensuring critical fields exist
-        if (!body.title || !body.category || !body.courseMode) {
+        if (!body.title || !body.courseMode) {
             return NextResponse.json(
-                { success: false, message: 'Please provide course title, category, and mode' },
+                { success: false, message: 'Please provide course title and mode' },
                 { status: 400 }
             );
         }

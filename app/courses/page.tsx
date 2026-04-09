@@ -9,7 +9,6 @@ import Footer from "@/app/components/Footer";
 function CoursesContent() {
     const [courses, setCourses] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('All');
     const searchParams = useSearchParams();
     const searchQuery = searchParams.get("search") || "";
 
@@ -32,14 +31,10 @@ function CoursesContent() {
     }, []);
 
     const filteredCourses = courses.filter(course => {
-        const matchesCategory = filter === 'All' || course.category === filter;
         const matchesSearch = !searchQuery || 
-            course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (course.category && course.category.toLowerCase().includes(searchQuery.toLowerCase()));
-        return matchesCategory && matchesSearch;
+            course.title.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesSearch;
     });
-
-    const categories = ['All', ...new Set(courses.map(c => c.category))];
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] text-[#1A1D1F] flex flex-col">
@@ -58,21 +53,6 @@ function CoursesContent() {
                         </p>
                     </div>
                     
-                    <div className="flex flex-wrap items-center justify-center gap-2">
-                        {categories.map(cat => (
-                            <button
-                                key={cat}
-                                onClick={() => setFilter(cat)}
-                                className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
-                                    filter === cat 
-                                    ? 'bg-[#6C5DD3] text-white shadow-lg shadow-[#6C5DD3]/20' 
-                                    : 'bg-white text-gray-600 border border-gray-100 hover:border-gray-200 hover:bg-gray-50'
-                                }`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -100,11 +80,6 @@ function CoursesContent() {
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                                         alt={course.title} 
                                     />
-                                    <div className="absolute top-4 left-4">
-                                        <span className="bg-white/90 backdrop-blur-md text-[#1A1D1F] text-[11px] px-3 py-1.5 rounded-lg font-bold shadow-sm border border-white/50">
-                                            {course.category}
-                                        </span>
-                                    </div>
                                     {course.courseMode === 'Online Class' && (
                                         <div className="absolute top-4 right-4 bg-[#EF4444] flex items-center gap-1.5 text-white text-[10px] px-2.5 py-1.5 rounded-lg font-black uppercase tracking-wider shadow-lg">
                                             <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
@@ -152,8 +127,6 @@ function CoursesContent() {
                                 onClick={() => {
                                     if (searchQuery) {
                                         window.location.href = '/courses';
-                                    } else {
-                                        setFilter('All');
                                     }
                                 }} 
                                 className="mt-4 text-[#6C5DD3] font-black underline"

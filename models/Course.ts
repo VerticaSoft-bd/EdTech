@@ -59,8 +59,6 @@ export interface ICourse extends Document {
     title: string;
     slug: string;
     subtitle: string;
-    category: string;
-    level: string;
     courseMode: string;
     duration: string;
     batches: IBatch[];
@@ -171,8 +169,6 @@ const CourseSchema: Schema<ICourse> = new Schema({
     title: { type: String, required: true },
     slug: { type: String, unique: true },
     subtitle: { type: String, required: true },
-    category: { type: String, required: true },
-    level: { type: String },
     courseMode: { type: String, required: true },
     duration: { type: String, required: true },
     batches: { type: [BatchSchema], default: [] },

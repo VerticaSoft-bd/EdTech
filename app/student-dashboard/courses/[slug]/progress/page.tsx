@@ -95,10 +95,6 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                 {course.title}
                             </h1>
                             <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500">
-                                <span className="flex items-center gap-1.5 px-3 py-1 bg-white border border-gray-100 rounded-full shadow-sm capitalize">
-                                    <Target size={14} className="text-[#6C5DD3]" />
-                                    {course.category || "Course"}
-                                </span>
                                 <span className="flex items-center gap-1.5 px-3 py-1 bg-white border border-gray-100 rounded-full shadow-sm">
                                     <BookOpen size={14} className="text-[#FFAB7B]" />
                                     {isOffline ? `${student.totalClasses} Classes` : `${student.totalClasses} Modules`}
