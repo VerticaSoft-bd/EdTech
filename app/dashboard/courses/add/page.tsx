@@ -8,11 +8,7 @@ export default function AddCoursePage() {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-    const [toolImageFiles, setToolImageFiles] = useState<(File | null)[]>([]);
-    const [learnItemIconFiles, setLearnItemIconFiles] = useState<(File | null)[]>([]);
-    const [benefitIconFiles, setBenefitIconFiles] = useState<(File | null)[]>([]);
     const [imageError, setImageError] = useState('');
-    const [studentProjectFiles, setStudentProjectFiles] = useState<(File | string)[]>([]);
     const [teachers, setTeachers] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
 
@@ -46,39 +42,30 @@ export default function AddCoursePage() {
     }, []);
 
     // Centralized Course State
-    const [instructorBannerFile, setInstructorBannerFile] = useState<File | null>(null);
     const [aiBannerFile, setAiBannerFile] = useState<File | null>(null);
     const [aiLearningBannerFile, setAiLearningBannerFile] = useState<File | null>(null);
+    const [toolImageFiles, setToolImageFiles] = useState<(File | null)[]>([]);
+    const [learnItemIconFiles, setLearnItemIconFiles] = useState<(File | null)[]>([]);
+    const [benefitIconFiles, setBenefitIconFiles] = useState<(File | null)[]>([]);
 
     const [courseData, setCourseData] = useState({
         title: '',
         subtitle: '',
-        category: 'Design',
-        level: 'Beginner',
+        category: '',
         courseMode: 'Offline Class',
         duration: '',
         batches: [] as { startDate: string, classTime: string }[],
-        totalStudents: 0,
         totalLectures: 0,
         totalProjects: 0,
         fullDetails: '',
         targetAudience: [] as string[],
-        keyDeliverables: [] as string[],
         modules: [] as { title: string, topics: { title: string }[] }[],
         thumbnail: '',
         introVideo: '',
-        studentProjects: [] as string[],
         regularFee: 0,
         discountPercentage: 0,
-        admissionUrl: '',
-        seminarUrl: '',
-        isFree: false,
         assignedTeachers: [] as string[],
         careerOpportunities: [] as { title: string, description: string }[],
-        uniqueFeatures: [] as { title: string, description: string }[],
-        totalPreRecordedVideos: 0,
-        enrollmentDeadline: '',
-        totalSeats: 0,
         batchNumber: '',
         benefits: [] as { icon: string, title: string, subtitle: string }[],
         whatYouWillLearn: [] as { text: string, icon: string }[],
@@ -87,7 +74,6 @@ export default function AddCoursePage() {
         faqs: [] as { question: string, answer: string }[],
         tools: [] as { name: string, image: string }[],
         demoClass: { date: '', time: '', platform: '', videoUrls: [] as string[] },
-        instructorBannerUrl: '',
         aiBannerUrl: '',
         aiLearningBannerUrl: '',
         aiLearningBadge: 'AI-Powered Learning',
@@ -146,29 +132,7 @@ export default function AddCoursePage() {
                 }
             }
 
-            // Upload Student Project Images
-            const uploadedProjectUrls: string[] = [];
-            for (let i = 0; i < studentProjectFiles.length; i++) {
-                const fileOrUrl = studentProjectFiles[i];
-                if (fileOrUrl instanceof File) {
-                    const uploadFormData = new FormData();
-                    uploadFormData.append('file', fileOrUrl);
 
-                    const uploadRes = await fetch('/api/upload', {
-                        method: 'POST',
-                        body: uploadFormData
-                    });
-
-                    if (uploadRes.ok) {
-                        const uploadData = await uploadRes.json();
-                        uploadedProjectUrls.push(uploadData.url);
-                    } else {
-                        throw new Error(`Failed to upload student project image ${i + 1}`);
-                    }
-                } else if (typeof fileOrUrl === 'string' && fileOrUrl.trim() !== '') {
-                    uploadedProjectUrls.push(fileOrUrl);
-                }
-            }
 
             // Upload Tool Images
             const uploadedTools: { name: string, image: string }[] = [];
@@ -230,22 +194,7 @@ export default function AddCoursePage() {
                 uploadedBenefits.push({ ...benefit, icon: imageUrl });
             }
 
-            // Handle instructor banner upload
-            let uploadedInstructorBannerUrl = courseData.instructorBannerUrl;
-            if (instructorBannerFile) {
-                const uploadFormData = new FormData();
-                uploadFormData.append('file', instructorBannerFile);
 
-                const uploadRes = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: uploadFormData,
-                });
-
-                if (uploadRes.ok) {
-                    const data = await uploadRes.json();
-                    uploadedInstructorBannerUrl = data.url;
-                }
-            }
 
             // Handle AI banner upload
             let uploadedAiBannerUrl = courseData.aiBannerUrl;
@@ -284,15 +233,10 @@ export default function AddCoursePage() {
             const payload = {
                 ...courseData,
                 thumbnail: thumbnailUrl,
-                studentProjects: Array.from(new Set([
-                    ...uploadedProjectUrls,
-                    ...courseData.studentProjects.filter(url => typeof url === 'string' && url.trim() !== '')
-                ])),
                 tools: uploadedTools,
                 whatYouWillLearn: uploadedLearnItems,
                 benefits: uploadedBenefits,
                 aiFeatures: courseData.aiFeatures,
-                instructorBannerUrl: uploadedInstructorBannerUrl,
                 aiBannerUrl: uploadedAiBannerUrl,
                 aiLearningBannerUrl: uploadedAiLearningBannerUrl,
                 assignedTeachers: courseData.assignedTeachers.filter(id => id.trim() !== ""),
@@ -323,7 +267,7 @@ export default function AddCoursePage() {
         }
     };
 
-    const tabList = ['basic', 'details', 'curriculum', 'media', 'banners', 'pricing', 'teacher', 'career', 'features', 'extras'];
+    const tabList = ['basic', 'details', 'curriculum', 'media', 'banners', 'pricing', 'teacher', 'career', 'extras'];
 
     const handleNextTab = () => {
         const currentIndex = tabList.indexOf(activeTab);
@@ -423,33 +367,18 @@ export default function AddCoursePage() {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Category (ক্যাটাগরি)</label>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Course Category (কোর্স ক্যাটাগরি)</label>
                                             <select
                                                 value={courseData.category}
                                                 onChange={(e) => handleInputChange('category', e.target.value)}
                                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] appearance-none cursor-pointer"
                                             >
-                                                <option value="">Select Category (ক্যাটাগরি নির্বাচন করুন)</option>
-                                                {categories.map((cat) => (
+                                                <option value="">Select Category</option>
+                                                {categories.map((cat: any) => (
                                                     <option key={cat._id} value={cat.name}>{cat.name}</option>
                                                 ))}
                                             </select>
                                         </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Level (লেভেল)</label>
-                                            <select
-                                                value={courseData.level}
-                                                onChange={(e) => handleInputChange('level', e.target.value)}
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] appearance-none cursor-pointer"
-                                            >
-                                                <option>Beginner</option>
-                                                <option>Intermediate</option>
-                                                <option>Advanced</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Course Mode (কোর্স মোড)</label>
                                             <select
@@ -529,29 +458,19 @@ export default function AddCoursePage() {
                                                 </div>
                                             ))}
                                             {courseData.batches.length === 0 && (
-                                                <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No batches added yet. Click "Add Batch" to specify schedules. (কোন ব্যাচ যোগ করা হয়নি। ব্যাচ যোগ করতে "Add Batch" এ ক্লিক করুন।)</div>
+                                                <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No batches added yet.</div>
                                             )}
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-3 gap-4">
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Students (মোট শিক্ষার্থী)</label>
-                                            <input
-                                                type="number"
-                                                value={courseData.totalStudents || ''}
-                                                onChange={(e) => handleInputChange('totalStudents', parseInt(e.target.value) || 0)}
-                                                placeholder="500"
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
-                                            />
-                                        </div>
+                                    <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Lectures (মোট লেকচার)</label>
                                             <input
                                                 type="number"
                                                 value={courseData.totalLectures || ''}
                                                 onChange={(e) => handleInputChange('totalLectures', parseInt(e.target.value) || 0)}
-                                                placeholder="52"
+                                                placeholder="50"
                                                 className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
                                             />
                                         </div>
@@ -623,45 +542,7 @@ export default function AddCoursePage() {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Key Deliverables</label>
-                                    <div className="space-y-2">
-                                        {courseData.keyDeliverables.map((deliverable, index) => (
-                                            <div key={index} className="flex gap-2">
-                                                <input
-                                                    type="text"
-                                                    value={deliverable}
-                                                    onChange={(e) => {
-                                                        const newDeliverables = [...courseData.keyDeliverables];
-                                                        newDeliverables[index] = e.target.value;
-                                                        handleInputChange('keyDeliverables', newDeliverables);
-                                                    }}
-                                                    placeholder="e.g. Completion Certification"
-                                                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
-                                                />
-                                                <button
-                                                    onClick={() => {
-                                                        const newDeliverables = courseData.keyDeliverables.filter((_, i) => i !== index);
-                                                        handleInputChange('keyDeliverables', newDeliverables);
-                                                    }}
-                                                    className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                                                >
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                                                </button>
-                                            </div>
-                                        ))}
-                                        {courseData.keyDeliverables.length === 0 && (
-                                            <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No deliverables added yet.</div>
-                                        )}
-                                        <button
-                                            onClick={() => setCourseData(prev => ({ ...prev, keyDeliverables: [...prev.keyDeliverables, ''] }))}
-                                            className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"
-                                        >
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
-                                            Add Deliverable
-                                        </button>
-                                    </div>
-                                </div>
+
                             </div>
                         )}
 
@@ -830,101 +711,7 @@ export default function AddCoursePage() {
                                     />
                                 </div>
 
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Student Projects Gallery (শিক্ষার্থীদের প্রজেক্ট গ্যালারি)</label>
-                                        <span className="text-xs text-gray-400 font-medium">Recommended ratio:(520x480px)| JPG, PNG, WEBP (Max 2MB)</span>
-                                    </div>
-                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                                        {studentProjectFiles.map((fileOrUrl, index) => (
-                                            <div key={index} className="relative aspect-video rounded-xl border border-gray-200 overflow-hidden group">
-                                                {fileOrUrl instanceof File ? (
-                                                    <img
-                                                        src={URL.createObjectURL(fileOrUrl)}
-                                                        alt={`Project ${index + 1}`}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <img
-                                                        src={fileOrUrl}
-                                                        alt={`Project ${index + 1}`}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                )}
-                                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button
-                                                        onClick={() => {
-                                                            const newFiles = [...studentProjectFiles];
-                                                            newFiles.splice(index, 1);
-                                                            setStudentProjectFiles(newFiles);
-                                                        }}
-                                                        className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                                                    >
-                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
 
-                                        {/* Add New Project Image Button */}
-                                        <div className="relative aspect-video rounded-xl border-2 border-dashed border-gray-200 hover:border-[#6C5DD3] transition-colors bg-gray-50 flex flex-col items-center justify-center cursor-pointer overflow-hidden">
-                                            <input
-                                                type="file"
-                                                accept="image/jpeg, image/png, image/webp"
-                                                onChange={e => {
-                                                    if (e.target.files && e.target.files.length > 0) {
-                                                        const file = e.target.files[0];
-                                                        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-                                                        if (validTypes.includes(file.type) && file.size <= 2 * 1024 * 1024) {
-                                                            setStudentProjectFiles([...studentProjectFiles, file]);
-                                                        } else {
-                                                            alert("Please upload a valid JPG, PNG, or WEBP image under 2MB.");
-                                                        }
-                                                    }
-                                                }}
-                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                                            />
-                                            <div className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center mb-2 text-gray-400">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                            </div>
-                                            <span className="text-xs font-bold text-gray-500">Upload Image (ইমেজ আপলোড করুন)</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        {courseData.studentProjects.map((projectUrl, index) => (
-                                            <div key={index} className="flex gap-2">
-                                                <input
-                                                    type="text"
-                                                    value={projectUrl}
-                                                    onChange={(e) => {
-                                                        const newProjects = [...courseData.studentProjects];
-                                                        newProjects[index] = e.target.value;
-                                                        handleInputChange('studentProjects', newProjects);
-                                                    }}
-                                                    placeholder="Or paste project image URL"
-                                                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
-                                                />
-                                                <button
-                                                    onClick={() => {
-                                                        const newProjects = courseData.studentProjects.filter((_, i) => i !== index);
-                                                        handleInputChange('studentProjects', newProjects);
-                                                    }}
-                                                    className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                                                >
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                                                </button>
-                                            </div>
-                                        ))}
-                                        <button
-                                            onClick={() => setCourseData(prev => ({ ...prev, studentProjects: [...prev.studentProjects, ''] }))}
-                                            className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"
-                                        >
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
-                                            Add Details from URL (ইউআরএল থেকে যোগ করুন)
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         )}
 
@@ -1356,41 +1143,7 @@ export default function AddCoursePage() {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Instructor Banner Image</label>
-                                        <span className="text-xs text-gray-400 font-medium">Recommended ratio:(293x164px)| JPG, PNG, WEBP (Max 2MB)</span>
-                                    </div>
-                                    <div className={`relative border-2 border-dashed ${(instructorBannerFile || courseData.instructorBannerUrl) ? 'border-transparent' : 'border-gray-200'} rounded-xl hover:border-[#6C5DD3] transition-colors bg-gray-50 text-center overflow-hidden min-h-[150px] flex items-center justify-center`}>
-                                        <input
-                                            type="file"
-                                            accept="image/jpeg, image/png, image/webp"
-                                            onChange={e => {
-                                                if (e.target.files && e.target.files.length > 0) {
-                                                    const file = e.target.files[0];
-                                                    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-                                                    if (!validTypes.includes(file.type)) { alert('Invalid image format.'); return; }
-                                                    if (file.size > 2 * 1024 * 1024) { alert('Size exceeds limit.'); return; }
-                                                    setInstructorBannerFile(file);
-                                                }
-                                            }}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
-                                        />
-                                        {(instructorBannerFile || courseData.instructorBannerUrl) ? (
-                                            <div className="absolute inset-0 w-full h-full group-thumbnail">
-                                                <img src={instructorBannerFile ? URL.createObjectURL(instructorBannerFile) : courseData.instructorBannerUrl} alt="Instructor Banner" className="w-full h-full object-cover" />
-                                                <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-10 pointer-events-auto">
-                                                    <span className="text-white text-sm font-bold mb-1">Click to change</span>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="flex flex-col items-center justify-center pointer-events-none py-6 z-10 text-gray-400">
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mb-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                                                <span className="text-sm font-bold text-gray-700">Upload Banner Image (ব্যানার ইমেজ আপলোড করুন)</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+
                             </div>
                         )}
 
@@ -1418,40 +1171,7 @@ export default function AddCoursePage() {
                                         />
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Admission/Enrollment URL (ভর্তির ইউআরএল)</label>
-                                        <input
-                                            type="text"
-                                            value={courseData.admissionUrl}
-                                            onChange={(e) => handleInputChange('admissionUrl', e.target.value)}
-                                            placeholder="e.g. https://forms.gle/..."
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Free Seminar Booking URL (ফ্রি সেমিনার বুকিং ইউআরএল)</label>
-                                        <input
-                                            type="text"
-                                            value={courseData.seminarUrl}
-                                            onChange={(e) => handleInputChange('seminarUrl', e.target.value)}
-                                            placeholder="e.g. https://forms.gle/..."
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
-                                        />
-                                    </div>
-                                </div>
-                                <div
-                                    className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer"
-                                    onClick={() => handleInputChange('isFree', !courseData.isFree)}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={courseData.isFree}
-                                        readOnly
-                                        className="w-5 h-5 rounded text-[#6C5DD3] focus:ring-[#6C5DD3] cursor-pointer pointer-events-none"
-                                    />
-                                    <span className="text-sm font-medium text-[#1A1D1F]">This is a free course (এটি একটি ফ্রি কোর্স)</span>
-                                </div>
+
                             </div>
                         )}
 
@@ -1608,65 +1328,7 @@ export default function AddCoursePage() {
                             </div>
                         )}
 
-                        {activeTab === 'features' && (
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Unique Features (বিশেষ বৈশিষ্ট্যসমূহ)</label>
-                                    <div className="space-y-4">
-                                        {courseData.uniqueFeatures.map((feature, index) => (
-                                            <div key={index} className="flex gap-4 items-start bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                                <div className="flex-1 space-y-3">
-                                                    <input
-                                                        type="text"
-                                                        value={feature.title}
-                                                        onChange={(e) => {
-                                                            const newFeatures = [...courseData.uniqueFeatures];
-                                                            newFeatures[index].title = e.target.value;
-                                                            handleInputChange('uniqueFeatures', newFeatures);
-                                                        }}
-                                                        placeholder="Feature Title (e.g. Certificate of Completion)"
-                                                        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20"
-                                                    />
-                                                    <textarea
-                                                        value={feature.description}
-                                                        onChange={(e) => {
-                                                            const newFeatures = [...courseData.uniqueFeatures];
-                                                            newFeatures[index].description = e.target.value;
-                                                            handleInputChange('uniqueFeatures', newFeatures);
-                                                        }}
-                                                        placeholder="Brief description of the feature"
-                                                        rows={2}
-                                                        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 resize-none"
-                                                    ></textarea>
-                                                </div>
-                                                <button
-                                                    onClick={() => {
-                                                        const newFeatures = [...courseData.uniqueFeatures];
-                                                        newFeatures.splice(index, 1);
-                                                        handleInputChange('uniqueFeatures', newFeatures);
-                                                    }}
-                                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-1 shrink-0"
-                                                >
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
 
-                                    {courseData.uniqueFeatures.length === 0 && (
-                                        <div className="text-sm text-gray-500 py-6 text-center border-2 border-dashed border-gray-100 rounded-xl mb-4 mt-2">No unique features added. (কোন বিশেষ বৈশিষ্ট্য যোগ করা হয়নি)</div>
-                                    )}
-
-                                    <button
-                                        onClick={() => handleInputChange('uniqueFeatures', [...courseData.uniqueFeatures, { title: '', description: '' }])}
-                                        className="text-sm font-bold text-[#6C5DD3] hover:text-[#5a4cb5] flex items-center gap-1.5 mt-2"
-                                    >
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                        Add Feature (বৈশিষ্ট্য যোগ করুন)
-                                    </button>
-                                </div>
-                            </div>
-                        )}
 
                         {activeTab === 'extras' && (
                             <div className="space-y-8">
@@ -1674,21 +1336,9 @@ export default function AddCoursePage() {
                                 <div>
                                     <h3 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
                                         <span className="w-1 h-4 bg-[#6C5DD3] rounded-full"></span>
-                                        Additional Stats
+                                        Additional Info
                                     </h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Pre-Recorded Videos (মোট প্রি-রেকর্ডেড ভিডিও)</label>
-                                            <input type="number" value={courseData.totalPreRecordedVideos} onChange={(e) => handleInputChange('totalPreRecordedVideos', parseInt(e.target.value) || 0)} placeholder="e.g. 278" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Enrollment Deadline (ভর্তির শেষ সময়)</label>
-                                            <input type="date" value={courseData.enrollmentDeadline} onChange={(e) => handleInputChange('enrollmentDeadline', e.target.value)} className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Total Seats (মোট আসন)</label>
-                                            <input type="number" value={courseData.totalSeats} onChange={(e) => handleInputChange('totalSeats', parseInt(e.target.value) || 0)} placeholder="e.g. 100" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                        </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Batch Number (ব্যাচ নম্বর)</label>
                                             <input type="text" value={courseData.batchNumber} onChange={(e) => handleInputChange('batchNumber', e.target.value)} placeholder="e.g. ১১তম ব্যাচ" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
@@ -1903,8 +1553,8 @@ export default function AddCoursePage() {
                             </button>
                             <button
                                 onClick={handleNextTab}
-                                disabled={activeTab === 'features'}
-                                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-colors ${activeTab === 'features' ? 'opacity-0 pointer-events-none w-0 h-0 overflow-hidden' : 'bg-[#6C5DD3] text-white shadow-[#6C5DD3]/25 shadow-lg hover:shadow-xl hover:bg-[#5a4cb5]'}`}
+                                disabled={activeTab === 'extras'}
+                                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-colors ${activeTab === 'extras' ? 'opacity-0 pointer-events-none w-0 h-0 overflow-hidden' : 'bg-[#6C5DD3] text-white shadow-[#6C5DD3]/25 shadow-lg hover:shadow-xl hover:bg-[#5a4cb5]'}`}
                             >
                                 Next Step
                             </button>
@@ -1929,8 +1579,8 @@ export default function AddCoursePage() {
                                     />
                                 )}
                                 <div className="flex justify-between items-start relative z-10">
-                                    <span className="px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 shadow-sm">{courseData.category || "Design"}</span>
-                                    <span className="px-2.5 py-1 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 bg-[#8E8AFF]/40 shadow-sm">{courseData.courseMode === 'Online Class' ? 'Online' : courseData.courseMode === 'Offline Class' ? 'Offline' : courseData.courseMode || "Online"}</span>
+                                    <span className="px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 shadow-sm">Courses</span>
+                                    <span className="px-2.5 py-1 backdrop-blur-md rounded-lg text-white text-[10px] font-bold border border-white/20 bg-[#8E8AFF]/40 shadow-sm">{courseData.courseMode === 'Online Class' ? 'Online' : courseData.courseMode === 'Offline Class' ? 'Offline' : "Hybrid"}</span>
                                 </div>
                                 <div className="relative z-10">
                                     <div className="flex items-center gap-1 text-white/90 text-[11px] font-medium mb-1 drop-shadow-md">
@@ -1945,15 +1595,9 @@ export default function AddCoursePage() {
                                     <div className="w-6 h-6 rounded-full bg-gray-200"></div>
                                     <span className="text-xs text-gray-500 font-medium">by You</span>
                                 </div>
-                                <div className="border-t border-gray-50 pt-3 flex items-center justify-between">
                                     <span className="text-lg font-bold text-[#1A1D1F]">
-                                        {courseData.isFree ? (
-                                            "Free"
-                                        ) : (
-                                            <>৳{courseData.regularFee || "0.00"}</>
-                                        )}
+                                        ৳{courseData.regularFee || "0.00"}
                                     </span>
-                                </div>
                             </div>
                         </div>
 

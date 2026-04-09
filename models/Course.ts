@@ -172,7 +172,7 @@ const CourseSchema: Schema<ICourse> = new Schema({
     slug: { type: String, unique: true },
     subtitle: { type: String, required: true },
     category: { type: String, required: true },
-    level: { type: String, required: true },
+    level: { type: String },
     courseMode: { type: String, required: true },
     duration: { type: String, required: true },
     batches: { type: [BatchSchema], default: [] },

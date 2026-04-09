@@ -24,6 +24,7 @@ export default function RootLayout({
     <html lang="bn" className={hindSiliguri.variable}>
       <body
         className={`${hindSiliguri.className} antialiased`}
+        suppressHydrationWarning
       >
         <Toaster position="top-right" />
         {children}
