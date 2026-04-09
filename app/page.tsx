@@ -8,6 +8,8 @@ import HeroCarousel from "@/app/components/HeroCarousel";
 import SeminarModal from "@/app/components/SeminarModal";
 import TeacherCarousel from "@/app/components/TeacherCarousel";
 import BrandCarousel from "@/app/components/BrandCarousel";
+import TestimonialVideoModal from "@/app/components/TestimonialVideoModal";
+import { Play } from 'lucide-react';
 
 // Static data removed, fetching from API now.
 
@@ -27,6 +29,11 @@ export default function RootPage() {
     const [testimonialIndex, setTestimonialIndex] = useState(0);
     const [selectedMode, setSelectedMode] = useState("All");
     const [selectedSeminarTitle, setSelectedSeminarTitle] = useState("");
+    
+    // Video Modal State
+    const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+    const [activeVideo, setActiveVideo] = useState<{ url: string, name: string, course: string }>({ url: '', name: '', course: '' });
+
     const freeCategoriesRef = React.useRef<HTMLDivElement>(null);
     const freeClassesSectionRef = React.useRef<HTMLElement>(null);
 
@@ -499,56 +506,72 @@ export default function RootPage() {
 
                 <section className="w-full pb-20 overflow-hidden">
                     <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-                        <h2 className="text-[28px] font-extrabold text-gray-900 border-l-4 border-[#6C5DD3] pl-4">See What Our Students Says</h2>
+                        <div>
+                            <h2 className="text-[28px] font-extrabold text-gray-900 border-l-4 border-[#6C5DD3] pl-4">See What Our Students Says</h2>
+                            <p className="text-gray-500 font-medium ml-5 mt-1">Real experience from our graduates</p>
+                        </div>
                         <div className="flex gap-3">
-                            <button onClick={prevTestimonial} className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center bg-white text-gray-600 hover:bg-[#6C5DD3] hover:text-white hover:border-[#6C5DD3] transition-all shadow-sm group">
+                            <button onClick={prevTestimonial} className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center bg-white text-gray-600 hover:bg-[#6C5DD3] hover:text-white hover:border-[#6C5DD3] transition-all shadow-sm group md:hidden">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
                             </button>
-                            <button onClick={nextTestimonial} className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center bg-white text-gray-600 hover:bg-[#6C5DD3] hover:text-white hover:border-[#6C5DD3] transition-all shadow-sm group">
+                            <button onClick={nextTestimonial} className="w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center bg-white text-gray-600 hover:bg-[#6C5DD3] hover:text-white hover:border-[#6C5DD3] transition-all shadow-sm group md:hidden">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6 6-6" transform="rotate(180 12 12)" /></svg>
                             </button>
                         </div>
                     </div>
 
                     <div className="relative">
-                        <div className="flex transition-transform duration-500 ease-out gap-6" style={{ transform: `translateX(-${testimonialIndex * 100}%)` }}>
-                            {testimonials.length > 0 ? testimonials.map((t, i) => (
-                                <div key={i} className="flex-shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] flex flex-col h-full group/card cursor-pointer">
-                                    {/* Video Thumbnail Card */}
-                                    <div className="relative rounded-[24px] overflow-hidden aspect-[4/5] shadow-md mb-4 flex-shrink-0">
-                                        <img src={t.image || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop"} className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-105" alt={t.studentName} />
-                                        {/* Gradient Overlay */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-between p-5">
-                                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                                <a href={t.videoUrl} target="_blank" rel="noopener noreferrer" className="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center pointer-events-auto border border-white/40 shadow-xl group-hover/card:bg-white text-white group-hover/card:text-black transition-colors duration-300">
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="ml-1">
-                                                        <path d="M8 5v14l11-7z" />
-                                                    </svg>
-                                                </a>
+                        <div className="flex flex-nowrap md:grid md:grid-cols-4 transition-transform duration-500 ease-out gap-6" style={{ transform: typeof window !== 'undefined' && window.innerWidth < 768 ? `translateX(-${testimonialIndex * 100}%)` : 'none' }}>
+                            {testimonials.length > 0 ? testimonials.slice(0, 4).map((t, i) => (
+                                <div 
+                                    key={i} 
+                                    className="flex-shrink-0 w-full md:w-auto flex flex-col h-full group/card cursor-pointer"
+                                    onClick={() => {
+                                        if (t.videoUrl) {
+                                            setActiveVideo({ url: t.videoUrl, name: t.studentName, course: t.courseName });
+                                            setIsVideoModalOpen(true);
+                                        }
+                                    }}
+                                >
+                                    {/* Video Thumbnail Card - Vertical 9:16 */}
+                                    <div className="relative rounded-[2rem] overflow-hidden aspect-[9/16] shadow-2xl mb-6 flex-shrink-0 border border-gray-100 group-hover/card:shadow-[#6C5DD3]/20 transition-all duration-500">
+                                        <img src={t.image || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop"} className="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110" alt={t.studentName} />
+                                        
+                                        {/* Premium Overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#0F1117] via-transparent to-[#0F1117]/40 flex flex-col justify-between p-6">
+                                            <div className="flex justify-between items-start">
+                                                <div className="px-3 py-1 bg-white/20 backdrop-blur-md border border-white/20 rounded-full text-[9px] text-white font-black uppercase tracking-widest opacity-0 group-hover/card:opacity-100 transition-opacity duration-500">
+                                                    Success Story
+                                                </div>
                                             </div>
 
-                                            <div className="flex items-center gap-3 mt-auto relative z-10 translate-y-2 group-hover/card:translate-y-0 transition-transform duration-300">
-                                                <div className="w-10 h-10 rounded-[12px] border-2 border-white/80 overflow-hidden shadow-md">
-                                                    <img src={t.avatar || `https://ui-avatars.com/api/?name=${t.studentName}&background=random`} className="w-full h-full object-cover" alt="avatar" />
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="w-16 h-16 bg-[#6C5DD3] rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(108,93,211,0.5)] transform scale-90 group-hover/card:scale-100 transition-transform duration-500">
+                                                    <Play fill="white" className="text-white ml-1" size={28} />
                                                 </div>
-                                                <div>
-                                                    <p className="text-white text-[13px] font-extrabold leading-tight">{t.studentName}</p>
-                                                    <p className="text-white/80 text-[11px] font-bold">{t.courseName}</p>
+                                            </div>
+
+                                            <div className="relative z-10 space-y-2 translate-y-2 group-hover/card:translate-y-0 transition-transform duration-500">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-xl border-2 border-white/30 overflow-hidden shadow-lg shrink-0">
+                                                        <img src={t.avatar || `https://ui-avatars.com/api/?name=${t.studentName}&background=random`} className="w-full h-full object-cover" alt="avatar" />
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p className="text-white text-sm font-black leading-tight truncate">{t.studentName}</p>
+                                                        <p className="text-white/70 text-[10px] font-bold truncate uppercase">{t.courseName}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Text Review Card */}
-                                    <div className={`flex-1 rounded-[20px] p-5 flex flex-col justify-between ${i % 2 === 0 ? 'bg-[#1e2a27] border border-[#2a443b]' : 'bg-[#1c222c] border border-[#2d3846]'} text-white shadow-lg transition-transform duration-300 group-hover/card:-translate-y-1`}>
-                                        <p className="text-[12px] text-gray-300 leading-[1.6] mb-5 font-medium relative z-10 italic">
-                                            <span className={`text-[40px] ${i % 2 === 0 ? 'text-[#386252]' : 'text-[#3d4b60]'} absolute -top-5 -left-1 -z-10`}>"</span>
-                                            {t.textFeedback || "The curriculum is exactly what the industry demands. This course was truly a game changer for my career path!"}
-                                        </p>
-                                        <div className="flex items-center gap-2.5 mt-auto pt-4 border-t border-white/10">
-                                            <div className="flex flex-col">
-                                                <p className="text-[12px] font-bold text-white leading-none">{t.studentName}</p>
-                                            </div>
+                                    <div className={`flex-1 rounded-[24px] p-6 flex flex-col justify-between shadow-xl transition-all duration-500 group-hover/card:-translate-y-2 ${i % 2 === 0 ? 'bg-[#1e2a27] border border-[#2a443b]' : 'bg-[#1c222c] border border-[#2d3846]'} text-white`}>
+                                        <div className="relative">
+                                            <svg className={`absolute -top-3 -left-2 w-10 h-10 opacity-20 ${i % 2 === 0 ? 'text-[#386252]' : 'text-[#3d4b60]'}`} fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.899 14.899 16 16 16L18 16L18 14L15 14C13.899 14 13 13.101 13 12L13 10C13 8.899 13.899 8 15 8L18 8C19.101 8 20 8.899 20 10L20 18C20 19.657 18.657 21 17 21L14.017 21ZM4 21L4 18C4 16.899 4.899 16 6 16L8 16L8 14L5 14C3.899 14 3 13.101 3 12L3 10C3 8.899 3.899 8 5 8L8 8C9.101 8 10 8.899 10 10L10 18C10 19.657 8.657 21 7 21L4 21Z" /></svg>
+                                            <p className="text-sm text-gray-200 leading-[1.7] font-medium italic pl-4 relative z-10">
+                                                {t.textFeedback || "The curriculum is exactly what the industry demands. This course was truly a game changer for my career path!"}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -559,6 +582,15 @@ export default function RootPage() {
                             )}
                         </div>
                     </div>
+
+                    {/* Video Modal */}
+                    <TestimonialVideoModal
+                        isOpen={isVideoModalOpen}
+                        onClose={() => setIsVideoModalOpen(false)}
+                        videoUrl={activeVideo.url}
+                        studentName={activeVideo.name}
+                        courseName={activeVideo.course}
+                    />
                 </section>
 
                 {/* Teacher Profile Section */}

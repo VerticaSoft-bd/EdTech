@@ -1,6 +1,45 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import SiteSettings from '@/models/SiteSettings';
+import AWS from 'aws-sdk';
+
+// Configure AWS S3
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+});
+
+// Helper function to extract S3 Key from URL
+function getS3KeyFromUrl(url: string) {
+    if (!url) return null;
+    try {
+        const urlObj = new URL(url);
+        let key = decodeURIComponent(urlObj.pathname);
+        if (key.startsWith('/')) {
+            key = key.substring(1);
+        }
+        return key;
+    } catch (e) {
+        return null;
+    }
+}
+
+async function deleteFromS3(url: string) {
+    const key = getS3KeyFromUrl(url);
+    if (!key) return;
+
+    try {
+        const bucketName = process.env.AWS_BUCKET_NAME as string;
+        await s3.deleteObject({
+            Bucket: bucketName,
+            Key: key
+        }).promise();
+        console.log(`Successfully deleted from S3: ${key}`);
+    } catch (error: any) {
+        console.error(`Failed to delete from S3 (${key}):`, error.message);
+    }
+}
 
 // GET - Fetch site settings (returns single settings doc, creates default if none exists)
 export async function GET() {
@@ -25,9 +64,46 @@ export async function PUT(request: Request) {
         await connectDB();
         const body = await request.json();
 
+        // fetch current settings to handle file deletion
+        const currentSettings = await SiteSettings.findOne();
+
+        if (currentSettings) {
+            // Check for changed testimonials
+            if (body.testimonials && Array.isArray(body.testimonials)) {
+                const oldTestimonials = currentSettings.testimonials || [];
+                const newTestimonials = body.testimonials;
+
+                // Identify removed or updated media
+                for (const oldT of oldTestimonials) {
+                    const newT = newTestimonials.find((t: any) => t._id && t._id === oldT._id.toString());
+                    
+                    // If testimonial was deleted or video URL changed
+                    if (!newT || (oldT.videoUrl && oldT.videoUrl !== newT.videoUrl)) {
+                        if (oldT.videoUrl) await deleteFromS3(oldT.videoUrl);
+                    }
+                    
+                    // If image URL changed
+                    if (!newT || (oldT.image && oldT.image !== newT.image)) {
+                        if (oldT.image) await deleteFromS3(oldT.image);
+                    }
+
+                    // If avatar changed
+                    if (!newT || (oldT.avatar && oldT.avatar !== newT.avatar)) {
+                        if (oldT.avatar) await deleteFromS3(oldT.avatar);
+                    }
+                }
+            }
+
+            // Check for general site images
+            if (body.logo && body.logo !== currentSettings.logo) {
+                if (currentSettings.logo && !currentSettings.logo.startsWith('/')) await deleteFromS3(currentSettings.logo);
+            }
+            if (body.favicon && body.favicon !== currentSettings.favicon) {
+                if (currentSettings.favicon && !currentSettings.favicon.startsWith('/')) await deleteFromS3(currentSettings.favicon);
+            }
+        }
+
         // Use findOneAndUpdate to ensure atomic updates and avoid multiple doc issues
-        // We find the first document (empty filter) and apply updates
-        // To handle partial updates while still managing arrays correctly, we use $set
         const settings = await SiteSettings.findOneAndUpdate(
             {},
             { $set: body },
