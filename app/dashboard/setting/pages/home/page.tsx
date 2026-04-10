@@ -41,15 +41,15 @@ interface ITestimonial {
     order: number;
 }
 
-const formatFileSize = (bytes?: number | string) => {
+const formatFileSize = (bytes?: number | string): string => {
     if (!bytes) return '';
     const b = typeof bytes === 'string' ? parseFloat(bytes) : bytes;
-    if (isNaN(b)) return bytes;
-    if (b < 1024) return b + ' Bytes';
+    if (isNaN(b)) return String(bytes);
+    if (b < 1024) return `${b} Bytes`;
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(b) / Math.log(k));
-    return parseFloat((b / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${parseFloat((b / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };
 
 const DEFAULT_SLIDE: IHeroSlide = {
