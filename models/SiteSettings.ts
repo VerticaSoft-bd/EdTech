@@ -26,13 +26,15 @@ const SiteSettingsSchema = new mongoose.Schema({
         order: { type: Number, default: 0 }
     }],
     testimonials: [{
-        studentName: { type: String, required: true },
+        studentName: { type: String },
         courseName: { type: String },
         role: { type: String }, // optional, for backward compatibility or extra info
         textFeedback: { type: String },
         videoUrl: { type: String },
         image: { type: String },
         avatar: { type: String },
+        videoSize: { type: String },
+        thumbnailSize: { type: String },
         order: { type: Number, default: 0 }
     }],
     brands: [{

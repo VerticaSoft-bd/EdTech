@@ -36,8 +36,21 @@ interface ITestimonial {
     videoUrl: string;
     image: string;
     avatar: string;
+    videoSize?: string;
+    thumbnailSize?: string;
     order: number;
 }
+
+const formatFileSize = (bytes?: number | string) => {
+    if (!bytes) return '';
+    const b = typeof bytes === 'string' ? parseFloat(bytes) : bytes;
+    if (isNaN(b)) return bytes;
+    if (b < 1024) return b + ' Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(b) / Math.log(k));
+    return parseFloat((b / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
 
 const DEFAULT_SLIDE: IHeroSlide = {
     tag: "NEXT-GEN LEARNING",
@@ -116,6 +129,8 @@ export default function HomePageSettings() {
                             videoUrl: '', 
                             image: '', 
                             avatar: '', 
+                            videoSize: '',
+                            thumbnailSize: '',
                             order: loadedTestimonials.length 
                         });
                     }
@@ -816,7 +831,7 @@ export default function HomePageSettings() {
                                                 <div className="absolute top-4 left-4">
                                                     <div className="px-2 py-1 bg-white/20 backdrop-blur-md border border-white/20 rounded-lg text-[8px] text-white font-black uppercase tracking-widest flex items-center gap-1.5">
                                                         <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
-                                                        MP4 LOADED
+                                                        MP4 LOADED {item.videoSize && `• ${item.videoSize}`}
                                                     </div>
                                                 </div>
                                             )}
@@ -888,13 +903,20 @@ export default function HomePageSettings() {
                                                 <input
                                                     type="file"
                                                     onChange={async (e) => {
+                                                        const file = e.target.files?.[0];
+                                                        const size = file ? formatFileSize(file.size) : '';
                                                         const url = await handleFileUpload(e, 'video');
-                                                        if (url) setCurrentTestimonial({ ...currentTestimonial!, videoUrl: url });
+                                                        if (url) setCurrentTestimonial({ ...currentTestimonial!, videoUrl: url, videoSize: size });
                                                     }}
                                                     className="text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#6C5DD3] file:text-white hover:file:bg-[#5b4eb3] cursor-pointer"
                                                     accept="video/mp4"
                                                 />
-                                                <p className="text-[10px] text-gray-400 font-medium ml-1">Upload a 9:16 vertical video for best results.</p>
+                                                <div className="flex justify-between items-center ml-1">
+                                                    <p className="text-[10px] text-gray-400 font-medium">Upload a 9:16 vertical video for best results.</p>
+                                                    {currentTestimonial?.videoSize && (
+                                                        <span className="text-[10px] text-[#6C5DD3] font-black uppercase tracking-widest">Size: {currentTestimonial.videoSize}</span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="space-y-4">
@@ -907,13 +929,20 @@ export default function HomePageSettings() {
                                                     <input
                                                         type="file"
                                                         onChange={async (e) => {
+                                                            const file = e.target.files?.[0];
+                                                            const size = file ? formatFileSize(file.size) : '';
                                                             const url = await handleFileUpload(e, 'testimonial');
-                                                            if (url) setCurrentTestimonial({ ...currentTestimonial!, image: url });
+                                                            if (url) setCurrentTestimonial({ ...currentTestimonial!, image: url, thumbnailSize: size });
                                                         }}
                                                         className="w-full text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#6C5DD3] file:text-white hover:file:bg-[#5b4eb3] cursor-pointer"
                                                         accept="image/*"
                                                     />
-                                                    <p className="text-[10px] text-gray-400 font-medium">This image will be shown as the video thumbnail.</p>
+                                                    <div className="flex justify-between items-center">
+                                                        <p className="text-[10px] text-gray-400 font-medium">This image will be shown as the video thumbnail.</p>
+                                                        {currentTestimonial?.thumbnailSize && (
+                                                            <span className="text-[10px] text-[#6C5DD3] font-black uppercase tracking-widest">Size: {currentTestimonial.thumbnailSize}</span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
