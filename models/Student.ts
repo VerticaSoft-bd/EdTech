@@ -24,7 +24,7 @@ export interface IStudent extends Document {
     progress: number;
     totalClasses: number;
     attendedClasses: number;
-    courseMode: 'Online' | 'Offline';
+    courseMode: 'Online' | 'Offline' | 'Online Class' | 'Offline Class' | 'Hybrid';
     createdAt: Date;
     updatedAt: Date;
 }
@@ -66,7 +66,7 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
         progress: { type: Number, default: 0 },
         totalClasses: { type: Number, default: 0 },
         attendedClasses: { type: Number, default: 0 },
-        courseMode: { type: String, enum: ['Online', 'Offline'], default: 'Online' },
+        courseMode: { type: String, enum: ['Online', 'Offline', 'Online Class', 'Offline Class', 'Hybrid'], default: 'Online' },
     },
     {
         timestamps: true,
