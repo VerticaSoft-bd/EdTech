@@ -86,13 +86,13 @@ export default function Footer() {
                         <div>
                             <h4 className="text-white font-bold mb-6">Subscribe</h4>
                             <p className="text-gray-400 text-sm mb-4">Get the latest course updates and educational insights.</p>
-                            <div className="flex bg-[#2A2E33] rounded-xl p-1 relative overflow-hidden">
+                            <div className="flex bg-[#2A2E33] rounded-lg p-1 relative overflow-hidden">
                                 <input
                                     type="email"
                                     placeholder="Enter your email"
                                     className="bg-transparent border-none text-sm text-white px-4 py-2 w-full focus:outline-none focus:ring-0"
                                 />
-                                <button className="bg-[#6C5DD3] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#5b4eb3] transition-colors shrink-0">
+                                <button className="bg-[#6C5DD3] text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-[#5b4eb3] transition-colors shrink-0">
                                     Subscribe
                                 </button>
                             </div>

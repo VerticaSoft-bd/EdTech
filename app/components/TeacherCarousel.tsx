@@ -49,7 +49,7 @@ export default function TeacherCarousel() {
         <section 
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
-            className="w-full py-20 relative overflow-hidden bg-white/50 backdrop-blur-sm rounded-[3rem] border border-white/50 shadow-sm"
+            className="w-full py-20 relative overflow-hidden bg-white/50 backdrop-blur-sm rounded-[1.5rem] border border-white/50 shadow-sm"
         >
             {/* Background Glows */}
             <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#6C5DD3]/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -82,8 +82,8 @@ export default function TeacherCarousel() {
                     {loading ? (
                         <div className="flex gap-6">
                             {[...Array(6)].map((_, i) => (
-                                <div key={i} className="w-[300px] rounded-[48px] bg-white border border-gray-100 p-8 shadow-sm animate-pulse">
-                                    <div className="w-32 h-32 mx-auto rounded-[32px] bg-gray-100 mb-8"></div>
+                                <div key={i} className="w-[300px] rounded-3xl bg-white border border-gray-100 p-8 shadow-sm animate-pulse">
+                                    <div className="w-32 h-32 mx-auto rounded-2xl bg-gray-100 mb-8"></div>
                                     <div className="h-6 bg-gray-100 rounded-lg w-3/4 mx-auto mb-4"></div>
                                     <div className="h-4 bg-gray-100 rounded-lg w-1/2 mx-auto mb-6"></div>
                                     <div className="flex justify-center gap-2">
@@ -99,11 +99,11 @@ export default function TeacherCarousel() {
                                 key={`${teacher._id}-${i}`}
                                 className="w-[300px] group py-8"
                             >
-                                <div className="relative bg-white rounded-[40px] p-8 border border-gray-100 hover:border-[#6C5DD3]/20 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-20px_rgba(108,93,211,0.15)] transition-all duration-500 flex flex-col items-center h-full group-hover:-translate-y-3">
+                                <div className="relative bg-white rounded-3xl p-8 border border-gray-100 hover:border-[#6C5DD3]/20 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-20px_rgba(108,93,211,0.15)] transition-all duration-500 flex flex-col items-center h-full group-hover:-translate-y-3">
                                     
                                     {/* Image Container */}
                                     <div className="relative mb-8 group/img">
-                                        <div className="w-32 h-32 rounded-[32px] overflow-hidden bg-gray-50 border-4 border-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] group-hover:shadow-[#6C5DD3]/30 transition-all duration-500 relative z-10">
+                                        <div className="w-32 h-32 rounded-2xl overflow-hidden bg-gray-50 border-4 border-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] group-hover:shadow-[#6C5DD3]/30 transition-all duration-500 relative z-10">
                                             <img 
                                                 src={teacher.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.name)}&background=6C5DD3&color=fff&font-size=0.35`} 
                                                 alt={teacher.name}
@@ -113,7 +113,7 @@ export default function TeacherCarousel() {
                                             <div className="absolute inset-0 bg-gradient-to-t from-[#6C5DD3]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
                                                 <Link 
                                                     href={`/instructors/${teacher.slug || teacher._id}`}
-                                                    className="px-4 py-2 bg-white/90 backdrop-blur-md text-[#6C5DD3] rounded-xl font-black text-[10px] uppercase tracking-wider transform translate-y-2 group-hover:translate-y-0 transition-all duration-500 shadow-xl"
+                                                    className="px-4 py-2 bg-white/90 backdrop-blur-md text-[#6C5DD3] rounded-lg font-black text-[10px] uppercase tracking-wider transform translate-y-2 group-hover:translate-y-0 transition-all duration-500 shadow-xl"
                                                 >
                                                     Profile
                                                 </Link>
@@ -121,7 +121,7 @@ export default function TeacherCarousel() {
                                         </div>
                                         
                                         {/* Expert Badge */}
-                                        <div className="absolute -top-2 -right-2 bg-[#6C5DD3] text-white px-3 py-1.5 rounded-2xl text-[9px] font-black uppercase tracking-widest shadow-lg shadow-[#6C5DD3]/30 z-20 border-2 border-white">
+                                        <div className="absolute -top-2 -right-2 bg-[#6C5DD3] text-white px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg shadow-[#6C5DD3]/30 z-20 border-2 border-white">
                                             Expert
                                         </div>
 

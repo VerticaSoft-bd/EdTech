@@ -37,7 +37,7 @@ const getYoutubeEmbedUrl = (url: string) => {
 };
 
 const Skeleton = ({ className }: { className?: string }) => (
-    <div className={`relative overflow-hidden bg-gray-200 rounded-xl ${className}`}>
+    <div className={`relative overflow-hidden bg-gray-200 rounded-lg ${className}`}>
         <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/50 to-transparent" />
     </div>
 );
@@ -97,7 +97,7 @@ const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
     if (timeLeft === null) {
         return (
             <div className="flex items-center gap-2">
-                <div className="px-3 py-1 bg-[#EEF2FF] text-[#6C5DD3] text-xs font-black rounded-lg border border-[#6C5DD3]/10">
+                <div className="px-3 py-1 bg-[#EEF2FF] text-[#6C5DD3] text-xs font-black rounded-md border border-[#6C5DD3]/10">
                     BATCH STARTED
                 </div>
             </div>
@@ -116,7 +116,7 @@ const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
                     <div className="flex flex-col items-center">
                         <div className="relative group/box">
                             <div className={`absolute -inset-0.5 bg-gradient-to-br ${unit.animate ? 'from-[#EF4444]/20 to-transparent' : 'from-[#6C5DD3]/10 to-transparent'} rounded-lg blur opacity-0 group-hover/box:opacity-100 transition duration-500`}></div>
-                            <div className="relative bg-white border border-gray-100 rounded-lg px-2 py-1.5 min-w-[36px] md:min-w-[42px] flex items-center justify-center shadow-sm">
+                            <div className="relative bg-white border border-gray-100 rounded-md px-2 py-1.5 min-w-[36px] md:min-w-[42px] flex items-center justify-center shadow-sm">
                                 <span className={`text-[15px] md:text-base font-black ${unit.color} tabular-nums ${unit.animate ? 'animate-[pulse_1s_infinite]' : ''}`}>
                                     {formatNumber(unit.value)}
                                 </span>
@@ -216,7 +216,7 @@ export default function CourseDetails() {
                             </div>
 
                             <div className="flex flex-wrap items-center gap-6">
-                                <Skeleton className="w-48 h-16 rounded-2xl" />
+                                <Skeleton className="w-48 h-16 rounded-xl" />
                                 <div className="flex items-center gap-4">
                                     <Skeleton className="w-32 h-10" />
                                     <Skeleton className="w-24 h-10 opacity-60" />
@@ -224,15 +224,15 @@ export default function CourseDetails() {
                             </div>
 
                             <div className="flex flex-wrap gap-4 pt-4">
-                                <Skeleton className="w-44 h-12 rounded-2xl" />
-                                <Skeleton className="w-44 h-12 rounded-2xl" />
-                                <Skeleton className="w-44 h-12 rounded-2xl" />
+                                <Skeleton className="w-44 h-12 rounded-xl" />
+                                <Skeleton className="w-44 h-12 rounded-xl" />
+                                <Skeleton className="w-44 h-12 rounded-xl" />
                             </div>
                         </div>
 
                         <div className="w-full lg:w-[500px] shrink-0">
-                            <div className="aspect-video relative rounded-[24px] overflow-hidden p-1 shadow-2xl bg-white">
-                                <Skeleton className="w-full h-full rounded-[20px]" />
+                            <div className="aspect-video relative rounded-xl overflow-hidden p-1 shadow-2xl bg-white">
+                                <Skeleton className="w-full h-full rounded-xl" />
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center">
                                         <Play className="w-8 h-8 text-white/50" />
@@ -243,7 +243,7 @@ export default function CourseDetails() {
                     </div>
 
                     {/* Batch Information Skeleton */}
-                    <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden mb-16">
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-16">
                         <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-100">
                             {[1, 2, 3, 4].map((i) => (
                                 <div key={i} className="p-8 space-y-3">
@@ -265,10 +265,10 @@ export default function CourseDetails() {
                             </div>
 
                             {/* Main Content Card Skeleton */}
-                            <div className="bg-white p-8 md:p-12 rounded-[40px] border border-gray-100 shadow-sm space-y-10">
+                            <div className="bg-white p-8 md:p-12 rounded-2xl border border-gray-100 shadow-sm space-y-10">
                                 <div className="flex flex-col gap-6">
                                     {[1, 2, 3, 4, 5, 6].map((i) => (
-                                        <div key={i} className="p-6 border border-gray-100 rounded-[20px] flex items-center justify-between">
+                                        <div key={i} className="p-6 border border-gray-100 rounded-xl flex items-center justify-between">
                                             <div className="flex items-center gap-4">
                                                 <Skeleton className="w-6 h-6 rounded-full" />
                                                 <Skeleton className="w-56 h-6" />
@@ -282,14 +282,14 @@ export default function CourseDetails() {
 
                         {/* Sidebar Skeleton */}
                         <div className="lg:col-span-1">
-                            <div className="bg-[#181C25] rounded-[32px] p-8 sticky top-[100px] space-y-8">
+                            <div className="bg-[#181C25] rounded-2xl p-8 sticky top-[100px] space-y-8">
                                 <Skeleton className="w-2/3 h-6 bg-gray-700" />
                                 <div className="space-y-4">
                                     <Skeleton className="w-full h-5 bg-gray-700" />
                                     <Skeleton className="w-full h-5 bg-gray-700" />
                                     <Skeleton className="w-full h-5 bg-gray-700" />
                                 </div>
-                                <Skeleton className="w-full h-14 rounded-2xl bg-[#6C5DD3]/30" />
+                                <Skeleton className="w-full h-14 rounded-xl bg-[#6C5DD3]/30" />
                             </div>
                         </div>
                     </div>
@@ -305,7 +305,7 @@ export default function CourseDetails() {
                 <div className="text-center">
                     <h2 className="text-3xl font-extrabold text-[#1A1D1F] mb-4">Course Not Found</h2>
                     <p className="text-gray-500 mb-8">It looks like the course you are looking for does not exist or has been archived.</p>
-                    <a href="/" className="px-6 py-3 bg-[#6C5DD3] text-white font-bold rounded-xl hover:bg-[#5A4CB5] transition">Back to Home</a>
+                    <a href="/" className="px-6 py-3 bg-[#6C5DD3] text-white font-bold rounded-lg hover:bg-[#5A4CB5] transition">Back to Home</a>
                 </div>
             </div>
         );
@@ -340,7 +340,7 @@ export default function CourseDetails() {
                             <button
                                 onClick={handleEnrollment}
                                 disabled={isEnrolled}
-                                className={`px-8 py-4 font-extrabold text-lg rounded-xl transition-all flex items-center gap-2 shadow-lg ${isEnrolled ? "bg-gray-300 text-gray-600 cursor-not-allowed shadow-none" : "bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 shadow-yellow-200 cursor-pointer"
+                                className={`px-8 py-4 font-extrabold text-lg rounded-lg transition-all flex items-center gap-2 shadow-lg ${isEnrolled ? "bg-gray-300 text-gray-600 cursor-not-allowed shadow-none" : "bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 shadow-yellow-200 cursor-pointer"
                                     }`}
                             >
                                 {isEnrolled ? "ভর্তি সম্পন্ন" : "ব্যাচে ভর্তি হোন"}
@@ -387,7 +387,7 @@ export default function CourseDetails() {
                                 </div>
                             )}
                             {course.lifetimeAccess && (
-                                <div className="flex items-center gap-2 px-6 py-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl text-[#059669] text-sm font-bold">
+                                <div className="flex items-center gap-2 px-6 py-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-lg text-[#059669] text-sm font-bold">
                                     <FolderArchive className="w-[18px] h-[18px]" strokeWidth={2.5} />
                                     ক্লাস রেকর্ডিং ও লাইফটাইম এক্সেস
                                 </div>
@@ -399,7 +399,7 @@ export default function CourseDetails() {
                             <div className="flex flex-wrap gap-2 pt-2">
                                 <span className="text-xs font-bold text-gray-400 self-center uppercase tracking-wider mr-2">Learn with:</span>
                                 {course.aiFeatures.map((item: string, i: number) => (
-                                    <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/80 border border-blue-100 rounded-lg text-[13px] font-bold text-blue-800 cursor-default">
+                                    <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/80 border border-blue-100 rounded-md text-[13px] font-bold text-blue-800 cursor-default">
                                         <span>{item}</span>
                                     </div>
                                 ))}
@@ -420,7 +420,7 @@ export default function CourseDetails() {
                     {/* Right: Video Preview Card */}
                     <div className="w-full lg:w-[500px] shrink-0">
                         {course.introVideo ? (
-                            <div className="relative rounded-[24px] overflow-hidden shadow-2xl shadow-gray-300 bg-black w-full" style={{ paddingBottom: '64%' }}>
+                            <div className="relative rounded-xl overflow-hidden shadow-2xl shadow-gray-300 bg-black w-full" style={{ paddingBottom: '64%' }}>
                                 <iframe
                                     src={getYoutubeEmbedUrl(course.introVideo)}
                                     title="Course Intro Video"
@@ -430,7 +430,7 @@ export default function CourseDetails() {
                                 ></iframe>
                             </div>
                         ) : (
-                            <div className="relative group cursor-pointer overflow-hidden rounded-[24px] shadow-2xl shadow-gray-300">
+                            <div className="relative group cursor-pointer overflow-hidden rounded-xl shadow-2xl shadow-gray-300">
                                 <img
                                     src={course.thumbnail || "/images/course-placeholder.jpg"}
                                     alt={course.title}
@@ -480,7 +480,7 @@ export default function CourseDetails() {
 
                 {/* Batch Information Bar */}
                 {course.batches && course.batches.length > 0 && (
-                    <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-16">
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-16">
                         <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-100">
                             <div className="p-8">
                                 <span className="block text-gray-500 text-xs font-bold uppercase mb-2">ব্যাচ শুরু</span>
@@ -518,7 +518,7 @@ export default function CourseDetails() {
 
                 {/* AI Section */}
                 {course.showAiLearningBanner === true && (
-                    <div id="ai-features" className="relative overflow-hidden rounded-[40px] mb-16 bg-[#050D1F]">
+                    <div id="ai-features" className="relative overflow-hidden rounded-2xl mb-16 bg-[#050D1F]">
                         {/* Glowing Background Orbs */}
                         <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-500/20 rounded-full blur-[120px] pointer-events-none"></div>
                         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
@@ -527,7 +527,7 @@ export default function CourseDetails() {
                             {/* Left: Text Content */}
                             <div className="flex-1 p-10 md:p-14 space-y-7">
                                 {course.aiLearningBadge && (
-                                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-blue-300 text-[13px] font-black rounded-xl border border-white/10 uppercase tracking-wider">
+                                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 text-blue-300 text-[13px] font-black rounded-lg border border-white/10 uppercase tracking-wider">
                                         <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
                                         {course.aiLearningBadge}
                                     </span>
@@ -545,7 +545,7 @@ export default function CourseDetails() {
                                 <div className="flex flex-wrap gap-3">
                                     {course.aiFeatures?.map((item: string, i: number) => (
                                         item ? (
-                                            <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-bold text-gray-300 hover:bg-white/10 hover:border-blue-500/30 transition-all cursor-default">
+                                            <div key={i} className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm font-bold text-gray-300 hover:bg-white/10 hover:border-blue-500/30 transition-all cursor-default">
                                                 <span>{item}</span>
                                             </div>
                                         ) : null
@@ -555,7 +555,7 @@ export default function CourseDetails() {
                                 <button
                                     onClick={handleEnrollment}
                                     disabled={isEnrolled}
-                                    className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-2xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 shadow-blue-900/40"
+                                    className={`inline-flex items-center gap-3 px-8 py-4 text-white font-black text-[16px] rounded-xl transition-all shadow-xl ${isEnrolled ? "bg-gray-500 cursor-not-allowed shadow-none" : "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 shadow-blue-900/40"
                                         }`}
                                 >
                                     {isEnrolled ? "ভর্তি সম্পন্ন" : "কোর্সে ভর্তি হোন"}
@@ -570,13 +570,13 @@ export default function CourseDetails() {
                                 <img
                                     src={course.aiLearningBannerUrl || "/images/ai-banner.png"}
                                     alt="AI-Powered Learning"
-                                    className="w-full h-full object-cover opacity-90 rounded-r-[40px]"
+                                    className="w-full h-full object-cover opacity-90 rounded-r-2xl"
                                     style={{ minHeight: '380px', maxHeight: '480px' }}
                                 />
                                 {/* Floating badge */}
                                 {(course.aiLearningImageBadge1 || course.aiLearningImageBadge2) && (
                                     <div className="absolute top-6 right-6 z-20 flex flex-col gap-3">
-                                        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 text-white text-center shadow-xl">
+                                        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-3 text-white text-center shadow-xl">
                                             <div className="text-2xl font-black text-blue-300">{course.aiLearningImageBadge1}</div>
                                             <div className="text-[11px] font-black text-gray-300 uppercase tracking-wider">{course.aiLearningImageBadge2}</div>
                                         </div>
@@ -590,13 +590,13 @@ export default function CourseDetails() {
                 {/* Detailed Description Section */}
                 {course.fullDetails && (
                     <section className="mb-16">
-                        <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden relative group hover:shadow-md transition-all duration-300">
+                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden relative group hover:shadow-md transition-all duration-300">
                             {/* Suburban glass effect background element */}
                             <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#6C5DD3]/5 rounded-full blur-[80px] pointer-events-none"></div>
                             
                             <div className="p-7 md:p-10 relative z-10">
                                 <div className="flex items-center gap-4 mb-8">
-                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6C5DD3] to-[#8E82EF] flex items-center justify-center shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform duration-300">
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6C5DD3] to-[#8E82EF] flex items-center justify-center shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform duration-300">
                                         <Info className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
@@ -673,7 +673,7 @@ export default function CourseDetails() {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {course.demoClass.videoUrls.map((url: string, i: number) => (
-                                    <div key={i} className="relative group rounded-[24px] overflow-hidden shadow-md bg-black w-full" style={{ paddingBottom: '56.25%' }}>
+                                    <div key={i} className="relative group rounded-xl overflow-hidden shadow-md bg-black w-full" style={{ paddingBottom: '56.25%' }}>
                                         <iframe
                                             src={getYoutubeEmbedUrl(url)}
                                             title="Demo Video"
@@ -689,7 +689,7 @@ export default function CourseDetails() {
 
                     {/* Live Demo Class Booking Card */}
                     {course.demoClass?.showBookingCard && (
-                        <section id="payment" className="bg-[#0B1221] rounded-[40px] p-6 md:p-12 overflow-hidden relative">
+                        <section id="payment" className="bg-[#0B1221] rounded-2xl p-6 md:p-12 overflow-hidden relative">
                             {/* Decorative glow */}
                             <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px]"></div>
                             <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px]"></div>
@@ -723,14 +723,14 @@ export default function CourseDetails() {
                                 </div>
 
                                 {/* Right Side: Form */}
-                                <div className="w-full lg:w-[550px] bg-white rounded-[32px] p-8 md:p-10 shadow-2xl">
+                                <div className="w-full lg:w-[550px] bg-white rounded-2xl p-8 md:p-10 shadow-2xl">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-gray-800">Mobile Number</label>
                                             <input
                                                 type="text"
                                                 placeholder="ফোন নাম্বার দিন"
-                                                className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all font-medium"
+                                                className="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all font-medium"
                                             />
                                             <p className="text-[10px] text-gray-400 font-bold">*ক্লাসের নোটিফিকেশন পেতে*</p>
                                         </div>
@@ -761,7 +761,7 @@ export default function CourseDetails() {
                                         </div>
                                     </div>
 
-                                    <button className="w-full py-5 bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 font-black text-lg rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-yellow-200">
+                                    <button className="w-full py-5 bg-[#FBBF24] hover:bg-[#F2B01E] text-slate-900 font-black text-lg rounded-xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-yellow-200">
                                         লাইভ ডেমো ক্লাস বুক করুন
                                         <Check className="w-6 h-6" strokeWidth={4} />
                                     </button>

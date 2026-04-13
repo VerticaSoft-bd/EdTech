@@ -36,7 +36,7 @@ export default function BrandCarousel() {
         <section 
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
-            className="w-full py-16 relative overflow-hidden bg-white/30 backdrop-blur-md rounded-[3rem] border border-white/50 shadow-sm my-16"
+            className="w-full py-16 relative overflow-hidden bg-white/30 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm my-16"
         >
             {/* Background Glows */}
             <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#4A72FF]/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -66,7 +66,7 @@ export default function BrandCarousel() {
                     {loading ? (
                         <div className="flex gap-16 px-10">
                             {[...Array(6)].map((_, i) => (
-                                <div key={i} className="w-[150px] md:w-[200px] h-12 bg-gray-100 rounded-xl animate-pulse"></div>
+                                <div key={i} className="w-[150px] md:w-[200px] h-12 bg-gray-100 rounded-lg animate-pulse"></div>
                             ))}
                         </div>
                     ) : (

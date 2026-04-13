@@ -53,7 +53,7 @@ export default function TestimonialVideoModal({ isOpen, onClose, videoUrl, stude
                     animate={{ scale: 1, y: 0, opacity: 1 }}
                     exit={{ scale: 0.9, y: 20, opacity: 0 }}
                     transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                    className="relative w-full max-w-[450px] aspect-[9/16] bg-black rounded-[2rem] overflow-hidden shadow-[0_0_100px_rgba(108,93,211,0.3)] border border-white/10 flex flex-col"
+                    className="relative w-full max-w-[450px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-[0_0_100px_rgba(108,93,211,0.3)] border border-white/10 flex flex-col"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Video Content */}

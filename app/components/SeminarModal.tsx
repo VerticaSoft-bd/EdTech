@@ -78,7 +78,7 @@ export default function SeminarModal({ isOpen, onClose, courseTitle }: SeminarMo
 
             {/* Modal Content */}
             <div
-                className={`relative bg-white w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden transition-all duration-300 transform ${isOpening ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}
+                className={`relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 transform ${isOpening ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}
             >
                 {/* Header Image/Pattern */}
                 <div className="h-32 bg-gradient-to-br from-[#3972CA] to-[#6C5DD3] relative overflow-hidden">
@@ -130,7 +130,7 @@ export default function SeminarModal({ isOpen, onClose, courseTitle }: SeminarMo
                                             value={formData.phone}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                             placeholder="ফোন নাম্বার দিন"
-                                            className="w-full px-4 py-3.5 rounded-2xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
+                                            className="w-full px-4 py-3.5 rounded-xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
                                             required
                                         />
                                         <p className="text-[10px] text-gray-400 font-bold">*ক্লাসের নোটিফিকেশন পেতে*</p>
@@ -142,7 +142,7 @@ export default function SeminarModal({ isOpen, onClose, courseTitle }: SeminarMo
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                             placeholder="ইমেইল দিন"
-                                            className="w-full px-4 py-3.5 rounded-2xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
+                                            className="w-full px-4 py-3.5 rounded-xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
                                             required
                                         />
                                         <p className="text-[10px] text-gray-400 font-bold">*ক্লাস জয়েনিং লিঙ্ক পেতে*</p>
@@ -154,7 +154,7 @@ export default function SeminarModal({ isOpen, onClose, courseTitle }: SeminarMo
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                             placeholder="Your Name"
-                                            className="w-full px-4 py-3.5 rounded-2xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
+                                            className="w-full px-4 py-3.5 rounded-xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
                                             required
                                         />
                                     </div>
@@ -165,7 +165,7 @@ export default function SeminarModal({ isOpen, onClose, courseTitle }: SeminarMo
                                             value={formData.profession}
                                             onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
                                             placeholder="Your Profession"
-                                            className="w-full px-4 py-3.5 rounded-2xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
+                                            className="w-full px-4 py-3.5 rounded-xl border border-blue-50 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-yellow-400/20 transition-all font-medium text-sm"
                                             required
                                         />
                                     </div>
@@ -175,7 +175,7 @@ export default function SeminarModal({ isOpen, onClose, courseTitle }: SeminarMo
                                     <button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full bg-[#FBBC05] hover:bg-[#eaa900] text-gray-900 font-black py-4 rounded-2xl transition-all shadow-lg shadow-yellow-500/20 active:scale-[0.98] flex items-center justify-center gap-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full bg-[#FBBC05] hover:bg-[#eaa900] text-gray-900 font-black py-4 rounded-xl transition-all shadow-lg shadow-yellow-500/20 active:scale-[0.98] flex items-center justify-center gap-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isSubmitting ? (
                                             <div className="w-6 h-6 border-4 border-gray-900/20 border-t-gray-900 rounded-full animate-spin"></div>

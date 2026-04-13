@@ -126,7 +126,7 @@ export default function RootPage() {
 
                 {/* Category Flow Tabs - Centered Below Hero */}
                 <div className="flex justify-center w-full relative z-20 mt-8 lg:mt-12 px-4 pb-8">
-                    <div className="bg-white rounded-[24px] p-2 shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-wrap items-center justify-center gap-1 max-w-fit mx-auto backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl p-2 shadow-[0_15px_40px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-wrap items-center justify-center gap-1 max-w-fit mx-auto backdrop-blur-sm">
 
                         {[
                             { label: "Online Course", mode: "Online Class", icon: (
@@ -150,7 +150,7 @@ export default function RootPage() {
                                         setSelectedMode(prev => prev === item.mode ? "All" : item.mode);
                                     }
                                 }}
-                                className={`px-4 py-2.5 md:px-6 md:py-3 text-[11px] md:text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 md:gap-3 overflow-hidden ${
+                                className={`px-4 py-2.5 md:px-6 md:py-3 text-[11px] md:text-[13px] font-black rounded-lg transition-all relative group flex items-center gap-2 md:gap-3 overflow-hidden ${
                                     (selectedMode === item.mode || (item.mode === "Seminar" && false)) // Seminar is a scroll action, doesn't stay "selected" in mode filter
                                     ? "text-[#6C5DD3]"
                                     : "text-gray-500 hover:text-[#1A1D1F]"
@@ -213,7 +213,7 @@ export default function RootPage() {
                             ))
                         ) : upcomingCourses.length > 0 ? (
                             upcomingCourses.map((course, i) => (
-                                <Link href={`/courses/${course.slug || course._id}`} key={course._id || i} className="border border-gray-200 rounded-[20px] overflow-hidden bg-white flex flex-col group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300">
+                                <Link href={`/courses/${course.slug || course._id}`} key={course._id || i} className="border border-gray-200 rounded-xl overflow-hidden bg-white flex flex-col group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300">
                                     <div className="relative h-[180px] bg-gray-100 overflow-hidden">
                                         <img src={course.thumbnail || "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=400&auto=format&fit=crop"} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={course.title} />
                                         <div className="absolute top-3 left-3 bg-[#EF4444] flex items-center gap-1.5 text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider shadow-sm">
@@ -242,7 +242,7 @@ export default function RootPage() {
                                                 </div>
                                             )}
 
-                                            <button className="w-9 h-9 flex items-center justify-center bg-blue-50 text-[#1A62FF] rounded-xl hover:bg-blue-100 transition group-hover:translate-x-1 shrink-0">
+                                            <button className="w-9 h-9 flex items-center justify-center bg-blue-50 text-[#1A62FF] rounded-lg hover:bg-blue-100 transition group-hover:translate-x-1 shrink-0">
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                                             </button>
                                         </div>
@@ -250,7 +250,7 @@ export default function RootPage() {
                                 </Link>
                             ))
                         ) : (
-                            <div className="col-span-full py-12 text-center text-gray-500 font-medium bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                            <div className="col-span-full py-12 text-center text-gray-500 font-medium bg-gray-50 rounded-xl border border-dashed border-gray-200">
                                 No upcoming live batches found at the moment.
                             </div>
                         )}
@@ -258,7 +258,7 @@ export default function RootPage() {
 
                     <div className="flex justify-center mt-10">
                         <Link href="/courses">
-                            <button className="px-7 py-3 border-2 border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-300 transition text-[15px] flex items-center gap-2 bg-white">
+                            <button className="px-7 py-3 border-2 border-gray-200 text-gray-700 font-bold rounded-lg hover:bg-gray-50 hover:border-gray-300 transition text-[15px] flex items-center gap-2 bg-white">
                                 Load More Courses
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50"><path d="m6 9 6 6 6-6" /></svg>
                             </button>
@@ -267,7 +267,7 @@ export default function RootPage() {
                 </section>
 
                 {/* Free Classes (Dark Theme) */}
-                <section ref={freeClassesSectionRef} className="w-full bg-[#181C25] rounded-[2.5rem] p-8 md:p-14 shadow-2xl relative overflow-hidden mt-6">
+                <section ref={freeClassesSectionRef} className="w-full bg-[#181C25] rounded-[1.5rem] p-8 md:p-14 shadow-2xl relative overflow-hidden mt-6">
                     {/* Background decoration */}
                     <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-900/20 rounded-full blur-[80px] -z-0 pointer-events-none"></div>
 
@@ -284,7 +284,7 @@ export default function RootPage() {
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                             {freeClasses.length > 0 ? freeClasses.map((cls, i) => (
-                                <div key={i} className="group border border-gray-700/50 rounded-[20px] overflow-hidden bg-[#1E232F] flex flex-col p-4 shadow-xl hover:-translate-y-1 transition-transform duration-300 relative">
+                                <div key={i} className="group border border-gray-700/50 rounded-xl overflow-hidden bg-[#1E232F] flex flex-col p-4 shadow-xl hover:-translate-y-1 transition-transform duration-300 relative">
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                                     <div className="relative h-[130px] rounded-2xl overflow-hidden mb-5 bg-[#141820] border border-gray-700/30 flex items-center justify-center group-hover:border-gray-600/50 transition-colors">
                                         <div className={`absolute inset-0 opacity-20 bg-gradient-to-br ${cls.color || 'from-blue-500 to-indigo-500'} blur-[30px]`}></div>
@@ -307,7 +307,7 @@ export default function RootPage() {
                                                 setSelectedSeminarTitle(`Masterclass on ${cls.title.split(' ')[0]} Technology & Career`);
                                                 setIsSeminarModalOpen(true);
                                             }}
-                                            className="mt-auto w-full py-2.5 flex items-center justify-center gap-2 bg-white/5 text-white font-bold text-sm rounded-xl border border-white/10 hover:bg-white/10 hover:border-white/20 transition group-hover:bg-[#4A72FF] group-hover:border-[#4A72FF] group-hover:shadow-lg group-hover:shadow-blue-500/25"
+                                            className="mt-auto w-full py-2.5 flex items-center justify-center gap-2 bg-white/5 text-white font-bold text-sm rounded-lg border border-white/10 hover:bg-white/10 hover:border-white/20 transition group-hover:bg-[#4A72FF] group-hover:border-[#4A72FF] group-hover:shadow-lg group-hover:shadow-blue-500/25"
                                         >
                                             Enroll Now
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="m9 18 6-6-6-6" /></svg>
@@ -323,7 +323,7 @@ export default function RootPage() {
 
                         {freeClasses.length > 4 && (
                             <div className="flex justify-center mt-12">
-                                <button className="px-8 py-3.5 bg-white text-[#181C25] font-extrabold rounded-xl hover:bg-gray-100 transition text-[15px] shadow-xl shadow-white/10 flex items-center gap-2">
+                                <button className="px-8 py-3.5 bg-white text-[#181C25] font-extrabold rounded-lg hover:bg-gray-100 transition text-[15px] shadow-xl shadow-white/10 flex items-center gap-2">
                                     Explore All Free Classes
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                                 </button>
@@ -441,7 +441,7 @@ export default function RootPage() {
                                     }}
                                 >
                                     {/* Video Thumbnail Card - Vertical 9:16 */}
-                                    <div className="relative rounded-[2rem] overflow-hidden aspect-[9/16] shadow-2xl mb-6 flex-shrink-0 border border-gray-100 group-hover/card:shadow-[#6C5DD3]/20 transition-all duration-500">
+                                    <div className="relative rounded-2xl overflow-hidden aspect-[9/16] shadow-2xl mb-6 flex-shrink-0 border border-gray-100 group-hover/card:shadow-[#6C5DD3]/20 transition-all duration-500">
                                         <img src={t.image || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop"} className="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-110" alt={t.studentName} />
                                         
                                         {/* Premium Overlay */}
@@ -473,7 +473,7 @@ export default function RootPage() {
                                     </div>
 
                                     {/* Text Review Card */}
-                                    <div className={`flex-1 rounded-[24px] p-6 flex flex-col justify-between shadow-xl transition-all duration-500 group-hover/card:-translate-y-2 ${i % 2 === 0 ? 'bg-[#1e2a27] border border-[#2a443b]' : 'bg-[#1c222c] border border-[#2d3846]'} text-white`}>
+                                    <div className={`flex-1 rounded-2xl p-6 flex flex-col justify-between shadow-xl transition-all duration-500 group-hover/card:-translate-y-2 ${i % 2 === 0 ? 'bg-[#1e2a27] border border-[#2a443b]' : 'bg-[#1c222c] border border-[#2d3846]'} text-white`}>
                                         <div className="relative">
                                             <svg className={`absolute -top-3 -left-2 w-10 h-10 opacity-20 ${i % 2 === 0 ? 'text-[#386252]' : 'text-[#3d4b60]'}`} fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.899 14.899 16 16 16L18 16L18 14L15 14C13.899 14 13 13.101 13 12L13 10C13 8.899 13.899 8 15 8L18 8C19.101 8 20 8.899 20 10L20 18C20 19.657 18.657 21 17 21L14.017 21ZM4 21L4 18C4 16.899 4.899 16 6 16L8 16L8 14L5 14C3.899 14 3 13.101 3 12L3 10C3 8.899 3.899 8 5 8L8 8C9.101 8 10 8.899 10 10L10 18C10 19.657 8.657 21 7 21L4 21Z" /></svg>
                                             <p className="text-sm text-gray-200 leading-[1.7] font-medium italic pl-4 relative z-10">
@@ -483,7 +483,7 @@ export default function RootPage() {
                                     </div>
                                 </div>
                             )) : (
-                                <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest bg-white rounded-[2.5rem] border-2 border-dashed border-gray-100 w-full">
+                                <div className="col-span-full py-20 text-center text-gray-400 font-bold uppercase tracking-widest bg-white rounded-2xl border-2 border-dashed border-gray-100 w-full">
                                     No testimonials available.
                                 </div>
                             )}

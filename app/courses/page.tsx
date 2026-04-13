@@ -58,12 +58,12 @@ function CoursesContent() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {loading ? (
                         [...Array(8)].map((_, i) => (
-                            <div key={i} className="animate-pulse bg-white border border-gray-200 rounded-[24px] overflow-hidden flex flex-col h-[380px]">
+                            <div key={i} className="animate-pulse bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col h-[380px]">
                                 <div className="bg-gray-200 h-[200px] w-full"></div>
                                 <div className="p-6 flex-1 flex flex-col gap-4">
                                     <div className="h-5 bg-gray-200 rounded w-3/4"></div>
                                     <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                                    <div className="mt-auto h-12 bg-gray-200 rounded-xl w-full"></div>
+                                    <div className="mt-auto h-12 bg-gray-200 rounded-lg w-full"></div>
                                 </div>
                             </div>
                         ))
@@ -72,7 +72,7 @@ function CoursesContent() {
                             <Link 
                                 href={`/courses/${course.slug || course._id}`} 
                                 key={course._id} 
-                                className="bg-white border border-gray-100 rounded-[24px] overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-gray-200 transition-all duration-500 hover:-translate-y-1"
+                                className="bg-white border border-gray-100 rounded-xl overflow-hidden flex flex-col group hover:shadow-2xl hover:shadow-gray-200 transition-all duration-500 hover:-translate-y-1"
                             >
                                 <div className="relative h-[200px] bg-gray-100 overflow-hidden">
                                     <img 
@@ -81,7 +81,7 @@ function CoursesContent() {
                                         alt={course.title} 
                                     />
                                     {course.courseMode === 'Online Class' && (
-                                        <div className="absolute top-4 right-4 bg-[#EF4444] flex items-center gap-1.5 text-white text-[10px] px-2.5 py-1.5 rounded-lg font-black uppercase tracking-wider shadow-lg">
+                                        <div className="absolute top-4 right-4 bg-[#EF4444] flex items-center gap-1.5 text-white text-[10px] px-2.5 py-1.5 rounded-md font-black uppercase tracking-wider shadow-lg">
                                             <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
                                             Live
                                         </div>
@@ -111,7 +111,7 @@ function CoursesContent() {
                                                 {course.isFree ? "Free" : `৳${course.regularFee}`}
                                             </span>
                                         </div>
-                                        <div className="w-11 h-11 bg-gray-50 text-[#6C5DD3] rounded-2xl flex items-center justify-center group-hover:bg-[#6C5DD3] group-hover:text-white transition-all duration-300 shadow-inner">
+                                        <div className="w-11 h-11 bg-gray-50 text-[#6C5DD3] rounded-xl flex items-center justify-center group-hover:bg-[#6C5DD3] group-hover:text-white transition-all duration-300 shadow-inner">
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
                                         </div>
                                     </div>
@@ -119,7 +119,7 @@ function CoursesContent() {
                             </Link>
                         ))
                     ) : (
-                        <div className="col-span-full py-20 text-center bg-white rounded-[32px] border border-dashed border-gray-200">
+                        <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-gray-200">
                             <p className="text-gray-500 font-bold text-lg">
                                 {searchQuery ? "আপনার অনুসন্ধান অনুযায়ী কোনো কোর্স পাওয়া যায়নি।" : "এই ক্যাটাগরিতে কোনো কোর্স পাওয়া যায়নি।"}
                             </p>

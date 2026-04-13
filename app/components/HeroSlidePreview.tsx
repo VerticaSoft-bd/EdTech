@@ -44,7 +44,7 @@ export default function HeroSlidePreview({ slide, isActive, onOpenModal }: HeroS
                 <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-6 md:mb-8 relative z-20">
                     <Link
                         href="/courses"
-                        className="px-6 py-3 md:px-8 md:py-4 text-white font-bold rounded-xl transition-all text-[14px] md:text-[15px] flex items-center gap-2 hover:scale-105 active:scale-95 duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)] relative group/btn overflow-hidden"
+                        className="px-6 py-3 md:px-8 md:py-4 text-white font-bold rounded-lg transition-all text-[14px] md:text-[15px] flex items-center gap-2 hover:scale-105 active:scale-95 duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)] relative group/btn overflow-hidden"
                         style={{ backgroundColor: slide.color }}
                     >
                         <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
@@ -53,14 +53,14 @@ export default function HeroSlidePreview({ slide, isActive, onOpenModal }: HeroS
                     </Link>
                     <button
                         onClick={onOpenModal}
-                        className="px-8 py-4 bg-white/5 backdrop-blur-md text-white font-bold rounded-xl hover:bg-white/10 transition-all text-[15px] border border-white/10 shadow-sm hover:border-white/20"
+                        className="px-8 py-4 bg-white/5 backdrop-blur-md text-white font-bold rounded-lg hover:bg-white/10 transition-all text-[15px] border border-white/10 shadow-sm hover:border-white/20"
                     >
                         {slide.secondaryBtn}
                     </button>
                 </div>
 
                 {/* Social Proof */}
-                <div className="flex items-center gap-4 py-4 px-6 bg-white/[0.03] border border-white/[0.05] rounded-2xl w-fit backdrop-blur-sm">
+                <div className="flex items-center gap-4 py-4 px-6 bg-white/[0.03] border border-white/[0.05] rounded-xl w-fit backdrop-blur-sm">
                     <div className="flex -space-x-3">
                         {[1, 2, 3, 4].map(i => (
                             <div key={i} className="w-9 h-9 rounded-full border-2 border-[#0F1117] bg-gray-800 overflow-hidden ring-1 ring-white/10">
@@ -109,10 +109,10 @@ export default function HeroSlidePreview({ slide, isActive, onOpenModal }: HeroS
                 </div>
 
                 {/* Floating elements */}
-                <div className={`hidden md:block absolute bottom-12 right-12 bg-white/[0.05] backdrop-blur-2xl p-6 rounded-[2rem] shadow-2xl border border-white/10 transition-all duration-1000 delay-500 max-w-[280px] ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+                <div className={`hidden md:block absolute bottom-12 right-12 bg-white/[0.05] backdrop-blur-2xl p-6 rounded-2xl shadow-2xl border border-white/10 transition-all duration-1000 delay-500 max-w-[280px] ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
                             </div>
                             <div>

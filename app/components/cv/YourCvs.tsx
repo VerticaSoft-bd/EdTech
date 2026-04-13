@@ -78,12 +78,12 @@ function YourCvsContent() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-800">Your Created CVs</h2>
-        <Link href={`/cv/create?userId=${resolvedUserId}`} className="bg-[#6C5DD3] hover:bg-[#5b4eb3] text-white px-5 py-2.5 rounded-[12px] shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2 text-[14px] font-bold cursor-pointer transition-all">
+        <Link href={`/cv/create?userId=${resolvedUserId}`} className="bg-[#6C5DD3] hover:bg-[#5b4eb3] text-white px-5 py-2.5 rounded-lg shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2 text-[14px] font-bold cursor-pointer transition-all">
           <PlusCircle size={16} /> Create New
         </Link>
       </div>
       {cvs.length === 0 ? (
-        <div className="text-center py-16 bg-white border-2 border-dashed border-gray-100 rounded-[24px]">
+        <div className="text-center py-16 bg-white border-2 border-dashed border-gray-100 rounded-xl">
           <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <PlusCircle size={32} className="text-gray-300" />
           </div>
@@ -93,23 +93,23 @@ function YourCvsContent() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
           {cvs.map(cv => (
-            <div key={cv._id} className="group relative bg-white p-6 rounded-[24px] border border-gray-100 hover:border-[#6C5DD3]/30 hover:shadow-xl hover:shadow-[#6C5DD3]/5 transition-all duration-300 flex flex-col">
+            <div key={cv._id} className="group relative bg-white p-6 rounded-xl border border-gray-100 hover:border-[#6C5DD3]/30 hover:shadow-xl hover:shadow-[#6C5DD3]/5 transition-all duration-300 flex flex-col">
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-12 h-12 bg-[#6C5DD3]/10 rounded-2xl flex items-center justify-center text-[#6C5DD3] font-bold text-xl">
+                  <div className="w-12 h-12 bg-[#6C5DD3]/10 rounded-xl flex items-center justify-center text-[#6C5DD3] font-bold text-xl">
                     {cv.fullName ? cv.fullName.charAt(0).toUpperCase() : 'CV'}
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Link 
                       href={`/cv/${cv._id}?userId=${resolvedUserId}`} 
-                      className="p-2.5 text-gray-400 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/5 rounded-xl transition-all"
+                      className="p-2.5 text-gray-400 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/5 rounded-lg transition-all"
                       title="Edit CV"
                     >
                       <Edit size={18} />
                     </Link>
                     <button 
                       onClick={() => handleDelete(cv._id)} 
-                      className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                      className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                       title="Delete CV"
                     >
                       <Trash2 size={18} />

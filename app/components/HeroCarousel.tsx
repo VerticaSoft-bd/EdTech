@@ -69,7 +69,7 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
     }, [nextSlide]);
 
     return (
-        <section className="w-full relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#0F1117] h-[650px] md:min-h-[500px] lg:h-[600px] group shadow-2xl border border-white/5">
+        <section className="w-full relative overflow-hidden rounded-2xl md:rounded-3xl bg-[#0F1117] h-[650px] md:min-h-[500px] lg:h-[600px] group shadow-2xl border border-white/55">
             {/* Ambient Background Glows */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -z-0"></div>
             <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none -z-0"></div>
@@ -101,12 +101,12 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
             <div className="hidden md:flex absolute right-12 bottom-12 z-20 gap-4">
                 <button
                     onClick={() => setCurrent(prev => (prev === 0 ? slides.length - 1 : prev - 1))}
-                    className="w-12 h-12 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all hover:scale-110 shadow-lg">
+                    className="w-12 h-12 rounded-xl bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all hover:scale-110 shadow-lg">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m15 18-6-6 6-6" /></svg>
                 </button>
                 <button
                     onClick={nextSlide}
-                    className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all hover:scale-110 shadow-lg">
+                    className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all hover:scale-110 shadow-lg">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="m9 18 6-6 6-6" className="rotate-180 origin-center" /></svg>
                 </button>
             </div>

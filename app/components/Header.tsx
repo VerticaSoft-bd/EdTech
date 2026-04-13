@@ -62,10 +62,10 @@ export default function Header() {
                         <div className="flex items-center gap-4">
                             <button 
                                 onClick={() => setIsAIModalOpen(true)}
-                                className="hidden sm:block relative group overflow-hidden p-[1px] rounded-[16px] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 bg-gradient-to-br from-[#8E8AFF] via-[#F1F5F9] via-60% to-[#6C5DD3] shrink-0"
+                                className="hidden sm:block relative group overflow-hidden p-[1px] rounded-2xl shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:translate-y-0.5 bg-gradient-to-br from-[#8E8AFF] via-[#F1F5F9] via-60% to-[#6C5DD3] shrink-0"
                             >
-                                <div className="relative bg-white rounded-[15px] pl-4 pr-5 py-2.5 flex items-center gap-2.5 bg-[radial-gradient(circle_at_top_left,rgba(142,138,255,0.15),transparent_50%),radial-gradient(circle_at_bottom_right,rgba(108,93,211,0.15),transparent_50%)] bg-white">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-[#6C5DD3]/0 via-[#6C5DD3]/10 to-[#6C5DD3]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer rounded-[15px]"></div>
+                                <div className="relative bg-white rounded-xl pl-4 pr-5 py-2.5 flex items-center gap-2.5 bg-[radial-gradient(circle_at_top_left,rgba(142,138,255,0.15),transparent_50%),radial-gradient(circle_at_bottom_right,rgba(108,93,211,0.15),transparent_50%)] bg-white">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-[#6C5DD3]/0 via-[#6C5DD3]/10 to-[#6C5DD3]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-shimmer rounded-xl"></div>
                                     <div className="text-[#1A1D1F]">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M12 2L13.8 6.2L18 8L13.8 9.8L12 14L10.2 9.8L6 8L10.2 6.2L12 2Z" fill="#1A1D1F" stroke="#1A1D1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -98,7 +98,7 @@ export default function Header() {
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-11 pr-10 py-2.5 bg-[#F8FAFC] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all placeholder:text-[#A4A4A4] border border-transparent focus:border-gray-200"
+                                    className="w-full pl-11 pr-10 py-2.5 bg-[#F8FAFC] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all placeholder:text-[#A4A4A4] border border-transparent focus:border-gray-200"
                                     placeholder="Search..."
                                 />
                                 <div className="absolute inset-y-0 right-2 flex items-center">
@@ -140,7 +140,7 @@ export default function Header() {
                                 ? pathname === "/"
                                 : pathname.startsWith(item.href);
 
-                            const commonClasses = `px-5 py-2.5 text-[13px] font-black rounded-xl transition-all relative group flex items-center gap-2 overflow-hidden ${isActive ? "text-[#6C5DD3]"
+                            const commonClasses = `px-5 py-2.5 text-[13px] font-black rounded-lg transition-all relative group flex items-center gap-2 overflow-hidden ${isActive ? "text-[#6C5DD3]"
                                 : isCVMaker ? "text-white bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] shadow-[0px_16px_40px_-10px_rgba(108,93,211,0.35)] hover:shadow-[0px_20px_50px_-8px_rgba(108,93,211,0.5)] hover:-translate-y-1 transform active:translate-y-0.5"
                                     : "text-gray-500 hover:text-[#1A1D1F]"
                                 }`;
@@ -225,7 +225,7 @@ export default function Header() {
                                         href={user.role === 'student' ? '/student-dashboard' : '/dashboard'}
                                         className="flex items-center gap-3 pl-1 cursor-pointer"
                                     >
-                                        <div className="w-10 h-10 bg-[#FFAB7B] rounded-xl flex items-center justify-center text-white font-bold shadow-sm transition-transform group-hover:scale-105">
+                                        <div className="w-10 h-10 bg-[#FFAB7B] rounded-lg flex items-center justify-center text-white font-bold shadow-sm transition-transform group-hover:scale-105">
                                             {user.name ? user.name.substring(0, 2).toUpperCase() : 'SR'}
                                         </div>
                                         <div className="flex flex-col hidden sm:flex">
@@ -252,7 +252,7 @@ export default function Header() {
                                     </Link>
 
                                     {/* Dropdown Menu */}
-                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform origin-top-right scale-95 group-hover:scale-100">
+                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 transform origin-top-right scale-95 group-hover:scale-100">
                                         <div className="p-2 space-y-1">
                                             <Link
                                                 href={user.role === 'student' ? '/student-dashboard' : '/dashboard'}
@@ -290,7 +290,7 @@ export default function Header() {
                                 </div>
                             </>
                         ) : (
-                            <Link href="/login" className="px-5 py-2.5 bg-[#6C5DD3] text-white text-[14px] font-bold rounded-xl hover:bg-[#5a4cb5] transition-colors shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2">
+                            <Link href="/login" className="px-5 py-2.5 bg-[#6C5DD3] text-white text-[14px] font-bold rounded-lg hover:bg-[#5a4cb5] transition-colors shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2">
                                 Login
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" /></svg>
                             </Link>
@@ -327,7 +327,7 @@ export default function Header() {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search courses..."
-                            className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/10 transition-all"
+                            className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-transparent focus:border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/10 transition-all"
                         />
                         <button type="submit" className="absolute inset-y-0 left-4 flex items-center">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A4A4A4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -352,7 +352,7 @@ export default function Header() {
                                     key={item.label}
                                     href={item.href}
                                     onClick={closeMenu}
-                                    className={`px-6 py-4 text-lg font-black rounded-2xl transition-all tracking-widest flex items-center justify-between group overflow-hidden relative ${isActive && !isCVMaker ? 'text-[#6C5DD3] bg-[#6C5DD3]/5' :
+                                    className={`px-6 py-4 text-lg font-black rounded-xl transition-all tracking-widest flex items-center justify-between group overflow-hidden relative ${isActive && !isCVMaker ? 'text-[#6C5DD3] bg-[#6C5DD3]/5' :
                                         isCVMaker ? 'text-white bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] shadow-lg shadow-[#6C5DD3]/20 hover:-translate-y-1 transform uppercase' :
                                             'text-gray-500 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/5 uppercase'
                                         }`}
@@ -379,7 +379,7 @@ export default function Header() {
                                 closeMenu();
                                 setIsAIModalOpen(true);
                             }}
-                            className="w-full py-4 bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] text-white font-black rounded-2xl shadow-xl shadow-[#6C5DD3]/20 flex items-center justify-center gap-3 active:scale-[0.98] transition-transform"
+                            className="w-full py-4 bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] text-white font-black rounded-xl shadow-xl shadow-[#6C5DD3]/20 flex items-center justify-center gap-3 active:scale-[0.98] transition-transform"
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L13.8 6.2L18 8L13.8 9.8L12 14L10.2 9.8L6 8L10.2 6.2L12 2Z" fill="white" /><path d="M19 13L20 15.5L22.5 16.5L20 17.5L19 20L18 17.5L15.5 16.5L18 15.5L19 13Z" fill="white" /></svg>
                             ASK AI ASSISTANT
