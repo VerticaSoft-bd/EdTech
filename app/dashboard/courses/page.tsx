@@ -119,7 +119,7 @@ export default function CoursesPage() {
                         className="pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 w-[240px]"
                     />
                 </div>
-                <Link href="/dashboard/courses/add" className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2">
+                <Link href="/dashboard/courses/new" className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     Create New Course
                 </Link>
@@ -241,7 +241,7 @@ export default function CoursesPage() {
 
                         {/* Add New Placeholder Card */}
                         <div className="bg-gray-50 rounded-[24px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 cursor-pointer hover:border-[#6C5DD3] hover:bg-[#6C5DD3]/5 transition-all min-h-[350px] group">
-                            <Link href="/dashboard/courses/add" className="flex flex-col items-center justify-center w-full h-full">
+                            <Link href="/dashboard/courses/new" className="flex flex-col items-center justify-center w-full h-full">
                                 <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-[#6C5DD3] group-hover:scale-110 transition-all mb-4">
                                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                                 </div>

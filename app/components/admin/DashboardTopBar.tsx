@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
     '/dashboard': { title: 'Dashboard', subtitle: 'Welcome back, Admin' },
     '/dashboard/courses': { title: 'Courses', subtitle: 'Manage your courses' },
-    '/dashboard/courses/add': { title: 'Create New Course', subtitle: 'Fill in the details to publish a new course' },
+    '/dashboard/courses/new': { title: 'Create New Course', subtitle: 'Fill in the details to publish a new course' },
     '/dashboard/enrollments': { title: 'Enrollments', subtitle: 'All course purchase transactions' },
     '/dashboard/categories': { title: 'Categories', subtitle: 'Manage course categories' },
     '/dashboard/students': { title: 'Students', subtitle: 'Student management' },
