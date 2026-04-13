@@ -66,7 +66,7 @@ const DEFAULT_SLIDE: IHeroSlide = {
 };
 
 export default function HomePageSettings() {
-    const [activeTab, setActiveTab] = useState<'hero' | 'free-classes' | 'testimonials'>('hero');
+    const [activeTab, setActiveTab] = useState<'hero' | 'free-classes' | 'testimonials' | 'special-packages'>('hero');
     const [view, setView] = useState<'list' | 'add' | 'edit'>('list');
     
     // Hero Slides State
@@ -83,6 +83,10 @@ export default function HomePageSettings() {
     const [testimonials, setTestimonials] = useState<ITestimonial[]>([]);
     const [currentTestimonial, setCurrentTestimonial] = useState<ITestimonial | null>(null);
     const [testimonialView, setTestimonialView] = useState<'list' | 'add' | 'edit'>('list');
+
+    // Special Packages State
+    const [allCourses, setAllCourses] = useState<any[]>([]);
+    const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
     
     // Site Settings State (for legacy purposes or general settings)
     const [siteSettings, setSiteSettings] = useState<any>(null);
@@ -94,7 +98,20 @@ export default function HomePageSettings() {
     useEffect(() => {
         fetchSlides();
         fetchSettings();
+        fetchAllCourses();
     }, []);
+
+    const fetchAllCourses = async () => {
+        try {
+            const res = await fetch('/api/courses');
+            const data = await res.json();
+            if (data.success) {
+                setAllCourses(data.data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch courses:", error);
+        }
+    };
 
     const fetchSlides = async () => {
         try {
@@ -134,10 +151,17 @@ export default function HomePageSettings() {
                             order: loadedTestimonials.length 
                         });
                     }
-                } else if (loadedTestimonials.length > 4) {
+                }
+                if (loadedTestimonials.length > 4) {
                     loadedTestimonials = loadedTestimonials.slice(0, 4);
                 }
                 setTestimonials(loadedTestimonials);
+
+                // Special Packages
+                if (data.data.specialPackageCourses) {
+                    const ids = data.data.specialPackageCourses.map((c: any) => typeof c === 'string' ? c : (c._id || c));
+                    setSelectedCourseIds(ids);
+                }
             }
         } catch (error) {
             toast.error("Failed to fetch settings");
@@ -362,7 +386,8 @@ export default function HomePageSettings() {
                     {[
                         { id: 'hero', label: 'Hero Slides', icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z' },
                         { id: 'free-classes', label: 'Free Classes', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.168.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
-                        { id: 'testimonials', label: 'Testimonials', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' }
+                        { id: 'testimonials', label: 'Testimonials', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+                        { id: 'special-packages', label: 'Special Packages', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4' }
                     ].map(tab => (
                         <button
                             key={tab.id}
@@ -960,6 +985,93 @@ export default function HomePageSettings() {
                                 </div>
                             </form>
                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* ═══════════════════════════════════════
+                SPECIAL PACKAGES TAB
+                ═══════════════════════════════════════ */}
+            {activeTab === 'special-packages' && (
+                <div className="space-y-6 animate-fade-in">
+                    <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-gray-100">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 className="text-2xl font-black text-gray-900">Special Package Courses</h2>
+                                <p className="text-gray-500 font-medium tracking-tight">Select the courses you want to feature in the special premium section.</p>
+                            </div>
+                            <button
+                                onClick={async () => {
+                                    setSaving(true);
+                                    const success = await saveSiteSettings({ specialPackageCourses: selectedCourseIds });
+                                    if (success) toast.success("Featured courses updated!");
+                                    setSaving(false);
+                                }}
+                                disabled={saving}
+                                className="px-8 py-3 bg-[#6C5DD3] text-white rounded-2xl text-sm font-black shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5b4eb3] transition-all flex items-center gap-2 group disabled:opacity-50"
+                            >
+                                {saving ? (
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>
+                                )}
+                                SAVE SELECTION
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {allCourses.length > 0 ? (
+                                allCourses.map((course) => {
+                                    const isSelected = selectedCourseIds.includes(course._id);
+                                    return (
+                                        <div 
+                                            key={course._id} 
+                                            onClick={() => {
+                                                setSelectedCourseIds(prev => 
+                                                    isSelected 
+                                                        ? prev.filter(id => id !== course._id) 
+                                                        : [...prev, course._id]
+                                                );
+                                            }}
+                                            className={`group relative rounded-[2rem] overflow-hidden border-2 transition-all duration-300 cursor-pointer ${
+                                                isSelected 
+                                                    ? 'border-[#6C5DD3] bg-[#6C5DD3]/5 shadow-xl shadow-[#6C5DD3]/10' 
+                                                    : 'border-gray-100 bg-white hover:border-gray-200'
+                                            }`}
+                                        >
+                                            <div className="aspect-video relative overflow-hidden">
+                                                <img src={course.thumbnail || "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=400&auto=format&fit=crop"} className="w-full h-full object-cover" alt={course.title} />
+                                                <div className={`absolute inset-0 flex items-center justify-center transition-all ${isSelected ? 'bg-[#6C5DD3]/20' : 'bg-transparent'}`}>
+                                                    {isSelected && (
+                                                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg text-[#6C5DD3]">
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="p-5">
+                                                <h3 className={`font-black text-sm line-clamp-2 leading-snug transition-colors ${isSelected ? 'text-[#6C5DD3]' : 'text-gray-900 group-hover:text-[#6C5DD3]'}`}>
+                                                    {course.title}
+                                                </h3>
+                                                <div className="flex items-center gap-2 mt-3">
+                                                    <span className="px-2 py-1 bg-gray-50 rounded-lg text-[10px] font-black text-gray-400 uppercase tracking-widest border border-gray-100">
+                                                        {course.category?.name || 'COURSE'}
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{course.courseMode}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <div className="col-span-full py-20 text-center bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-200">
+                                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-300"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+                                    </div>
+                                    <p className="text-gray-400 font-black uppercase tracking-widest text-xs">No courses found in database</p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

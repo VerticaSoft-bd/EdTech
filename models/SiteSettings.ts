@@ -43,6 +43,10 @@ const SiteSettingsSchema = new mongoose.Schema({
         link: { type: String },
         order: { type: Number, default: 0 }
     }],
+    specialPackageCourses: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course'
+    }],
 }, { timestamps: true });
 
 if (mongoose.models.SiteSettings) {

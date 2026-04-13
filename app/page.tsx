@@ -17,6 +17,7 @@ export default function RootPage() {
     const [isSeminarModalOpen, setIsSeminarModalOpen] = useState(false);
     const [allCourses, setAllCourses] = useState<any[]>([]);
     const [upcomingCourses, setUpcomingCourses] = useState<any[]>([]);
+    const [specialPackageCourses, setSpecialPackageCourses] = useState<any[]>([]);
     const [loadingCourses, setLoadingCourses] = useState(true);
     const [allFreeClasses, setAllFreeClasses] = useState<any[]>([]);
     const [freeClasses, setFreeClasses] = useState<any[]>([]);
@@ -69,6 +70,7 @@ export default function RootPage() {
                         setAllFreeClasses(data.data.freeClasses || []);
                         setFreeClasses(data.data.freeClasses || []);
                         setTestimonials(data.data.testimonials || []);
+                        setSpecialPackageCourses(data.data.specialPackageCourses || []);
                     }
                 }
             } catch (err) {
@@ -265,6 +267,109 @@ export default function RootPage() {
                         </Link>
                     </div>
                 </section>
+
+                {/* Special Package Courses - NEW SECTION */}
+                {specialPackageCourses.length > 0 && (
+                    <section className="w-full relative py-12">
+                        {/* Abstract Background Element */}
+                        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-full h-[80%] bg-gradient-to-r from-[#6C5DD3]/5 via-white to-[#6C5DD3]/5 rounded-[3rem] -z-10"></div>
+                        
+                        <div className="flex flex-col md:flex-row justify-between items-end mb-10 px-2 gap-4">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black uppercase tracking-widest mb-3">
+                                    🔥 Hot Deals
+                                </div>
+                                <h2 className="text-[28px] md:text-[36px] font-black text-gray-900 leading-tight">
+                                    Special <span className="text-[#6C5DD3]">Package</span> Courses
+                                </h2>
+                                <p className="text-gray-500 font-medium mt-2">Curated expert-led bundles for accelerated learning</p>
+                            </div>
+                            <Link href="/courses" className="text-[#6C5DD3] font-black text-sm uppercase tracking-widest hover:translate-x-1 transition-transform flex items-center gap-2 pb-1 border-b-2 border-transparent hover:border-[#6C5DD3]/30">
+                                View All Deals
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            {specialPackageCourses.map((course, idx) => {
+                                const activeBatch = Array.isArray(course.assignedBatches) 
+                                    ? (course.assignedBatches.find((b: any) => b.status === 'Active') || course.assignedBatches[0])
+                                    : null;
+                                const seatsLeft = activeBatch 
+                                    ? Math.max(0, (activeBatch.totalSeats || 0) - (activeBatch.enrolledStudents || 0))
+                                    : Math.max(0, (course.totalSeats || 0) - (course.totalStudents || 0));
+
+                                return (
+                                    <Link 
+                                        href={`/courses/${course.slug || course._id}`} 
+                                        key={course._id || idx} 
+                                        className="group relative bg-white rounded-xl border border-gray-100 hover:border-[#6C5DD3]/20 shadow-sm hover:shadow-2xl hover:shadow-[#6C5DD3]/10 transition-all duration-500 flex flex-col overflow-hidden"
+                                    >
+                                        {/* Premium Card Header/Image */}
+                                        <div className="aspect-[16/10] relative overflow-hidden">
+                                            <img 
+                                                src={course.thumbnail || "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=400&auto=format&fit=crop"} 
+                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                                                alt={course.title} 
+                                            />
+                                            
+                                            {/* Floating Badge */}
+                                            <div className="absolute top-4 left-4 flex flex-col gap-2">
+                                                <div className="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-lg border border-white/20 flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+                                                    <span className="text-[10px] font-black text-gray-900 tracking-wider">LIMITED TIME</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Save Badge */}
+                                            <div className="absolute top-4 right-4 w-12 h-12 bg-[#6C5DD3] text-white rounded-full flex flex-col items-center justify-center shadow-xl rotate-12 group-hover:rotate-0 transition-transform duration-500">
+                                                <span className="text-[10px] font-bold leading-none">SAVE</span>
+                                                <span className="text-[14px] font-black leading-none">20%</span>
+                                            </div>
+
+                                            {/* Hover Overlay */}
+                                            <div className="absolute inset-0 bg-[#6C5DD3]/0 group-hover:bg-[#6C5DD3]/10 transition-colors duration-500"></div>
+                                        </div>
+
+                                        {/* Card Content */}
+                                        <div className="p-6 flex-1 flex flex-col">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <span className="px-3 py-1 bg-gray-50 rounded-lg text-[10px] font-black text-gray-400 uppercase tracking-widest border border-gray-100">
+                                                    {course.category?.name || 'Bundle'}
+                                                </span>
+                                                <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none translate-y-[1px]">
+                                                    {course.courseMode}
+                                                </span>
+                                            </div>
+                                            
+                                            <h3 className="text-[17px] font-black text-gray-900 mb-6 group-hover:text-[#6C5DD3] transition-colors line-clamp-2 leading-tight">
+                                                {course.title}
+                                            </h3>
+
+                                            <div className="mt-auto flex items-center justify-between pt-6 border-t border-gray-50">
+                                                <div className="flex flex-col">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Seats Left</span>
+                                                    </div>
+                                                    <span className="text-[15px] font-black text-[#EF4444]">
+                                                        {seatsLeft} Seats
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex flex-col items-end">
+                                                    <div className="text-[10px] text-gray-400 line-through font-bold">৳{Math.round((course.price || 5000) * 1.25)}</div>
+                                                    <div className="text-lg font-black text-[#6C5DD3]">৳{course.price || 5000}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </section>
+                )}
 
                 {/* Free Classes (Dark Theme) */}
                 <section ref={freeClassesSectionRef} className="w-full bg-[#181C25] rounded-[1.5rem] p-8 md:p-14 shadow-2xl relative overflow-hidden mt-6">

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import SiteSettings from '@/models/SiteSettings';
+import Course from '@/models/Course';
+import Batch from '@/models/Batch';
 import AWS from 'aws-sdk';
 
 // Configure AWS S3
@@ -45,9 +47,16 @@ async function deleteFromS3(url: string) {
 export async function GET() {
     try {
         await connectDB();
-        let settings = await SiteSettings.findOne();
+        let settings = await SiteSettings.findOne().populate({
+            path: 'specialPackageCourses',
+            populate: { path: 'assignedBatches' }
+        });
         if (!settings) {
             settings = await SiteSettings.create({});
+            settings = await SiteSettings.findById(settings._id).populate({
+                path: 'specialPackageCourses',
+                populate: { path: 'assignedBatches' }
+            });
         }
         // Fill in defaults for legacy records with empty logo/favicon
         if (!settings.logo) { settings.logo = '/images/logo.png'; await settings.save(); }
