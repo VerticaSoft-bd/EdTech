@@ -58,6 +58,11 @@ export async function GET() {
                 populate: { path: 'assignedBatches' }
             });
         }
+
+        if (!settings) {
+            return NextResponse.json({ success: false, message: "Failed to initialize site settings" }, { status: 500 });
+        }
+
         // Fill in defaults for legacy records with empty logo/favicon
         if (!settings.logo) { settings.logo = '/images/logo.png'; await settings.save(); }
         if (!settings.favicon) { settings.favicon = '/favicon.ico'; await settings.save(); }
