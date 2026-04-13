@@ -105,7 +105,8 @@ export default function ProfileView({ basePath }: ProfileViewProps) {
         name, mobileNo, presentAddress,
         fatherName, motherName, guardianMobileNo,
         dateOfBirth, nidNo, gender, maritalStatus,
-        residentialStatus, country, education
+        residentialStatus, country, education,
+        designation, bio, image, expertise
       } = formData;
       const res = await fetch("/api/users/profile", {
         method: "PUT",
