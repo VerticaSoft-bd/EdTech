@@ -65,60 +65,21 @@ export default function EditCoursePage() {
                         typeof b === 'string' ? b : (b?._id || '')
                     ).filter((id: string) => id !== '');
 
-                    // Build clean courseData, stripping all Mongoose internal fields
+                    // Build clean courseData, preserving all fields while stripping internal Mongoose ones
+                    // We keep _id in the state for stable API calls
                     const cleanData = {
-                        title: raw.title || '',
-                        subtitle: raw.subtitle || '',
-                        courseMode: raw.courseMode || 'Offline Class',
-                        duration: raw.duration || '',
+                        ...raw,
+                        _id: raw._id.toString(),
                         batches: cleanSubDocs(raw.batches),
-                        totalLectures: raw.totalLectures || 0,
-                        totalProjects: raw.totalProjects || 0,
-                        fullDetails: raw.fullDetails || '',
-                        targetAudience: raw.targetAudience || [],
-                        modules: (raw.modules || []).map(({ _id, title, topics }: any) => ({
-                            title: title || '',
-                            topics: (topics || []).map(({ _id: _tid, title: tTitle }: any) => ({ title: tTitle || '' }))
-                        })),
-                        thumbnail: raw.thumbnail || '',
-                        introVideo: raw.introVideo || '',
-                        regularFee: raw.regularFee || 0,
-                        discountPercentage: raw.discountPercentage || 0,
                         assignedTeachers: normalizedTeachers,
                         assignedBatches: normalizedBatches,
                         careerOpportunities: cleanSubDocs(raw.careerOpportunities),
-                        batchNumber: raw.batchNumber || '',
                         benefits: cleanSubDocs(raw.benefits),
                         whatYouWillLearn: cleanSubDocs(raw.whatYouWillLearn),
                         successStories: cleanSubDocs(raw.successStories),
                         testimonials: cleanSubDocs(raw.testimonials),
                         faqs: cleanSubDocs(raw.faqs),
                         tools: (raw.tools || []).map(({ _id, name, image }: any) => ({ name: name || '', image: image || '' })),
-                        demoClass: {
-                            date: raw.demoClass?.date || '',
-                            time: raw.demoClass?.time || '',
-                            platform: raw.demoClass?.platform || '',
-                            videoUrls: raw.demoClass?.videoUrls || []
-                        },
-                        aiBannerUrl: raw.aiBannerUrl || '',
-                        aiLearningBannerUrl: raw.aiLearningBannerUrl || '',
-                        aiLearningBadge: raw.aiLearningBadge || 'AI-Powered Learning',
-                        aiLearningTitle1: raw.aiLearningTitle1 || 'এই কোর্সে',
-                        aiLearningHighlight: raw.aiLearningHighlight || 'AI ব্যবহার করে',
-                        aiLearningTitle2: raw.aiLearningTitle2 || 'শিখবেন কীভাবে কাজ করতে হয়',
-                        aiLearningDetails: raw.aiLearningDetails || '',
-                        aiLearningImageBadge1: raw.aiLearningImageBadge1 || 'AI',
-                        aiLearningImageBadge2: raw.aiLearningImageBadge2 || 'Driven',
-                        showAiLearningBanner: raw.showAiLearningBanner !== false,
-                        aiJobReadyBadge: raw.aiJobReadyBadge || 'ক্যারিয়ার রেডি',
-                        aiJobReadyTitle1: raw.aiJobReadyTitle1 || 'কোর্স শেষে আপনি',
-                        aiJobReadyHighlight: raw.aiJobReadyHighlight || 'চাকরির জন্য প্রস্তুত',
-                        aiJobReadyTitle2: raw.aiJobReadyTitle2 || 'হয়ে যাবেন',
-                        aiJobReadyDetails: raw.aiJobReadyDetails || '',
-                        aiJobReadyImageBadge: raw.aiJobReadyImageBadge || 'Job Ready',
-                        showAiJobReadyBanner: raw.showAiJobReadyBanner !== false,
-                        status: raw.status || 'Draft',
-                        aiFeatures: raw.aiFeatures || ['🤖 ChatGPT Integration', '⚡ GitHub Copilot', '🧠 AI Error Handling']
                     };
 
                     setCourseData(cleanData as any);
@@ -360,7 +321,10 @@ export default function EditCoursePage() {
             delete payload.createdAt;
             delete payload.updatedAt;
 
-            const res = await fetch(`/api/courses/${id}`, {
+            // Use the stable database ID if available, otherwise fallback to the URL param
+            const requestId = (courseData as any)._id || id;
+            
+            const res = await fetch(`/api/courses/${requestId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

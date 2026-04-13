@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AddCoursePage() {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState('basic');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -256,8 +258,15 @@ export default function AddCoursePage() {
             }
 
             setSuccessMessage(`Course successfully saved as ${status}!`);
-            if (status === 'Active') {
-                window.location.href = '/dashboard/courses';
+            
+            // For both Draft and Active, redirect to the edit page of the newly created course
+            // This prevents duplicate creation if they click save again
+            if (data.data && data.data._id) {
+                setTimeout(() => {
+                    router.push(`/dashboard/courses/edit/${data.data._id}`);
+                }, 1500);
+            } else if (status === 'Active') {
+                router.push('/dashboard/courses');
             }
         } catch (err: any) {
             setError(err.message);

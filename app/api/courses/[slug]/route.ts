@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connectToDatabase from '@/lib/db';
 import Course from '@/models/Course';
 
@@ -11,16 +12,16 @@ export async function GET(
         await connectToDatabase();
 
         let course;
-        // Check if slug is actually a valid MongoDB ObjectId (for dashboard compatibility)
-        const isObjectId = /^[0-9a-fA-F]{24}$/.test(slug);
-
-        if (isObjectId) {
+        // Check if slug is actually a valid MongoDB ObjectId
+        if (mongoose.isValidObjectId(slug)) {
             course = await Course.findById(slug).populate({
                 path: 'assignedTeachers',
                 select: 'name email profileImage role'
             }).populate('assignedBatches');
-        } else {
-            // Find the course by slug
+        }
+
+        // If not found by ID, try finding by slug
+        if (!course) {
             course = await Course.findOne({ slug })
                 .populate({
                     path: 'assignedTeachers',
@@ -59,17 +60,17 @@ export async function PATCH(
         await connectToDatabase();
 
         let course;
-        const isObjectId = /^[0-9a-fA-F]{24}$/.test(slug);
-
-        if (isObjectId) {
+        if (mongoose.isValidObjectId(slug)) {
             course = await Course.findById(slug);
-        } else {
+        }
+
+        if (!course) {
             course = await Course.findOne({ slug });
         }
 
         if (!course) {
             return NextResponse.json(
-                { success: false, message: 'Course not found' },
+                { success: false, message: `Course not found. Identifier: ${slug}. (ID format correctly recognized: ${mongoose.isValidObjectId(slug)})` },
                 { status: 404 }
             );
         }
@@ -110,11 +111,11 @@ export async function DELETE(
         await connectToDatabase();
 
         let course;
-        const isObjectId = /^[0-9a-fA-F]{24}$/.test(slug);
-
-        if (isObjectId) {
+        if (mongoose.isValidObjectId(slug)) {
             course = await Course.findByIdAndDelete(slug);
-        } else {
+        }
+
+        if (!course) {
             course = await Course.findOneAndDelete({ slug });
         }
 
