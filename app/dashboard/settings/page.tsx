@@ -25,6 +25,7 @@ interface ISiteSettings {
         _id?: string;
         name: string;
         logo: string;
+        link?: string;
         order: number;
     }>;
 }
@@ -92,7 +93,7 @@ export default function SettingsPage() {
     const addBrand = () => {
         setSettings({
             ...settings,
-            brands: [...settings.brands, { name: '', logo: '', order: settings.brands.length }]
+            brands: [...settings.brands, { name: '', logo: '', link: '', order: settings.brands.length }]
         });
     };
 
@@ -103,9 +104,9 @@ export default function SettingsPage() {
         });
     };
 
-    const updateBrand = (index: number, name: string) => {
+    const updateBrand = (index: number, field: 'name' | 'link', value: string) => {
         const newBrands = [...settings.brands];
-        newBrands[index].name = name;
+        newBrands[index][field] = value;
         setSettings({ ...settings, brands: newBrands });
     };
 
@@ -361,40 +362,60 @@ export default function SettingsPage() {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {settings.brands.map((brand, idx) => (
-                        <div key={idx} className="p-5 bg-gray-50/50 rounded-3xl border border-gray-100 group relative">
-                            <button onClick={() => removeBrand(idx)} className="absolute -top-2 -right-2 w-8 h-8 bg-white border border-red-50 text-red-500 rounded-full flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 z-10">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        <div key={idx} className="p-6 bg-white rounded-[2.5rem] border border-gray-100 group relative shadow-sm hover:shadow-xl hover:shadow-[#6C5DD3]/5 transition-all duration-500">
+                            {/* Remove Button */}
+                            <button onClick={() => removeBrand(idx)} 
+                                className="absolute -top-3 -right-3 w-10 h-10 bg-white border border-red-50 text-red-500 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-red-50 hover:scale-110 z-20">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
                             </button>
                             
-                            <div className="space-y-4">
-                                <div className="w-full h-32 bg-white rounded-2xl border border-gray-100 flex items-center justify-center overflow-hidden p-4 relative group/img">
+                            <div className="space-y-6">
+                                {/* Logo Preview Area */}
+                                <div className="w-full h-40 bg-gray-50 rounded-3xl border border-dashed border-gray-200 flex items-center justify-center overflow-hidden p-6 relative group/img cursor-pointer">
                                     {brand.logo ? (
-                                        <img src={brand.logo} alt={brand.name} className="max-h-24 max-w-full object-contain" />
+                                        <img src={brand.logo} alt={brand.name} className="max-h-28 max-w-full object-contain transition-transform duration-700 group-hover/img:scale-110" />
                                     ) : (
                                         <div className="text-center">
-                                            <div className="w-10 h-10 mx-auto bg-gray-100 rounded-xl flex items-center justify-center text-gray-300 mb-2">
-                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+                                            <div className="w-14 h-14 mx-auto bg-white rounded-2xl flex items-center justify-center text-gray-300 mb-3 shadow-sm">
+                                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
                                             </div>
-                                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">No Logo</p>
+                                            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">Upload Brand Logo</p>
                                         </div>
                                     )}
-                                    <label className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                                        <span className="text-white text-[10px] font-bold uppercase tracking-widest border border-white/50 px-3 py-1.5 rounded-lg backdrop-blur-sm">
-                                            {uploading === idx ? 'Uploading...' : 'Change Logo'}
-                                        </span>
+                                    <label className="absolute inset-0 bg-[#6C5DD3]/80 opacity-0 group-hover/img:opacity-100 transition-all duration-500 flex items-center justify-center cursor-pointer backdrop-blur-[2px]">
+                                        <div className="text-white text-[11px] font-black uppercase tracking-[0.2em] bg-white/20 border border-white/30 px-5 py-2.5 rounded-xl flex items-center gap-2">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                            {uploading === idx ? 'UPLOADING...' : 'CHANGE LOGO'}
+                                        </div>
                                         <input type="file" onChange={e => handleFileUpload(e, idx)} className="hidden" accept="image/*" disabled={uploading !== null} />
                                     </label>
                                 </div>
                                 
-                                <input 
-                                    type="text" 
-                                    value={brand.name} 
-                                    onChange={e => updateBrand(idx, e.target.value)} 
-                                    placeholder="Brand Name"
-                                    className="w-full px-4 py-3 rounded-xl bg-white border border-gray-100 focus:ring-2 focus:ring-[#6C5DD3]/10 focus:border-[#6C5DD3] outline-none text-xs font-bold text-[#1A1D1F]"
-                                />
+                                {/* Info Inputs */}
+                                <div className="space-y-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Brand Name *</label>
+                                        <input 
+                                            type="text" 
+                                            value={brand.name} 
+                                            onChange={e => updateBrand(idx, 'name', e.target.value)} 
+                                            placeholder="e.g. Google"
+                                            className="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:ring-4 focus:ring-[#6C5DD3]/5 focus:border-[#6C5DD3]/20 outline-none text-[13px] font-bold text-[#1A1D1F] transition-all"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Website Link (Optional)</label>
+                                        <input 
+                                            type="text" 
+                                            value={brand.link || ''} 
+                                            onChange={e => updateBrand(idx, 'link', e.target.value)} 
+                                            placeholder="https://..."
+                                            className="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-transparent focus:bg-white focus:ring-4 focus:ring-[#6C5DD3]/5 focus:border-[#6C5DD3]/20 outline-none text-[13px] font-medium text-gray-500 transition-all"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     ))}

@@ -40,6 +40,7 @@ const SiteSettingsSchema = new mongoose.Schema({
     brands: [{
         name: { type: String, required: true },
         logo: { type: String, required: true },
+        link: { type: String },
         order: { type: Number, default: 0 }
     }],
 }, { timestamps: true });
