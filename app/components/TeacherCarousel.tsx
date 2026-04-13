@@ -62,7 +62,7 @@ export default function TeacherCarousel() {
                         Expert Instructors
                     </div>
                     <h2 className="text-[32px] md:text-[40px] font-black text-gray-900 leading-tight">
-                        আমাদের দক্ষ <span className="text-[#6C5DD3]">ম্যাকাল ট্রেইনারগণ</span>
+                        আমাদের দক্ষ <span className="text-[#6C5DD3]">ট্রেইনারগণ</span>
                     </h2>
                     <p className="text-gray-500 font-medium mt-2 max-w-xl mx-auto">
                         দেশসেরা ইন্ডাস্ট্রি এক্সপার্টদের কাছ থেকে শিখুন এবং নিজের ক্যারিয়ারকে এক ধাপ এগিয়ে নিয়ে যান।
@@ -82,10 +82,14 @@ export default function TeacherCarousel() {
                     {loading ? (
                         <div className="flex gap-6">
                             {[...Array(6)].map((_, i) => (
-                                <div key={i} className="w-[300px] h-[400px] rounded-[32px] bg-white border border-gray-100 p-6 animate-pulse">
-                                    <div className="w-full aspect-square rounded-[24px] bg-gray-100 mb-6"></div>
-                                    <div className="h-6 bg-gray-100 rounded-lg w-3/4 mb-4"></div>
-                                    <div className="h-4 bg-gray-100 rounded-lg w-1/2"></div>
+                                <div key={i} className="w-[300px] rounded-[48px] bg-white border border-gray-100 p-8 shadow-sm animate-pulse">
+                                    <div className="w-32 h-32 mx-auto rounded-[32px] bg-gray-100 mb-8"></div>
+                                    <div className="h-6 bg-gray-100 rounded-lg w-3/4 mx-auto mb-4"></div>
+                                    <div className="h-4 bg-gray-100 rounded-lg w-1/2 mx-auto mb-6"></div>
+                                    <div className="flex justify-center gap-2">
+                                        <div className="h-6 w-20 bg-gray-100 rounded-md"></div>
+                                        <div className="h-6 w-20 bg-gray-100 rounded-md"></div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -93,49 +97,58 @@ export default function TeacherCarousel() {
                         displayTeachers.map((teacher, i) => (
                             <div 
                                 key={`${teacher._id}-${i}`}
-                                className="w-[300px] group transition-all duration-500"
+                                className="w-[300px] group py-8"
                             >
-                                <div className="relative bg-white rounded-[32px] p-4 border border-gray-100 hover:border-[#6C5DD3]/30 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-20px_rgba(108,93,211,0.2)] transition-all duration-500 flex flex-col h-full group-hover:-translate-y-2">
+                                <div className="relative bg-white rounded-[40px] p-8 border border-gray-100 hover:border-[#6C5DD3]/20 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_60px_-20px_rgba(108,93,211,0.15)] transition-all duration-500 flex flex-col items-center h-full group-hover:-translate-y-3">
+                                    
                                     {/* Image Container */}
-                                    <div className="relative aspect-[4/5] rounded-[24px] overflow-hidden mb-6 bg-gray-50 border border-gray-50">
-                                        <img 
-                                            src={teacher.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.name)}&background=6C5DD3&color=fff&size=512`} 
-                                            alt={teacher.name}
-                                            className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
-                                        />
+                                    <div className="relative mb-8 group/img">
+                                        <div className="w-32 h-32 rounded-[32px] overflow-hidden bg-gray-50 border-4 border-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] group-hover:shadow-[#6C5DD3]/30 transition-all duration-500 relative z-10">
+                                            <img 
+                                                src={teacher.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.name)}&background=6C5DD3&color=fff&font-size=0.35`} 
+                                                alt={teacher.name}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                            />
+                                            
+                                            <div className="absolute inset-0 bg-gradient-to-t from-[#6C5DD3]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                                                <Link 
+                                                    href={`/instructors/${teacher.slug || teacher._id}`}
+                                                    className="px-4 py-2 bg-white/90 backdrop-blur-md text-[#6C5DD3] rounded-xl font-black text-[10px] uppercase tracking-wider transform translate-y-2 group-hover:translate-y-0 transition-all duration-500 shadow-xl"
+                                                >
+                                                    Profile
+                                                </Link>
+                                            </div>
+                                        </div>
                                         
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1D1F]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-                                            <Link 
-                                                href={`/instructors/${teacher.slug || teacher._id}`}
-                                                className="w-full py-3 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-xl font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-[#6C5DD3] flex items-center justify-center"
-                                            >
-                                                View Profile
-                                            </Link>
+                                        {/* Expert Badge */}
+                                        <div className="absolute -top-2 -right-2 bg-[#6C5DD3] text-white px-3 py-1.5 rounded-2xl text-[9px] font-black uppercase tracking-widest shadow-lg shadow-[#6C5DD3]/30 z-20 border-2 border-white">
+                                            Expert
                                         </div>
 
-                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white shadow-sm">
-                                            <p className="text-[10px] font-black text-[#6C5DD3] uppercase tracking-wider">Expert</p>
-                                        </div>
+                                        {/* Decorative Rings */}
+                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 border border-[#6C5DD3]/10 rounded-full scale-90 group-hover:scale-110 opacity-0 group-hover:opacity-100 transition-all duration-700 -z-0"></div>
+                                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 border border-[#6C5DD3]/5 rounded-full scale-75 group-hover:scale-125 opacity-0 group-hover:opacity-100 transition-all duration-1000 -z-0"></div>
                                     </div>
 
                                     {/* Content */}
-                                    <div className="px-2 pb-2">
-                                        <h3 className="text-xl font-black text-gray-900 group-hover:text-[#6C5DD3] transition-colors duration-300">
+                                    <div className="text-center w-full">
+                                        <h3 className="text-xl font-black text-gray-900 group-hover:text-[#6C5DD3] transition-colors duration-300 leading-tight">
                                             <Link href={`/instructors/${teacher.slug || teacher._id}`}>
                                                 {teacher.name}
                                             </Link>
                                         </h3>
-                                        <p className="text-gray-500 font-bold text-[13px] mt-1 uppercase tracking-wide opacity-80">
+                                        <p className="text-[#6C5DD3]/60 font-black text-[11px] mt-2 uppercase tracking-[0.15em]">
                                             {teacher.designation || "Lead Instructor"}
                                         </p>
 
-                                        <div className="mt-4 flex items-center gap-2 overflow-hidden">
-                                            <div className="px-2 py-1 rounded-md bg-[#F8FAFC] border border-gray-100 text-[10px] font-bold text-gray-500">Mentorship</div>
-                                            <div className="px-2 py-1 rounded-md bg-[#F8FAFC] border border-gray-100 text-[10px] font-bold text-gray-500">Live Class</div>
+                                        <div className="mt-6 flex items-center justify-center gap-2">
+                                            <div className="px-3 py-1.5 rounded-xl bg-gray-50 border border-gray-100 text-[10px] font-bold text-gray-500">Mentorship</div>
+                                            <div className="px-3 py-1.5 rounded-xl bg-gray-50 border border-gray-100 text-[10px] font-bold text-gray-500">Live Class</div>
                                         </div>
                                     </div>
                                     
-                                    <div className="absolute -bottom-1 -right-1 w-12 h-12 bg-[#6C5DD3]/5 rounded-tl-[32px] rounded-br-[32px] -z-10 group-hover:bg-[#6C5DD3]/10 transition-colors"></div>
+                                    {/* Subtle Bottom Accent */}
+                                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-12 h-1 bg-gray-100 rounded-full group-hover:bg-[#6C5DD3]/20 group-hover:w-20 transition-all duration-500"></div>
                                 </div>
                             </div>
                         ))
