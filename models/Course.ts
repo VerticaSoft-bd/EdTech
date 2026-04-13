@@ -62,6 +62,7 @@ export interface ICourse extends Document {
     courseMode: string;
     duration: string;
     batches: IBatch[];
+    assignedBatches: mongoose.Types.ObjectId[];
     totalStudents: number;
     totalLectures: number;
     totalProjects: number;
@@ -172,6 +173,11 @@ const CourseSchema: Schema<ICourse> = new Schema({
     courseMode: { type: String, required: true },
     duration: { type: String, required: true },
     batches: { type: [BatchSchema], default: [] },
+    assignedBatches: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Batch',
+        default: []
+    },
     totalStudents: { type: Number, default: 0 },
     totalLectures: { type: Number, default: 0 },
     totalProjects: { type: Number, default: 0 },

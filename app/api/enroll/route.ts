@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
+import Batch from '@/models/Batch';
 
 export async function POST(request: Request) {
     try {
@@ -19,6 +20,11 @@ export async function POST(request: Request) {
         const newStudent = await Student.create({
             ...body
         });
+
+        // Increment Batch enrollment if batchId is provided
+        if (body.batchId) {
+            await Batch.findByIdAndUpdate(body.batchId, { $inc: { enrolledStudents: 1 } });
+        }
 
         return NextResponse.json({
             success: true,

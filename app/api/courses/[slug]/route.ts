@@ -18,14 +18,14 @@ export async function GET(
             course = await Course.findById(slug).populate({
                 path: 'assignedTeachers',
                 select: 'name email profileImage role'
-            });
+            }).populate('assignedBatches');
         } else {
             // Find the course by slug
             course = await Course.findOne({ slug })
                 .populate({
                     path: 'assignedTeachers',
                     select: 'name email profileImage role'
-                });
+                }).populate('assignedBatches');
         }
 
         if (!course) {

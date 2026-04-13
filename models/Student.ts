@@ -25,6 +25,7 @@ export interface IStudent extends Document {
     totalClasses: number;
     attendedClasses: number;
     courseMode: 'Online' | 'Offline' | 'Online Class' | 'Offline Class' | 'Hybrid';
+    batchId?: mongoose.Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -67,6 +68,7 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
         totalClasses: { type: Number, default: 0 },
         attendedClasses: { type: Number, default: 0 },
         courseMode: { type: String, enum: ['Online', 'Offline', 'Online Class', 'Offline Class', 'Hybrid'], default: 'Online' },
+        batchId: { type: Schema.Types.ObjectId, ref: 'Batch' },
     },
     {
         timestamps: true,

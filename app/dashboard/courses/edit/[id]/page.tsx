@@ -12,10 +12,12 @@ export default function EditCoursePage() {
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+    const [isBatchDropdownOpen, setIsBatchDropdownOpen] = useState(false);
     const [imageError, setImageError] = useState('');
     const [teachers, setTeachers] = useState<any[]>([]);
+    const [batchesList, setBatchesList] = useState<any[]>([]);
 
-    // Fetch teachers, categories and course data on mount
+    // Fetch teachers, batches and course data on mount
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
@@ -25,6 +27,14 @@ export default function EditCoursePage() {
                     const data = await teachersRes.json();
                     if (data.success && data.data) {
                         setTeachers(data.data);
+                    }
+                }
+
+                const batchesRes = await fetch('/api/batches?status=Active');
+                if (batchesRes.ok) {
+                    const data = await batchesRes.json();
+                    if (data.success && data.data) {
+                        setBatchesList(data.data);
                     }
                 }
             } catch (err) {
@@ -51,6 +61,10 @@ export default function EditCoursePage() {
                         typeof t === 'string' ? t : (t?._id || '')
                     ).filter((id: string) => id !== '');
 
+                    const normalizedBatches = (raw.assignedBatches || []).map((b: any) =>
+                        typeof b === 'string' ? b : (b?._id || '')
+                    ).filter((id: string) => id !== '');
+
                     // Build clean courseData, stripping all Mongoose internal fields
                     const cleanData = {
                         title: raw.title || '',
@@ -71,6 +85,7 @@ export default function EditCoursePage() {
                         regularFee: raw.regularFee || 0,
                         discountPercentage: raw.discountPercentage || 0,
                         assignedTeachers: normalizedTeachers,
+                        assignedBatches: normalizedBatches,
                         careerOpportunities: cleanSubDocs(raw.careerOpportunities),
                         batchNumber: raw.batchNumber || '',
                         benefits: cleanSubDocs(raw.benefits),
@@ -155,6 +170,7 @@ export default function EditCoursePage() {
         regularFee: 0,
         discountPercentage: 0,
         assignedTeachers: [] as string[],
+        assignedBatches: [] as string[],
         careerOpportunities: [] as { title: string, description: string }[],
         batchNumber: '',
         benefits: [] as { icon: string, title: string, subtitle: string }[],
@@ -331,6 +347,9 @@ export default function EditCoursePage() {
                 assignedTeachers: courseData.assignedTeachers
                     .map((t: any) => typeof t === 'string' ? t : t._id)
                     .filter((id: string) => id && typeof id === 'string' && id.trim() !== ""),
+                assignedBatches: courseData.assignedBatches
+                    .map((b: any) => typeof b === 'string' ? b : b._id)
+                    .filter((id: string) => id && typeof id === 'string' && id.trim() !== ""),
                 status
             };
 
@@ -500,64 +519,84 @@ export default function EditCoursePage() {
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Batches & Schedules (ব্যাচ ও সময়সূচী)</label>
-                                            <button
-                                                onClick={() => setCourseData(prev => ({ ...prev, batches: [...prev.batches, { startDate: '', classTime: '' }] }))}
-                                                className="text-xs font-bold text-[#6C5DD3] hover:underline flex items-center gap-1"
-                                            >
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
-                                                Add Batch (ব্যাচ যোগ করুন)
-                                            </button>
-                                        </div>
-                                        <div className="space-y-3">
-                                            {courseData.batches.map((batch, index) => (
-                                                <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 border border-gray-100 rounded-xl">
-                                                    <div className="flex-1 grid grid-cols-2 gap-3">
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Start Date (শুরুর তারিখ)</label>
-                                                            <input
-                                                                type="date"
-                                                                value={batch.startDate}
-                                                                onChange={(e) => {
-                                                                    const newBatches = [...courseData.batches];
-                                                                    newBatches[index].startDate = e.target.value;
-                                                                    handleInputChange('batches', newBatches);
-                                                                }}
-                                                                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20"
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Class Time (ক্লাসের সময়)</label>
-                                                            <input
-                                                                type="text"
-                                                                value={batch.classTime}
-                                                                onChange={(e) => {
-                                                                    const newBatches = [...courseData.batches];
-                                                                    newBatches[index].classTime = e.target.value;
-                                                                    handleInputChange('batches', newBatches);
-                                                                }}
-                                                                placeholder="e.g. 02:00 PM TO 04:00 PM"
-                                                                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20"
-                                                            />
-                                                        </div>
+                                     <div className="relative">
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assigned Batches (নির্ধারিত ব্যাচ)</label>
+                                        <div 
+                                            onClick={() => setIsBatchDropdownOpen(!isBatchDropdownOpen)}
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium flex items-center justify-between cursor-pointer hover:bg-white transition-all text-[#1A1D1F]"
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                {courseData.assignedBatches.length === 0 ? (
+                                                    <span className="text-gray-400">Select batches for this course...</span>
+                                                ) : (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        <span className="bg-[#6C5DD3] text-white px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm">
+                                                            {courseData.assignedBatches.length} Batch(es) Selected
+                                                        </span>
                                                     </div>
-                                                    <button
-                                                        onClick={() => {
-                                                            const newBatches = courseData.batches.filter((_, i) => i !== index);
-                                                            handleInputChange('batches', newBatches);
-                                                        }}
-                                                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-5"
+                                                )}
+                                            </div>
+                                            <svg className={`transform transition-transform ${isBatchDropdownOpen ? 'rotate-180' : ''}`} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"></path></svg>
+                                        </div>
+
+                                        {isBatchDropdownOpen && (
+                                            <div className="absolute z-50 left-0 right-0 mt-2 p-3 bg-white border border-gray-200 rounded-2xl shadow-2xl max-h-[400px] overflow-y-auto animate-in fade-in zoom-in duration-200">
+                                                <div className="flex items-center justify-between mb-3 px-1">
+                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Available Batches</span>
+                                                    <button 
+                                                        onClick={() => setIsBatchDropdownOpen(false)}
+                                                        className="text-[10px] font-bold text-[#6C5DD3] hover:underline"
                                                     >
-                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                        Done
                                                     </button>
                                                 </div>
-                                            ))}
-                                            {courseData.batches.length === 0 && (
-                                                <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No batches added yet. Click "Add Batch" to specify schedules. (কোন ব্যাচ যোগ করা হয়নি। ব্যাচ যোগ করতে "Add Batch" এ ক্লিক করুন।)</div>
-                                            )}
-                                        </div>
+                                                {batchesList.length === 0 ? (
+                                                    <div className="text-sm text-gray-500 text-center py-8 bg-gray-50 rounded-xl">
+                                                        No active batches available.
+                                                    </div>
+                                                ) : (
+                                                    <div className="space-y-3">
+                                                        {batchesList.map((batch) => {
+                                                            const isSelected = courseData.assignedBatches.includes(batch._id);
+                                                            return (
+                                                                <label 
+                                                                    key={batch._id} 
+                                                                    className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all border-2 ${isSelected ? 'border-[#6C5DD3] bg-[#6C5DD3]/5' : 'border-gray-50 bg-gray-50 hover:border-gray-200'}`}
+                                                                >
+                                                                    <div className="mt-1">
+                                                                        <div className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-all ${isSelected ? 'bg-[#6C5DD3] border-[#6C5DD3]' : 'bg-white border-gray-300'}`}>
+                                                                            {isSelected && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4"><path d="M20 6L9 17l-5-5"></path></svg>}
+                                                                        </div>
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            className="hidden"
+                                                                            checked={isSelected}
+                                                                            onChange={(e) => {
+                                                                                if (e.target.checked) {
+                                                                                    handleInputChange('assignedBatches', [...courseData.assignedBatches, batch._id]);
+                                                                                } else {
+                                                                                    handleInputChange('assignedBatches', courseData.assignedBatches.filter((id: string) => id !== batch._id));
+                                                                                }
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="flex-1">
+                                                                        <div className="font-bold text-[#1A1D1F] text-sm">{batch.name}</div>
+                                                                        <div className="text-xs text-gray-500 mt-0.5">{batch.type} | {batch.schedule}</div>
+                                                                        <div className="flex items-center gap-3 mt-1.5">
+                                                                             <div className="px-2 py-0.5 bg-white border border-gray-100 rounded text-[10px] font-bold text-gray-400 uppercase">{batch.timing}</div>
+                                                                             <div className="text-[10px] font-bold text-blue-600 uppercase tracking-tight">Seats Left: {batch.totalSeats - batch.enrolledStudents}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </label>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                        {/* Overlay to close dropdown when clicking outside */}
+                                        {isBatchDropdownOpen && <div className="fixed inset-0 z-40" onClick={() => setIsBatchDropdownOpen(false)}></div>}
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-4">

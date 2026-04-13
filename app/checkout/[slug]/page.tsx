@@ -32,6 +32,7 @@ function CheckoutContent() {
         mobileNo: "",
         guardianMobileNo: "",
         privacyPolicyAccepted: false,
+        batchId: "",
     });
 
     useEffect(() => {
@@ -86,6 +87,11 @@ function CheckoutContent() {
 
         if (!formData.privacyPolicyAccepted) {
             toast.error("Please accept the Terms & Privacy Policy");
+            return;
+        }
+        
+        if (!formData.batchId) {
+            toast.error("Please select a batch schedule to enroll.");
             return;
         }
 
@@ -213,6 +219,26 @@ function CheckoutContent() {
                                     <label className="block text-sm font-bold text-gray-700 mb-2">NID / Birth Certificate No. *</label>
                                     <input required type="text" name="nidNo" value={formData.nidNo} onChange={handleInputChange} className="w-full px-4 py-3 bg-gray-50 text-black border border-gray-200 rounded-xl focus:outline-none focus:border-[#6C5DD3]" />
                                 </div>
+
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Select Course Batch & Schedule *</label>
+                                    <select required name="batchId" value={formData.batchId} onChange={handleInputChange} className="w-full px-4 py-3 bg-white text-black border-2 border-[#6C5DD3]/20 hover:border-[#6C5DD3]/50 rounded-xl focus:outline-none focus:border-[#6C5DD3] transition-colors shadow-sm cursor-pointer appearance-none">
+                                        <option value="" disabled>-- Select a batch --</option>
+                                        {course?.assignedBatches?.map((batch: any) => {
+                                            const availableSeats = batch.totalSeats - batch.enrolledStudents;
+                                            const isFull = availableSeats <= 0;
+                                            return (
+                                                <option key={batch._id} value={batch._id} disabled={isFull}>
+                                                    {batch.name} | {batch.type} | {batch.schedule} ({batch.timing}) {isFull ? '- [BATCH FULL]' : `- [${availableSeats} SEATS LEFT]`}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                    {course?.assignedBatches?.length === 0 && (
+                                        <p className="text-red-500 text-xs mt-2 font-bold">No batches currently available for this course.</p>
+                                    )}
+                                </div>
+
 
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Gender *</label>
