@@ -11,6 +11,7 @@ interface Teacher {
     image?: string;
     designation?: string;
     bio?: string;
+    slug?: string;
 }
 
 export default function TeacherCarousel() {
@@ -104,9 +105,12 @@ export default function TeacherCarousel() {
                                         />
                                         
                                         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1D1F]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-                                            <button className="w-full py-3 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-xl font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-[#6C5DD3]">
+                                            <Link 
+                                                href={`/instructors/${teacher.slug || teacher._id}`}
+                                                className="w-full py-3 bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-xl font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 hover:bg-white hover:text-[#6C5DD3] flex items-center justify-center"
+                                            >
                                                 View Profile
-                                            </button>
+                                            </Link>
                                         </div>
 
                                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white shadow-sm">
@@ -117,7 +121,9 @@ export default function TeacherCarousel() {
                                     {/* Content */}
                                     <div className="px-2 pb-2">
                                         <h3 className="text-xl font-black text-gray-900 group-hover:text-[#6C5DD3] transition-colors duration-300">
-                                            {teacher.name}
+                                            <Link href={`/instructors/${teacher.slug || teacher._id}`}>
+                                                {teacher.name}
+                                            </Link>
                                         </h3>
                                         <p className="text-gray-500 font-bold text-[13px] mt-1 uppercase tracking-wide opacity-80">
                                             {teacher.designation || "Lead Instructor"}

@@ -51,7 +51,11 @@ export async function PUT(req: Request) {
             maritalStatus,
             residentialStatus,
             country,
-            education
+            education,
+            designation,
+            bio,
+            image,
+            expertise
         } = body;
 
         await dbConnect();
@@ -90,6 +94,10 @@ export async function PUT(req: Request) {
         if (residentialStatus !== undefined) user.residentialStatus = residentialStatus;
         if (country !== undefined) user.country = country;
         if (education !== undefined) user.education = education;
+        if (designation !== undefined) user.designation = designation;
+        if (bio !== undefined) user.bio = bio;
+        if (image !== undefined) user.image = image;
+        if (expertise !== undefined) user.expertise = Array.isArray(expertise) ? expertise : (typeof expertise === 'string' ? expertise.split(',').map((s: string) => s.trim()) : []);
 
         await user.save();
 

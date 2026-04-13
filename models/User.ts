@@ -21,6 +21,11 @@ export interface IUser extends Document {
     residentialStatus?: string;
     country?: string;
     education?: string;
+    designation?: string;
+    bio?: string;
+    image?: string;
+    expertise?: string[];
+    slug?: string;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -75,10 +80,28 @@ const UserSchema: Schema<IUser> = new Schema({
     residentialStatus: { type: String, trim: true },
     country: { type: String, trim: true },
     education: { type: String, trim: true },
+    designation: { type: String, trim: true },
+    bio: { type: String, trim: true },
+    image: { type: String },
+    expertise: { type: [String], default: [] },
+    slug: { type: String, unique: true, sparse: true },
 }, { timestamps: true });
 
-// Pre-save hook to hash the password before saving to the database
+// Pre-save hook to hash the password and generate slug before saving
 UserSchema.pre<IUser>('save', async function () {
+    // Generate slug for teachers if name is modified or slug is missing
+    if (this.role === 'teacher' && (this.isModified('name') || !this.slug)) {
+        try {
+            const _slugify = require('slugify');
+            const slugFunc = typeof _slugify === 'function' ? _slugify : _slugify.default;
+            if (typeof slugFunc === 'function') {
+                this.slug = slugFunc(this.name, { lower: true, strict: true }) + '-' + Math.floor(Math.random() * 1000);
+            }
+        } catch (err) {
+            console.error("Slug generation failed for User:", err);
+        }
+    }
+
     if (!this.isModified('password')) {
         return;
     }

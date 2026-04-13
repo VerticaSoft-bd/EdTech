@@ -45,6 +45,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         if (body.residentialStatus !== undefined) updateData.residentialStatus = body.residentialStatus;
         if (body.country !== undefined) updateData.country = body.country;
         if (body.education !== undefined) updateData.education = body.education;
+        if (body.designation !== undefined) updateData.designation = body.designation;
+        if (body.bio !== undefined) updateData.bio = body.bio;
+        if (body.image !== undefined) updateData.image = body.image;
+        if (body.expertise !== undefined) updateData.expertise = Array.isArray(body.expertise) ? body.expertise : (typeof body.expertise === 'string' ? body.expertise.split(',').map((s: string) => s.trim()) : []);
         
         const user = await User.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select('-password');
         

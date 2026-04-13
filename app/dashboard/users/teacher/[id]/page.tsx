@@ -27,7 +27,11 @@ export default function TeacherProfilePage() {
     residentialStatus: "Resident",
     country: "Bangladesh",
     education: "",
-    role: "teacher"
+    role: "teacher",
+    designation: "",
+    bio: "",
+    image: "",
+    expertise: ""
   });
 
   useEffect(() => {
@@ -63,6 +67,10 @@ export default function TeacherProfilePage() {
         residentialStatus: user.residentialStatus || "Resident",
         country: user.country || "Bangladesh",
         education: user.education || "",
+        designation: user.designation || "",
+        bio: user.bio || "",
+        image: user.image || "",
+        expertise: Array.isArray(user.expertise) ? user.expertise.join(", ") : (user.expertise || ""),
       }));
     } catch (error) {
       console.error(error);
@@ -364,6 +372,111 @@ export default function TeacherProfilePage() {
                   className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent focus:border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-sm font-medium resize-none"
                 ></textarea>
               </div>
+            </div>
+
+            <div className="h-[1px] bg-gray-100 w-full my-10"></div>
+            
+            <div className="mb-8">
+              <h3 className="text-xl font-bold flex items-center gap-2 mb-1">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C5DD3" strokeWidth="2"><path d="M20 7h-9m9 4H9m11 4H11M6 12l-3-3 3-3"/></svg>
+                Professional Profile
+              </h3>
+              <p className="text-sm text-gray-500">How this teacher appears to students and the public.</p>
+            </div>
+
+            <div className="space-y-6 mb-12">
+               <div className="flex flex-col gap-2">
+                  <label className="text-sm font-bold text-gray-600">Profile Image</label>
+                  <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+                     <div className="w-24 h-24 rounded-2xl bg-white border border-gray-100 overflow-hidden shrink-0">
+                        {formData.image ? (
+                           <img src={formData.image} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                           <div className="w-full h-full flex items-center justify-center text-gray-300">
+                              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                           </div>
+                        )}
+                     </div>
+                     <div className="flex-1 w-full">
+                        <input 
+                          type="text" 
+                          name="image"
+                          value={formData.image}
+                          onChange={handleChange}
+                          placeholder="Image URL or upload..."
+                          className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-200 focus:border-[#6C5DD3] focus:outline-none text-sm transition-all mb-2"
+                        />
+                        <label className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 hover:border-[#6C5DD3] hover:text-[#6C5DD3] rounded-lg text-xs font-bold cursor-pointer transition-all">
+                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                           Upload Photo
+                           <input 
+                             type="file" 
+                             accept="image/*" 
+                             className="hidden" 
+                             onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                const uploadToast = toast.loading("Uploading image...");
+                                try {
+                                   const body = new FormData();
+                                   body.append('file', file);
+                                   const res = await fetch('/api/upload', { method: 'POST', body });
+                                   const data = await res.json();
+                                   if (data.success) {
+                                      setFormData(prev => ({ ...prev, image: data.url }));
+                                      toast.success("Image uploaded!");
+                                   } else {
+                                      throw new Error(data.message);
+                                   }
+                                } catch (err: any) {
+                                   toast.error(err.message || "Upload failed");
+                                } finally {
+                                   toast.dismiss(uploadToast);
+                                }
+                             }}
+                           />
+                        </label>
+                     </div>
+                  </div>
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-bold text-gray-600">Professional Designation</label>
+                    <input
+                      type="text"
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleChange}
+                      placeholder="e.g. Senior Software Engineer / Lead Instructor"
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent focus:border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-sm font-medium"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-bold text-gray-600">Expertise (Comma separated)</label>
+                    <input
+                      type="text"
+                      name="expertise"
+                      value={formData.expertise}
+                      onChange={handleChange}
+                      placeholder="e.g. React, Node.js, UI/UX"
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent focus:border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-sm font-medium"
+                    />
+                  </div>
+               </div>
+
+               <div className="flex flex-col gap-2">
+                  <label className="text-sm font-bold text-gray-600">Professional Bio</label>
+                  <textarea
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleChange}
+                    rows={5}
+                    placeholder="Write a brief professional summary about yourself..."
+                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent focus:border-gray-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-sm font-medium resize-none"
+                  ></textarea>
+               </div>
             </div>
 
             <div className="mt-10 flex justify-end">
