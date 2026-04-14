@@ -47,16 +47,10 @@ async function deleteFromS3(url: string) {
 export async function GET() {
     try {
         await connectDB();
-        let settings = await SiteSettings.findOne().populate({
-            path: 'specialPackageCourses',
-            populate: { path: 'assignedBatches' }
-        });
+        let settings = await SiteSettings.findOne().populate('specialPackageCourses');
         if (!settings) {
             settings = await SiteSettings.create({});
-            settings = await SiteSettings.findById(settings._id).populate({
-                path: 'specialPackageCourses',
-                populate: { path: 'assignedBatches' }
-            });
+            settings = await SiteSettings.findById(settings._id).populate('specialPackageCourses');
         }
 
         if (!settings) {

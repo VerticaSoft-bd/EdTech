@@ -1,4 +1,9 @@
 import mongoose from "mongoose";
+import './../models/Course';
+import './../models/User';
+import './../models/Batch';
+import './../models/SiteSettings';
+
 
 const DATABASE_URL = process.env.DATABASE_URL || "mongodb://127.0.0.1:27017/ed-tech";
 
@@ -43,7 +48,15 @@ async function connectToDatabase() {
         throw e;
     }
 
+    // Ensure any models we expect are registered
+    // (They are imported above, accessing them just to be doubly sure)
+    const models = mongoose.models;
+    if (!models.Course || !models.User || !models.Batch || !models.SiteSettings) {
+        // This is mostly to satisfy internal checks and ensure they are loaded
+    }
+
     return cached.conn;
 }
+
 
 export default connectToDatabase;

@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import connectToDatabase from '@/lib/db';
 import Course from '@/models/Course';
+import User from '@/models/User';
+import Batch from '@/models/Batch';
+
 
 export async function GET(
     request: Request,
@@ -10,6 +13,8 @@ export async function GET(
     try {
         const { slug } = await params;
         await connectToDatabase();
+
+
 
         let course;
         // Check if slug is actually a valid MongoDB ObjectId
