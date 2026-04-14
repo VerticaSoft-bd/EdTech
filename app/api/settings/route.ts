@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import connectDB from '@/lib/db';
 import SiteSettings from '@/models/SiteSettings';
 import Course from '@/models/Course';
@@ -43,14 +44,36 @@ async function deleteFromS3(url: string) {
     }
 }
 
+export const dynamic = 'force-dynamic';
+
 // GET - Fetch site settings (returns single settings doc, creates default if none exists)
 export async function GET() {
     try {
         await connectDB();
-        let settings = await SiteSettings.findOne().populate('specialPackageCourses');
+        
+        // Explicitly check models to ensure they are registered for population
+        if (!mongoose.models.Course) {
+            console.log("Registering Course model for settings population");
+        }
+        if (!mongoose.models.Batch) {
+            console.log("Registering Batch model for settings population");
+        }
+
+        let settings = await SiteSettings.findOne().populate({
+            path: 'specialPackageCourses',
+            populate: {
+                path: 'assignedBatches'
+            }
+        });
+
         if (!settings) {
             settings = await SiteSettings.create({});
-            settings = await SiteSettings.findById(settings._id).populate('specialPackageCourses');
+            settings = await SiteSettings.findById(settings._id).populate({
+                path: 'specialPackageCourses',
+                populate: {
+                    path: 'assignedBatches'
+                }
+            });
         }
 
         if (!settings) {
@@ -60,8 +83,10 @@ export async function GET() {
         // Fill in defaults for legacy records with empty logo/favicon
         if (!settings.logo) { settings.logo = '/images/logo.png'; await settings.save(); }
         if (!settings.favicon) { settings.favicon = '/favicon.ico'; await settings.save(); }
+        
         return NextResponse.json({ success: true, data: settings });
     } catch (error: any) {
+        console.error("Settings GET Error:", error);
         return NextResponse.json({ success: false, message: error.message }, { status: 500 });
     }
 }
