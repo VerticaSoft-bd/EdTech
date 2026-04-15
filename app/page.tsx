@@ -322,10 +322,12 @@ export default function RootPage() {
                                             </div>
 
                                             {/* Save Badge */}
-                                            <div className="absolute top-4 right-4 w-12 h-12 bg-[#6C5DD3] text-white rounded-full flex flex-col items-center justify-center shadow-xl rotate-12 group-hover:rotate-0 transition-transform duration-500">
-                                                <span className="text-[10px] font-bold leading-none">SAVE</span>
-                                                <span className="text-[14px] font-black leading-none">20%</span>
-                                            </div>
+                                            {course.discountPercentage > 0 && (
+                                                <div className="absolute top-4 right-4 w-12 h-12 bg-[#6C5DD3] text-white rounded-full flex flex-col items-center justify-center shadow-xl rotate-12 group-hover:rotate-0 transition-transform duration-500">
+                                                    <span className="text-[10px] font-bold leading-none">SAVE</span>
+                                                    <span className="text-[14px] font-black leading-none">{course.discountPercentage}%</span>
+                                                </div>
+                                            )}
 
                                             {/* Hover Overlay */}
                                             <div className="absolute inset-0 bg-[#6C5DD3]/0 group-hover:bg-[#6C5DD3]/10 transition-colors duration-500"></div>
@@ -359,8 +361,14 @@ export default function RootPage() {
                                                 </div>
 
                                                 <div className="flex flex-col items-end">
-                                                    <div className="text-[10px] text-gray-400 line-through font-bold">৳{Math.round((course.price || 5000) * 1.25)}</div>
-                                                    <div className="text-lg font-black text-[#6C5DD3]">৳{course.price || 5000}</div>
+                                                    {course.discountPercentage > 0 && (
+                                                        <div className="text-[10px] text-gray-400 line-through font-bold">৳{course.regularFee || 0}</div>
+                                                    )}
+                                                    <div className="text-lg font-black text-[#6C5DD3]">
+                                                        ৳{course.discountPercentage > 0 
+                                                            ? Math.round((course.regularFee || 0) * (1 - course.discountPercentage / 100))
+                                                            : (course.regularFee || 0)}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
