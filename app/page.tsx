@@ -9,6 +9,7 @@ import SeminarModal from "@/app/components/SeminarModal";
 import TeacherCarousel from "@/app/components/TeacherCarousel";
 import BrandCarousel from "@/app/components/BrandCarousel";
 import TestimonialVideoModal from "@/app/components/TestimonialVideoModal";
+import HomeSkeleton from "@/app/components/HomeSkeleton";
 import { Play } from 'lucide-react';
 
 // Static data removed, fetching from API now.
@@ -19,6 +20,7 @@ export default function RootPage() {
     const [upcomingCourses, setUpcomingCourses] = useState<any[]>([]);
     const [specialPackageCourses, setSpecialPackageCourses] = useState<any[]>([]);
     const [loadingCourses, setLoadingCourses] = useState(true);
+    const [loadingSettings, setLoadingSettings] = useState(true);
     const [allFreeClasses, setAllFreeClasses] = useState<any[]>([]);
     const [freeClasses, setFreeClasses] = useState<any[]>([]);
     const [selectedMode, setSelectedMode] = useState("All");
@@ -75,6 +77,8 @@ export default function RootPage() {
                 }
             } catch (err) {
                 console.error("Error fetching settings", err);
+            } finally {
+                setLoadingSettings(false);
             }
         };
 
@@ -114,7 +118,10 @@ export default function RootPage() {
         <div className="min-h-screen bg-[#F8FAFC] text-[#1A1D1F] flex flex-col">
             <Header />
 
-            <main className="flex-1 flex flex-col items-center w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-8 md:py-12 gap-16">
+            {loadingCourses || loadingSettings ? (
+                <HomeSkeleton />
+            ) : (
+                <main className="flex-1 flex flex-col items-center w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-8 md:py-12 gap-16">
 
                 {/* Hero Section */}
                 <HeroCarousel onOpenModal={() => { setSelectedSeminarTitle("Website Hero Seminar"); setIsSeminarModalOpen(true); }} />
@@ -196,24 +203,7 @@ export default function RootPage() {
                         </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {loadingCourses ? (
-                            [...Array(4)].map((_, i) => (
-                                <div key={i} className="animate-pulse bg-white border border-gray-200 rounded-[20px] overflow-hidden flex flex-col h-[340px]">
-                                    <div className="bg-gray-200 h-[180px] w-full"></div>
-                                    <div className="p-5 flex-1 flex flex-col">
-                                        <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-auto"></div>
-                                        <div className="pt-4 border-t border-gray-100 flex items-center gap-2">
-                                            <div className="w-9 h-9 bg-gray-200 rounded-full"></div>
-                                            <div className="flex-1">
-                                                <div className="h-2 bg-gray-200 rounded w-1/3 mb-1"></div>
-                                                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        ) : upcomingCourses.length > 0 ? (
+                        {upcomingCourses.length > 0 ? (
                             upcomingCourses.map((course, i) => (
                                 <Link href={`/courses/${course.slug || course._id}`} key={course._id || i} className="border border-gray-200 rounded-xl overflow-hidden bg-white flex flex-col group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-300">
                                     <div className="relative h-[180px] bg-gray-100 overflow-hidden">
@@ -618,7 +608,8 @@ export default function RootPage() {
 
                 {/* Brand Carousel Section */}
                 <BrandCarousel />
-            </main>
+                </main>
+            )}
 
             <Footer />
         </div>
