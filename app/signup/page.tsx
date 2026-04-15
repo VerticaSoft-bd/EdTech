@@ -58,12 +58,15 @@ export default function SignupPage() {
                 // Trigger auth event for components listening to login state
                 window.dispatchEvent(new Event('auth-change'));
 
-                if (data.data.role === 'admin') {
-                    router.push('/dashboard/admin');
-                } else if (data.data.role === 'staff') {
-                    router.push('/dashboard/staff');
+                const userRole = data.data?.role;
+                if (userRole === 'student') {
+                    window.location.href = '/student-dashboard';
+                } else if (userRole === 'teacher') {
+                    window.location.href = '/teacher-dashboard';
+                } else if (userRole === 'admin' || userRole === 'staff') {
+                    window.location.href = '/dashboard';
                 } else {
-                    router.push('/student-dashboard');
+                    window.location.href = '/student-dashboard';
                 }
             }
         } catch (err) {

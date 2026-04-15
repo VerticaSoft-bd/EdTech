@@ -47,10 +47,15 @@ export default function LoginPage() {
                 window.dispatchEvent(new Event('auth-change'));
 
                 // Check role and redirect accordingly
-                if (data.data?.role === 'student') {
-                    router.push('/student-dashboard');
+                const userRole = data.data?.role;
+                if (userRole === 'student') {
+                    window.location.href = '/student-dashboard';
+                } else if (userRole === 'teacher') {
+                    window.location.href = '/teacher-dashboard';
+                } else if (userRole === 'admin' || userRole === 'staff') {
+                    window.location.href = '/dashboard';
                 } else {
-                    router.push('/dashboard');
+                    window.location.href = '/dashboard';
                 }
             }
         } catch (err) {
