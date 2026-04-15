@@ -20,6 +20,8 @@ export interface IStudent extends Document {
     mobileNo: string;
     guardianMobileNo: string;
     avatar?: string;
+    appliedCoupon?: string;
+    discountAmount?: number;
     privacyPolicyAccepted: boolean;
     progress: number;
     totalClasses: number;
@@ -63,6 +65,8 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
         mobileNo: { type: String, required: true },
         guardianMobileNo: { type: String, required: true },
         avatar: { type: String },
+        appliedCoupon: { type: String },
+        discountAmount: { type: Number, default: 0 },
         privacyPolicyAccepted: { type: Boolean, required: true, default: false },
         progress: { type: Number, default: 0 },
         totalClasses: { type: Number, default: 0 },

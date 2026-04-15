@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
 import Course from '@/models/Course';
+import Coupon from '@/models/Coupon';
 
 export async function POST(request: Request) {
     try {
@@ -42,6 +43,14 @@ export async function POST(request: Request) {
             ...body,
             courseMode
         });
+
+        // If coupon applied, increment usageCount
+        if (body.appliedCoupon) {
+            await Coupon.findOneAndUpdate(
+                { code: body.appliedCoupon.toUpperCase() },
+                { $inc: { usageCount: 1 } }
+            );
+        }
 
         return NextResponse.json({
             success: true,

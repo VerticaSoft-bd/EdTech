@@ -36,11 +36,17 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
                 mobileNo: student.mobileNo || '',
                 guardianMobileNo: student.guardianMobileNo || '',
                 avatar: student.avatar || '',
+                couponCode: student.appliedCoupon || '',
                 privacyPolicyAccepted: student.privacyPolicyAccepted || false,
                 progress: student.progress || 0,
                 totalClasses: student.totalClasses || 0,
                 attendedClasses: student.attendedClasses || 0,
             });
+            if (student.appliedCoupon) {
+                // If student already has a coupon, we can pre-set it as applied
+                // However, for simplicity in edit, we just show the code.
+                // If they want to change it, they can re-apply.
+            }
             fetchCourses();
         }
     }, [isOpen, student]);
@@ -79,11 +85,19 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
         mobileNo: '',
         guardianMobileNo: '',
         avatar: '',
+        couponCode: '',
         privacyPolicyAccepted: false,
         progress: 0,
         totalClasses: 0,
         attendedClasses: 0,
     });
+
+    const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+    const [appliedCoupon, setAppliedCoupon] = useState<{
+        code: string;
+        discountType: string;
+        discountValue: number;
+    } | null>(null);
 
     if (!isOpen) return null;
 
@@ -103,6 +117,36 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
                     setFormData(prev => ({ ...prev, depositCourseFee: selectedCourse.regularFee.toString() }));
                 }
             }
+        }
+    };
+
+    const handleApplyCoupon = async () => {
+        if (!formData.couponCode) {
+            toast.error("Please enter a coupon code");
+            return;
+        }
+
+        setIsApplyingCoupon(true);
+        try {
+            const res = await fetch('/api/coupons/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: formData.couponCode })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                setAppliedCoupon(data.data);
+                toast.success(data.message);
+            } else {
+                toast.error(data.message);
+                setAppliedCoupon(null);
+            }
+        } catch (error) {
+            console.error("Failed to apply coupon:", error);
+            toast.error("Error applying coupon");
+        } finally {
+            setIsApplyingCoupon(false);
         }
     };
 
@@ -128,7 +172,21 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
         setIsLoading(true);
 
         const selectedCourse = courses.find((c: any) => c.title === formData.courseName);
-        const totalFee = selectedCourse?.regularFee || 0;
+        const regularFee = selectedCourse?.regularFee || 0;
+        
+        let discount = 0;
+        if (appliedCoupon) {
+            if (appliedCoupon.discountType === 'Percentage') {
+                discount = (regularFee * appliedCoupon.discountValue) / 100;
+            } else {
+                discount = appliedCoupon.discountValue;
+            }
+        } else if (student.discountAmount > 0) {
+            // Keep existing discount if no new coupon applied
+            discount = student.discountAmount;
+        }
+
+        const totalFee = Math.max(0, regularFee - discount);
         const paidAmount = Number(formData.depositCourseFee) || 0;
         const dueAmount = Math.max(0, totalFee - paidAmount);
 
@@ -138,6 +196,8 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
             totalCourseFee: totalFee,
             paidAmount: paidAmount,
             dueAmount: dueAmount,
+            appliedCoupon: appliedCoupon?.code || formData.couponCode || '',
+            discountAmount: discount,
         };
         // Remove the frontend-only state key
         delete (submissionPayload as any).depositCourseFee;
@@ -158,8 +218,9 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
 
                 // Reset form
                 setFormData({
-                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', privacyPolicyAccepted: false, progress: 0, totalClasses: 0, attendedClasses: 0,
+                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', couponCode: '', privacyPolicyAccepted: false, progress: 0, totalClasses: 0, attendedClasses: 0,
                 });
+                setAppliedCoupon(null);
 
                 if (onSuccess) onSuccess();
                 onClose();
@@ -175,7 +236,20 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
     };
 
     const selectedCourse = courses.find((c: any) => c.title === formData.courseName);
-    const totalFee = selectedCourse?.regularFee || 0;
+    const regularFee = selectedCourse?.regularFee || 0;
+    
+    let currentDiscount = 0;
+    if (appliedCoupon) {
+        if (appliedCoupon.discountType === 'Percentage') {
+            currentDiscount = (regularFee * appliedCoupon.discountValue) / 100;
+        } else {
+            currentDiscount = appliedCoupon.discountValue;
+        }
+    } else if (student.discountAmount > 0) {
+        currentDiscount = student.discountAmount;
+    }
+
+    const totalFee = Math.max(0, regularFee - currentDiscount);
     const paidAmount = Number(formData.depositCourseFee) || 0;
     const dueAmount = Math.max(0, totalFee - paidAmount);
 
@@ -382,13 +456,50 @@ export default function EditStudentModal({ isOpen, onClose, onSuccess, student }
                                 <div className="space-y-2 col-span-1 md:col-span-2">
                                     <label className="text-sm font-bold text-gray-700">Course Fee Deposit <span className="text-red-500">*</span></label>
                                     <input type="number" name="depositCourseFee" value={formData.depositCourseFee} onChange={handleChange} required placeholder="Enter deposit amount" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    
+                                    {/* Coupon Code Field */}
+                                    <div className="mt-4">
+                                        <label className="text-sm font-bold text-gray-700">Coupon Code</label>
+                                        <div className="flex gap-2 mt-1">
+                                            <input 
+                                                type="text" 
+                                                name="couponCode" 
+                                                value={formData.couponCode} 
+                                                onChange={handleChange} 
+                                                placeholder="Enter coupon code" 
+                                                className="flex-1 px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F] uppercase" 
+                                            />
+                                            <button 
+                                                type="button"
+                                                onClick={handleApplyCoupon}
+                                                disabled={isApplyingCoupon || !formData.couponCode}
+                                                className="px-6 py-3 bg-[#1A1D1F] text-white rounded-[16px] font-bold hover:bg-black transition-all disabled:opacity-50"
+                                            >
+                                                {isApplyingCoupon ? '...' : 'Apply'}
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     {formData.courseName && (
-                                        <div className="mt-3 p-4 bg-white rounded-[16px] border border-gray-200">
-                                            <div className="flex justify-between items-center mb-2 pb-2 border-b border-gray-100">
-                                                <span className="text-sm font-medium text-gray-600">Total Course Fee</span>
-                                                <span className="text-sm font-bold text-[#1A1D1F]">৳{totalFee}</span>
+                                        <div className="mt-4 p-5 bg-white rounded-[20px] border border-gray-100 shadow-sm space-y-3">
+                                            <div className="flex justify-between items-center text-gray-500">
+                                                <span className="text-sm font-medium">Regular Fee</span>
+                                                <span className="text-sm font-bold">৳{regularFee}</span>
                                             </div>
-                                            <div className="flex justify-between items-center mb-2">
+                                            
+                                            {currentDiscount > 0 && (
+                                                <div className="flex justify-between items-center text-green-600 bg-green-50 p-2 rounded-lg">
+                                                    <span className="text-sm font-medium">Discount ({appliedCoupon?.code || student.appliedCoupon || 'Applied'})</span>
+                                                    <span className="text-sm font-bold">-৳{currentDiscount}</span>
+                                                </div>
+                                            )}
+
+                                            <div className="flex justify-between items-center py-2 border-t border-gray-100">
+                                                <span className="text-sm font-bold text-[#1A1D1F]">Total Course Fee</span>
+                                                <span className="text-lg font-extrabold text-[#6C5DD3]">৳{totalFee}</span>
+                                            </div>
+
+                                            <div className="flex justify-between items-center pt-2 border-t border-dashed border-gray-100">
                                                 <span className="text-sm font-medium text-gray-600">Paid Amount</span>
                                                 <span className="text-sm font-bold text-green-600">৳{paidAmount}</span>
                                             </div>
