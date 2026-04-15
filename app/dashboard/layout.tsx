@@ -2,10 +2,24 @@ import type { Metadata } from "next";
 import Sidebar from "../components/Sidebar";
 import DashboardTopBar from "../components/admin/DashboardTopBar";
 
-export const metadata: Metadata = {
-    title: "Admin Dashboard | Streva",
-    description: "Futuristic EdTech Admin Dashboard",
-};
+import SiteSettings from "@/models/SiteSettings";
+import connectDB from "@/lib/db";
+
+export async function generateMetadata(): Promise<Metadata> {
+    try {
+        await connectDB();
+        const settings = await SiteSettings.findOne();
+        const siteTitle = settings?.siteTitle || "Youthins";
+        return {
+            title: "Admin Dashboard",
+            description: "Futuristic EdTech Admin Dashboard",
+        };
+    } catch {
+        return {
+            title: "Admin Dashboard | Youthins",
+        };
+    }
+}
 
 export default function DashboardLayout({
     children,

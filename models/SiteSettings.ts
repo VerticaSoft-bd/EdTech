@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const SiteSettingsSchema = new mongoose.Schema({
     siteName: { type: String, default: 'Streva' },
+    siteTitle: { type: String, default: 'Youthins' },
     siteTagline: { type: String, default: 'Education Platform' },
     logo: { type: String, default: '/images/logo.png' },
     favicon: { type: String, default: '/favicon.ico' },

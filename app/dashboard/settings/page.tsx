@@ -6,6 +6,7 @@ import { toast, Toaster } from 'react-hot-toast';
 interface ISiteSettings {
     _id?: string;
     siteName: string;
+    siteTitle: string;
     siteTagline: string;
     logo: string;
     favicon: string;
@@ -32,6 +33,7 @@ interface ISiteSettings {
 
 const DEFAULT_SETTINGS: ISiteSettings = {
     siteName: 'Streva',
+    siteTitle: 'Youthins',
     siteTagline: 'Education Platform',
     logo: '/images/logo.png',
     favicon: '/favicon.ico',
@@ -171,11 +173,16 @@ export default function SettingsPage() {
                         <p className="text-xs text-gray-400 font-medium">Your brand name and tagline</p>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                         <label className={labelClasses}>Site Name *</label>
                         <input type="text" value={settings.siteName} onChange={e => setSettings({ ...settings, siteName: e.target.value })}
                             className={inputClasses} placeholder="e.g. Streva" />
+                    </div>
+                    <div className="space-y-2">
+                        <label className={labelClasses}>Website Title (SEO)</label>
+                        <input type="text" value={settings.siteTitle} onChange={e => setSettings({ ...settings, siteTitle: e.target.value })}
+                            className={inputClasses} placeholder="e.g. Youthins" />
                     </div>
                     <div className="space-y-2">
                         <label className={labelClasses}>Tagline</label>

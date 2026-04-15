@@ -2,27 +2,21 @@ const mongoose = require('mongoose');
 
 const MONGODB_URI = 'mongodb+srv://LMHasib:LMShsb@cluster0.db2ry.mongodb.net/ed-tech';
 
-// Define schemas to match
-const CourseSchema = new mongoose.Schema({ title: String });
-const Course = mongoose.models.Course || mongoose.model('Course', CourseSchema);
-
-const BatchSchema = new mongoose.Schema({ name: String });
-const Batch = mongoose.models.Batch || mongoose.model('Batch', BatchSchema);
-
 const SiteSettingsSchema = new mongoose.Schema({
-    specialPackageCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]
-});
+    siteName: { type: String, default: 'Streva' },
+    siteTitle: { type: String, default: 'Youthins' },
+    siteTagline: { type: String, default: 'Education Platform' },
+    favicon: { type: String, default: '/favicon.ico' },
+}, { strict: false });
+
 const SiteSettings = mongoose.models.SiteSettings || mongoose.model('SiteSettings', SiteSettingsSchema);
 
 async function checkSettings() {
     try {
         await mongoose.connect(MONGODB_URI);
         console.log('Connected to DB');
-        const settings = await SiteSettings.findOne().populate({
-            path: 'specialPackageCourses',
-            populate: { path: 'assignedBatches' }
-        });
-        console.log('Settings:', JSON.stringify(settings, null, 2));
+        const settings = await SiteSettings.findOne();
+        console.log('Settings in DB:', JSON.stringify(settings, null, 2));
         await mongoose.disconnect();
     } catch (err) {
         console.error('Error:', err);

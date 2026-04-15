@@ -8,10 +8,32 @@ const hindSiliguri = Hind_Siliguri({
   variable: "--font-hind-siliguri",
 });
 
-export const metadata: Metadata = {
-  title: "Youthins",
-  description: "The best platform for learning and education",
-};
+import SiteSettings from "@/models/SiteSettings";
+import connectDB from "@/lib/db";
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    await connectDB();
+    const settings = await SiteSettings.findOne();
+    const siteTitle = settings?.siteTitle || "Youthins";
+    return {
+      title: {
+        template: `%s | ${siteTitle}`,
+        default: siteTitle,
+      },
+      description: settings?.siteTagline || "The best platform for learning and education",
+      icons: {
+        icon: settings?.favicon || "/favicon.ico",
+      }
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Youthins",
+      description: "The best platform for learning and education",
+    };
+  }
+}
 
 import { Toaster } from 'react-hot-toast';
 

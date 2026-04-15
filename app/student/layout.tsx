@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
 import StudentSidebar from "../components/StudentSidebar";
 
-export const metadata: Metadata = {
-    title: "Student Dashboard | Streva",
-    description: "Futuristic EdTech Student Dashboard",
-};
+import SiteSettings from "@/models/SiteSettings";
+import connectDB from "@/lib/db";
+
+export async function generateMetadata(): Promise<Metadata> {
+    try {
+        await connectDB();
+        const settings = await SiteSettings.findOne();
+        const siteTitle = settings?.siteTitle || "Youthins";
+        return {
+            title: "Student Dashboard",
+            description: "Futuristic EdTech Student Dashboard",
+        };
+    } catch {
+        return {
+            title: "Student Dashboard | Youthins",
+        };
+    }
+}
 
 export default function StudentLayout({
     children,
