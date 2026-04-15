@@ -95,9 +95,6 @@ export default function HeroSlidePreview({ slide, isActive, onOpenModal }: HeroS
                     />
                     {/* Glass overlay */}
                     <div className="absolute inset-0 bg-gradient-to-r from-[#0F1117] via-[#0F1117]/40 to-transparent"></div>
-
-                    {/* Scanning line effect */}
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-scan"></div>
                 </div>
 
                 {/* AI Badge */}

@@ -116,15 +116,8 @@ export default function HeroCarousel({ onOpenModal }: { onOpenModal: () => void 
                     from { opacity: 0; transform: translateY(10px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
-                @keyframes scan {
-                    0% { top: -10%; }
-                    100% { top: 110%; }
-                }
                 .animate-fade-in {
                     animation: fade-in 0.6s ease-out forwards;
-                }
-                .animate-scan {
-                    animation: scan 4s linear infinite;
                 }
             `}</style>
         </section>
