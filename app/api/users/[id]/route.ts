@@ -88,9 +88,28 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
             await deleteFromS3(user.image);
         }
 
+        // Smart Approach: If deleting a student user, also delete their Student enrollment record
+        if (user.role === 'student') {
+            const Student = (await import('@/models/Student')).default;
+            const studentRecord = await Student.findOne({ email: user.email });
+            if (studentRecord) {
+                // Delete avatar if different from user image
+                if (studentRecord.avatar && studentRecord.avatar !== user.image) {
+                    await deleteFromS3(studentRecord.avatar);
+                }
+                
+                // Cleanup attendance
+                const Attendance = (await import('@/models/Attendance')).default;
+                await Attendance.deleteMany({ student: studentRecord._id });
+                
+                // Delete student record
+                await Student.findByIdAndDelete(studentRecord._id);
+            }
+        }
+
         await User.findByIdAndDelete(id);
 
-        return NextResponse.json({ success: true, message: 'User deleted successfully' });
+        return NextResponse.json({ success: true, message: 'User and related records deleted successfully' });
     } catch (error: any) {
         console.error("Delete User Error:", error);
         return NextResponse.json({ success: false, message: 'Failed to delete user' }, { status: 500 });

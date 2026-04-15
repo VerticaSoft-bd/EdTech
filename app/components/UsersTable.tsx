@@ -13,9 +13,10 @@ interface UsersTableProps {
     loading: boolean;
     role: string;
     onEdit?: (user: User) => void;
+    onDelete?: (user: User) => void;
 }
 
-export default function UsersTable({ users, loading, role, onEdit }: UsersTableProps) {
+export default function UsersTable({ users, loading, role, onEdit, onDelete }: UsersTableProps) {
     if (loading) {
         return (
             <div className="bg-white rounded-[24px] border border-gray-100 p-12 text-center shadow-sm">
@@ -65,10 +66,10 @@ export default function UsersTable({ users, loading, role, onEdit }: UsersTableP
                             <tr key={user._id} className="hover:bg-gray-50/50 transition-colors">
                                 <td className="py-4 px-6">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6C5DD3]/20 to-[#6C5DD3]/10 flex flex-col items-center justify-center text-[#6C5DD3] font-bold shadow-inner">
-                                            {user.name.charAt(0).toUpperCase()}
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6C5DD3]/20 to-[#6C5DD3]/10 flex flex-col items-center justify-center text-[#6C5DD3] font-bold shadow-inner" title={user.name}>
+                                            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                                         </div>
-                                        <div className="font-semibold text-[#1A1D1F]">{user.name}</div>
+                                        <div className="font-semibold text-[#1A1D1F]">{user.name || 'N/A'}</div>
                                     </div>
                                 </td>
                                 <td className="py-4 px-6 text-gray-500 text-sm">
@@ -83,14 +84,30 @@ export default function UsersTable({ users, loading, role, onEdit }: UsersTableP
                                     {formatDate(user.createdAt)}
                                 </td>
                                 <td className="py-4 px-6 text-right">
-                                    <button 
-                                        onClick={() => onEdit && onEdit(user)}
-                                        className="p-2 text-gray-400 hover:text-[#6C5DD3] transition-colors rounded-xl hover:bg-[#6C5DD3]/10">
-                                        <svg width="18" height="18" viewBox="0 0  24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                        </svg>
-                                    </button>
+                                    <div className="flex items-center justify-end gap-2">
+                                        <button 
+                                            onClick={() => onEdit && onEdit(user)}
+                                            className="p-2 text-gray-400 hover:text-[#6C5DD3] transition-colors rounded-xl hover:bg-[#6C5DD3]/10"
+                                            title="Edit User"
+                                        >
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                            </svg>
+                                        </button>
+                                        <button 
+                                            onClick={() => onDelete && onDelete(user)}
+                                            className="p-2 text-gray-400 hover:text-[#FF4C4C] transition-colors rounded-xl hover:bg-[#FF4C4C]/10"
+                                            title="Delete User"
+                                        >
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

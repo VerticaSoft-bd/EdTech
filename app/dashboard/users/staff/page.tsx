@@ -36,6 +36,25 @@ export default function StaffUsersPage() {
         fetchUsers();
     }, [fetchUsers]);
 
+    const handleDelete = async (user: any) => {
+        if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
+
+        try {
+            const res = await fetch(`/api/users/${user._id}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+            if (data.success) {
+                fetchUsers();
+            } else {
+                alert(data.message || "Failed to delete user");
+            }
+        } catch (error) {
+            console.error("Delete user error", error);
+            alert("An error occurred while deleting user");
+        }
+    };
+
     if (currentUser && currentUser.role !== 'admin') {
         return (
             <div className="bg-white rounded-[24px] border border-red-100 p-12 text-center shadow-sm">
@@ -71,6 +90,7 @@ export default function StaffUsersPage() {
                     setEditingUser(user);
                     setIsModalOpen(true);
                 }} 
+                onDelete={handleDelete}
             />
 
             <CreateUserModal

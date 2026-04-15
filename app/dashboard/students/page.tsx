@@ -51,6 +51,23 @@ export default function StudentsPage() {
         }
     };
 
+    const handleDeleteStudent = async (id: string) => {
+        try {
+            const res = await fetch(`/api/students/${id}`, {
+                method: 'DELETE',
+            });
+            const data = await res.json();
+            if (data.success) {
+                fetchStudents();
+            } else {
+                alert(data.message || "Failed to delete student");
+            }
+        } catch (error) {
+            console.error("Delete Student Error:", error);
+            alert("An error occurred while deleting student");
+        }
+    };
+
     return (
         <div className="space-y-6 pb-8">
             <div className="flex items-center justify-end">
@@ -196,6 +213,19 @@ export default function StudentsPage() {
                                                         >
                                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                                                             Course History
+                                                        </button>
+                                                        <div className="h-px bg-gray-100 my-1 mx-2"></div>
+                                                        <button
+                                                            onClick={() => {
+                                                                if (confirm(`Are you sure you want to delete ${name}? This will also delete their account and history.`)) {
+                                                                    handleDeleteStudent(student._id || student.id);
+                                                                }
+                                                                setOpenActionMenuId(null);
+                                                            }}
+                                                            className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                        >
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                                            Delete Student
                                                         </button>
                                                     </div>
                                                 </>

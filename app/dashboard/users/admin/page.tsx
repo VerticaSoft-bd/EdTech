@@ -27,6 +27,25 @@ export default function AdminUsersPage() {
         fetchUsers();
     }, [fetchUsers]);
 
+    const handleDelete = async (user: any) => {
+        if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
+
+        try {
+            const res = await fetch(`/api/users/${user._id}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+            if (data.success) {
+                fetchUsers();
+            } else {
+                alert(data.message || "Failed to delete user");
+            }
+        } catch (error) {
+            console.error("Delete user error", error);
+            alert("An error occurred while deleting user");
+        }
+    };
+
     return (
         <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-end gap-3">
@@ -39,7 +58,12 @@ export default function AdminUsersPage() {
                 </button>
             </div>
 
-            <UsersTable users={users} loading={loading} role="admin" />
+            <UsersTable 
+                users={users} 
+                loading={loading} 
+                role="admin" 
+                onDelete={handleDelete}
+            />
 
             <CreateUserModal
                 role="admin"
