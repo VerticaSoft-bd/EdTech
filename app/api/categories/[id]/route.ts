@@ -1,35 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Category from '@/models/Category';
-import AWS from 'aws-sdk';
-
-// Configure AWS S3
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-});
-
-// Helper function to extract S3 Key from URL
-function getS3KeyFromUrl(url: string, bucketName: string) {
-    if (!url) return null;
-
-    try {
-        const urlObj = new URL(url);
-        // The pathname usually looks like /uploads/folder/filename.jpg
-        // But if the bucket name is part of the host (bucket.s3.region.amazonaws.com)
-        // Then pathname is just /uploads/folder/filename.jpg
-        // We decode it to handle spaces or special characters
-        let key = decodeURIComponent(urlObj.pathname);
-        if (key.startsWith('/')) {
-            key = key.substring(1); // remove leading slash
-        }
-        return key;
-    } catch (e) {
-        console.error("Failed to parse S3 URL:", url, e);
-        return null; // Invalid URL
-    }
-}
+import { deleteFromS3 } from '@/lib/s3-client';
 
 // DELETE a single category
 export async function DELETE(
@@ -48,25 +20,7 @@ export async function DELETE(
 
         // 2. Delete image from S3 if it exists
         if (category.thumbnail) {
-            const bucketName = process.env.AWS_BUCKET_NAME as string;
-            const key = getS3KeyFromUrl(category.thumbnail, bucketName);
-
-            if (key) {
-                console.log(`Attempting to delete image from S3. Bucket: ${bucketName}, Key: ${key}`);
-                try {
-                    await s3.deleteObject({
-                        Bucket: bucketName,
-                        Key: key
-                    }).promise();
-                    console.log(`Successfully deleted image from S3: ${key}`);
-                } catch (s3Error: any) {
-                    console.error("====== S3 Delete Error ======");
-                    console.error("Failed to delete old image from S3:", s3Error.message);
-                    // Decide if S3 failure should block DB deletion. Usually, we log and proceed to not break the UI.
-                }
-            } else {
-                console.log("Could not extract S3 key from thumbnail URL:", category.thumbnail);
-            }
+            await deleteFromS3(category.thumbnail);
         }
 
         // 3. Delete category from Database
@@ -100,20 +54,7 @@ export async function PUT(
 
         // 2. Check if thumbnail was updated/removed and delete the old one from S3
         if (existingCategory.thumbnail && existingCategory.thumbnail !== thumbnail) {
-            const bucketName = process.env.AWS_BUCKET_NAME as string;
-            const key = getS3KeyFromUrl(existingCategory.thumbnail, bucketName);
-
-            if (key) {
-                console.log(`Thumbnail changed! Deleting old image from S3. Key: ${key}`);
-                try {
-                    await s3.deleteObject({
-                        Bucket: bucketName,
-                        Key: key
-                    }).promise();
-                } catch (s3Error: any) {
-                    console.error("Failed to delete replaced image from S3:", s3Error.message);
-                }
-            }
+            await deleteFromS3(existingCategory.thumbnail);
         }
 
         // 3. Update the database

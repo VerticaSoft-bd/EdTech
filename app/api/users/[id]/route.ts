@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import User from '@/models/User';
+import { deleteFromS3 } from '@/lib/s3-client';
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -25,6 +26,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         const body = await request.json();
         
         await connectToDatabase();
+
+        const existingUser = await User.findById(id);
+        if (!existingUser) {
+            return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+        }
         
         const updateData: any = {};
         if (body.name) updateData.name = body.name;
@@ -47,18 +53,46 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         if (body.education !== undefined) updateData.education = body.education;
         if (body.designation !== undefined) updateData.designation = body.designation;
         if (body.bio !== undefined) updateData.bio = body.bio;
-        if (body.image !== undefined) updateData.image = body.image;
+        
+        // Handle profile image update
+        if (body.image !== undefined) {
+            if (existingUser.image && existingUser.image !== body.image) {
+                await deleteFromS3(existingUser.image);
+            }
+            updateData.image = body.image;
+        }
+
         if (body.expertise !== undefined) updateData.expertise = Array.isArray(body.expertise) ? body.expertise : (typeof body.expertise === 'string' ? body.expertise.split(',').map((s: string) => s.trim()) : []);
         
         const user = await User.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select('-password');
-        
-        if (!user) {
-            return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
-        }
         
         return NextResponse.json({ success: true, message: 'User updated successfully', data: user });
     } catch (error: any) {
         console.error("Update User Error:", error);
         return NextResponse.json({ success: false, message: error.message || 'Error updating user' }, { status: 500 });
+    }
+}
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const { id } = await params;
+        await connectToDatabase();
+
+        const user = await User.findById(id);
+        if (!user) {
+            return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+        }
+
+        // Cleanup profile image
+        if (user.image) {
+            await deleteFromS3(user.image);
+        }
+
+        await User.findByIdAndDelete(id);
+
+        return NextResponse.json({ success: true, message: 'User deleted successfully' });
+    } catch (error: any) {
+        console.error("Delete User Error:", error);
+        return NextResponse.json({ success: false, message: 'Failed to delete user' }, { status: 500 });
     }
 }

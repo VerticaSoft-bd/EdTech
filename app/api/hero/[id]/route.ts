@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import HeroSlide from '@/models/HeroSlide';
+import { deleteFromS3 } from '@/lib/s3-client';
 
 export async function GET(
     request: Request,
@@ -28,10 +29,18 @@ export async function PATCH(
         const { id } = await params;
         const body = await request.json();
         await connectToDatabase();
-        const updatedSlide = await HeroSlide.findByIdAndUpdate(id, body, { new: true });
-        if (!updatedSlide) {
+
+        const existingSlide = await HeroSlide.findById(id);
+        if (!existingSlide) {
             return NextResponse.json({ success: false, message: 'Slide not found' }, { status: 404 });
         }
+
+        // Handle image update
+        if (body.image && body.image !== existingSlide.image) {
+            await deleteFromS3(existingSlide.image);
+        }
+
+        const updatedSlide = await HeroSlide.findByIdAndUpdate(id, body, { new: true });
         return NextResponse.json({ success: true, data: updatedSlide });
     } catch (error: any) {
         console.error("Update Hero Slide Error:", error);
@@ -46,10 +55,18 @@ export async function DELETE(
     try {
         const { id } = await params;
         await connectToDatabase();
-        const deletedSlide = await HeroSlide.findByIdAndDelete(id);
-        if (!deletedSlide) {
+
+        const existingSlide = await HeroSlide.findById(id);
+        if (!existingSlide) {
             return NextResponse.json({ success: false, message: 'Slide not found' }, { status: 404 });
         }
+
+        // Delete image from S3
+        if (existingSlide.image) {
+            await deleteFromS3(existingSlide.image);
+        }
+
+        await HeroSlide.findByIdAndDelete(id);
         return NextResponse.json({ success: true, message: 'Slide deleted successfully' });
     } catch (error: any) {
         console.error("Delete Hero Slide Error:", error);

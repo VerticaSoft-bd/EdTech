@@ -4,45 +4,7 @@ import connectDB from '@/lib/db';
 import SiteSettings from '@/models/SiteSettings';
 import Course from '@/models/Course';
 import Batch from '@/models/Batch';
-import AWS from 'aws-sdk';
-
-// Configure AWS S3
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-});
-
-// Helper function to extract S3 Key from URL
-function getS3KeyFromUrl(url: string) {
-    if (!url) return null;
-    try {
-        const urlObj = new URL(url);
-        let key = decodeURIComponent(urlObj.pathname);
-        if (key.startsWith('/')) {
-            key = key.substring(1);
-        }
-        return key;
-    } catch (e) {
-        return null;
-    }
-}
-
-async function deleteFromS3(url: string) {
-    const key = getS3KeyFromUrl(url);
-    if (!key) return;
-
-    try {
-        const bucketName = process.env.AWS_BUCKET_NAME as string;
-        await s3.deleteObject({
-            Bucket: bucketName,
-            Key: key
-        }).promise();
-        console.log(`Successfully deleted from S3: ${key}`);
-    } catch (error: any) {
-        console.error(`Failed to delete from S3 (${key}):`, error.message);
-    }
-}
+import { deleteFromS3 } from '@/lib/s3-client';
 
 export const dynamic = 'force-dynamic';
 
@@ -133,6 +95,19 @@ export async function PUT(request: Request) {
             }
             if (body.favicon && body.favicon !== currentSettings.favicon) {
                 if (currentSettings.favicon && !currentSettings.favicon.startsWith('/')) await deleteFromS3(currentSettings.favicon);
+            }
+
+            // Check for brands
+            if (body.brands && Array.isArray(body.brands)) {
+                const oldBrands = currentSettings.brands || [];
+                const newBrands = body.brands;
+
+                for (const oldB of oldBrands) {
+                    const newB = newBrands.find((b: any) => b._id && b._id === oldB._id.toString());
+                    if (!newB || (oldB.logo && oldB.logo !== newB.logo)) {
+                        if (oldB.logo) await deleteFromS3(oldB.logo);
+                    }
+                }
             }
         }
 

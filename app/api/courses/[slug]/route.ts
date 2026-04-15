@@ -4,7 +4,15 @@ import connectToDatabase from '@/lib/db';
 import Course from '@/models/Course';
 import User from '@/models/User';
 import Batch from '@/models/Batch';
+import { deleteFromS3, handleMediaUpdate, cleanupMedia } from '@/lib/s3-client';
 
+const COURSE_MEDIA_FIELDS = [
+    'thumbnail',
+    'introVideo',
+    'instructorBannerUrl',
+    'aiBannerUrl',
+    'aiLearningBannerUrl'
+];
 
 export async function GET(
     request: Request,
@@ -13,8 +21,6 @@ export async function GET(
     try {
         const { slug } = await params;
         await connectToDatabase();
-
-
 
         let course;
         // Check if slug is actually a valid MongoDB ObjectId
@@ -80,6 +86,20 @@ export async function PATCH(
             );
         }
 
+        // Handle Media Cleanup
+        await handleMediaUpdate(course, body, COURSE_MEDIA_FIELDS);
+
+        // Handle complex media fields (arrays)
+        if (body.tools && Array.isArray(body.tools)) {
+            const oldTools = (course as any).tools || [];
+            for (const oldTool of oldTools) {
+                const newTool = body.tools.find((t: any) => t._id && t._id === oldTool._id.toString());
+                if (!newTool || (oldTool.image && oldTool.image !== newTool.image)) {
+                    if (oldTool.image) await deleteFromS3(oldTool.image);
+                }
+            }
+        }
+
         // Update fields - filter out internal/auto-managed fields
         const excludedFields = ['id', '_id', '__v', 'createdAt', 'updatedAt', 'slug'];
         Object.keys(body).forEach((key) => {
@@ -117,11 +137,11 @@ export async function DELETE(
 
         let course;
         if (mongoose.isValidObjectId(slug)) {
-            course = await Course.findByIdAndDelete(slug);
+            course = await Course.findById(slug);
         }
 
         if (!course) {
-            course = await Course.findOneAndDelete({ slug });
+            course = await Course.findOne({ slug });
         }
 
         if (!course) {
@@ -130,6 +150,19 @@ export async function DELETE(
                 { status: 404 }
             );
         }
+
+        // Cleanup all media from S3
+        await cleanupMedia(course, COURSE_MEDIA_FIELDS);
+        
+        // Cleanup tools images
+        if (course.tools && Array.isArray(course.tools)) {
+            for (const tool of course.tools) {
+                if (tool.image) await deleteFromS3(tool.image);
+            }
+        }
+
+        // Delete from DB
+        await Course.findByIdAndDelete(course._id);
 
         return NextResponse.json({
             success: true,
