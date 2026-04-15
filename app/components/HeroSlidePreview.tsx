@@ -108,23 +108,6 @@ export default function HeroSlidePreview({ slide, isActive, onOpenModal }: HeroS
                     </div>
                 </div>
 
-                {/* Floating elements */}
-                <div className={`hidden md:block absolute bottom-12 right-12 bg-white/[0.05] backdrop-blur-2xl p-6 rounded-2xl shadow-2xl border border-white/10 transition-all duration-1000 delay-500 max-w-[280px] ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                    <div className="flex flex-col gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shadow-lg">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
-                            </div>
-                            <div>
-                                <p className="text-[10px] uppercase tracking-wider font-extrabold text-blue-400">Security Grade</p>
-                                <p className="text-base font-black text-white leading-tight">ISO Certified Learning</p>
-                            </div>
-                        </div>
-                        <p className="text-xs text-gray-400 leading-relaxed">
-                            Our curriculum is vetted by industry leaders and powered by adaptive AI technologies.
-                        </p>
-                    </div>
-                </div>
             </div>
         </div>
     );
