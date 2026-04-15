@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Coupon from '@/models/Coupon';
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         const body = await request.json();
 
         await connectToDatabase();
@@ -25,9 +25,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const { id } = params;
+        const { id } = await params;
         await connectToDatabase();
         const deletedCoupon = await Coupon.findByIdAndDelete(id);
         
