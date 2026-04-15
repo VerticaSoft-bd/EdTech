@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import CreateUserModal from "@/app/components/CreateUserModal";
 import UsersTable from "@/app/components/UsersTable";
+import { showToast } from "@/lib/toast";
 
 export default function StaffUsersPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,22 +38,35 @@ export default function StaffUsersPage() {
     }, [fetchUsers]);
 
     const handleDelete = async (user: any) => {
-        if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
+        showToast.confirm(
+            `Are you sure you want to delete ${user.name}? This action cannot be undone.`,
+            async () => {
+                const loadingToast = showToast.loading("Deleting staff...");
+                try {
+                    const res = await fetch(`/api/users/${user._id}`, {
+                        method: "DELETE",
+                    });
+                    const data = await res.json();
+                    showToast.dismiss(loadingToast);
 
-        try {
-            const res = await fetch(`/api/users/${user._id}`, {
-                method: "DELETE",
-            });
-            const data = await res.json();
-            if (data.success) {
-                fetchUsers();
-            } else {
-                alert(data.message || "Failed to delete user");
+                    if (data.success) {
+                        showToast.success("Staff member deleted successfully");
+                        fetchUsers();
+                    } else {
+                        showToast.error(data.message || "Failed to delete user");
+                    }
+                } catch (error) {
+                    showToast.dismiss(loadingToast);
+                    console.error("Delete user error", error);
+                    showToast.error("An error occurred while deleting user");
+                }
+            },
+            {
+                title: "Delete Staff",
+                confirmText: "Delete",
+                type: 'danger'
             }
-        } catch (error) {
-            console.error("Delete user error", error);
-            alert("An error occurred while deleting user");
-        }
+        );
     };
 
     if (currentUser && currentUser.role !== 'admin') {

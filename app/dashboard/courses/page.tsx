@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+import { showToast } from "@/lib/toast";
+
 const ITEMS_PER_PAGE = 6;
 
 // Function to deterministically map an index to a gradient for dynamic courses
@@ -64,25 +66,34 @@ export default function CoursesPage() {
     }, [filterType, searchQuery]);
 
     const handleDelete = async (courseId: string, courseTitle: string) => {
-        if (!window.confirm(`Are you sure you want to delete the course "${courseTitle}"? This action cannot be undone.`)) {
-            return;
-        }
+        showToast.confirm(
+            `Are you sure you want to delete the course "${courseTitle}"? This action cannot be undone.`,
+            async () => {
+                const loadingToast = showToast.loading("Deleting course...");
+                try {
+                    const res = await fetch(`/api/courses/${courseId}`, {
+                        method: 'DELETE',
+                    });
+                    const data = await res.json();
+                    showToast.dismiss(loadingToast);
 
-        try {
-            const res = await fetch(`/api/courses/${courseId}`, {
-                method: 'DELETE',
-            });
-            const data = await res.json();
-
-            if (res.ok && data.success) {
-                // Remove the deleted course from state
-                setCourses(courses.filter(c => c._id !== courseId));
-            } else {
-                setError(data.message || 'Failed to delete course');
+                    if (res.ok && data.success) {
+                        showToast.success("Course deleted successfully");
+                        setCourses(courses.filter(c => c._id !== courseId));
+                    } else {
+                        showToast.error(data.message || 'Failed to delete course');
+                    }
+                } catch (err: any) {
+                    showToast.dismiss(loadingToast);
+                    showToast.error('An error occurred while deleting the course.');
+                }
+            },
+            {
+                title: "Delete Course",
+                confirmText: "Delete",
+                type: 'danger'
             }
-        } catch (err: any) {
-            setError('An error occurred while deleting the course.');
-        }
+        );
     };
 
     const handlePageChange = (page: number) => {

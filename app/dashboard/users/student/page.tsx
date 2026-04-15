@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import CreateStudentModal from "@/app/components/CreateStudentModal";
 import UsersTable from "@/app/components/UsersTable";
+import { showToast } from "@/lib/toast";
 
 export default function StudentUsersPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,22 +29,35 @@ export default function StudentUsersPage() {
     }, [fetchUsers]);
 
     const handleDelete = async (user: any) => {
-        if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
-
-        try {
-            const res = await fetch(`/api/users/${user._id}`, {
-                method: "DELETE",
-            });
-            const data = await res.json();
-            if (data.success) {
-                fetchUsers();
-            } else {
-                alert(data.message || "Failed to delete user");
+        showToast.confirm(
+            `Are you sure you want to delete ${user.name}? This will also remove their account and history.`,
+            async () => {
+                const loadingToast = showToast.loading("Deleting user...");
+                try {
+                    const res = await fetch(`/api/users/${user._id}`, {
+                        method: "DELETE",
+                    });
+                    const data = await res.json();
+                    showToast.dismiss(loadingToast);
+                    
+                    if (data.success) {
+                        showToast.success("User deleted successfully");
+                        fetchUsers();
+                    } else {
+                        showToast.error(data.message || "Failed to delete user");
+                    }
+                } catch (error) {
+                    showToast.dismiss(loadingToast);
+                    console.error("Delete user error", error);
+                    showToast.error("An error occurred while deleting user");
+                }
+            },
+            { 
+                title: "Delete User", 
+                confirmText: "Delete", 
+                type: 'danger' 
             }
-        } catch (error) {
-            console.error("Delete user error", error);
-            alert("An error occurred while deleting user");
-        }
+        );
     };
 
     return (

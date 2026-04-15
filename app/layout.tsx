@@ -48,7 +48,37 @@ export default function RootLayout({
         className={`${hindSiliguri.className} antialiased`}
         suppressHydrationWarning
       >
-        <Toaster position="top-right" />
+        <Toaster 
+          position="bottom-right"
+          reverseOrder={false}
+          gutter={8}
+          toastOptions={{
+            duration: 5000,
+            style: {
+              background: '#1A1D1F',
+              color: '#fff',
+              borderRadius: '16px',
+              padding: '16px 24px',
+              fontSize: '14px',
+              fontWeight: '500',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            },
+            success: {
+              iconTheme: {
+                primary: '#4ADE80',
+                secondary: '#fff',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: '#FF4C4C',
+                secondary: '#fff',
+              },
+              duration: 4000,
+            },
+          }}
+        />
         {children}
       </body>
     </html>
