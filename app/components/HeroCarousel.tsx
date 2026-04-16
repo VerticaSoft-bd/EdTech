@@ -6,33 +6,33 @@ import HeroSlidePreview from './HeroSlidePreview';
 const FALLBACK_SLIDES = [
     {
         tag: "NEXT-GEN LEARNING",
-        title: "Master AI-Driven Development",
-        highlight: "AI-Driven",
-        description: "Harness the power of Artificial Intelligence to build faster, smarter, and more efficient applications.",
+        title: "AI শিখুন, এগিয়ে থাকুন",
+        highlight: "AI শিখুন",
+        description: "ক্যারিয়ারে এগিয়ে থাকতে এবং অর্থ উপার্জনে — AI-এর কোনো বিকল্প নেই",
         primaryBtn: "Browse Courses",
         secondaryBtn: "Free AI Workshop",
-        image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop",
+        image: "https://fcom-micro-saas.s3.eu-north-1.amazonaws.com/ed-tech/1775772148294-Firefly_Gemini_Flash.png",
+        color: "#2465ff"
+    },
+    {
+        tag: "NEXT-GEN LEARNING",
+        title: "SSC-এর পর অবসরে কী করবেন ভাবছেন?",
+        highlight: "SSC-এর পর",
+        description: "SSC-এর পর অবসর বসে না থেকে নিজেই গডুন নিজের ভবিষ্যৎ — অর্জন করুন Computer Skill, AI Skill এবং Digital Skill",
+        primaryBtn: "Browse Courses",
+        secondaryBtn: "Free Seminar",
+        image: "https://fcom-micro-saas.s3.eu-north-1.amazonaws.com/ed-tech/1775772612680-Firefly_Gemini_Flash_A_powerful_visual_of_Bangladeshi_youth__students__standing_in_a_V-formation_like_a_su_626350.png",
         color: "#6C5DD3"
     },
     {
-        tag: "LIVE LEARNING PLATFORM",
-        title: "Skill up with Live Courses",
-        highlight: "Live Courses",
-        description: "Join thousands of learners mastering new skills with industry experts in real-time.",
-        primaryBtn: "Browse Courses",
-        secondaryBtn: "Free Seminar",
-        image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop",
-        color: "#3972CA"
-    },
-    {
-        tag: "CAREER TRACK PROGRAM",
-        title: "Expert-Led Tech Career Track",
-        highlight: "Career Track",
-        description: "Build a professional portfolio and get hired by top tech companies worldwide with our AI-integrated curriculum.",
+        tag: "NEXT-GEN LEARNING",
+        title: "Skill নেই তাই দুশ্চিন্তাগ্রস্ত? ",
+        highlight: "Skill নেই",
+        description: "কোনো সমস্যা নেই, আমরা আপনাকে হাতে-কলমে শেখাবো — Real Project, Real Earning এবং Real Transformation",
         primaryBtn: "Browse Courses",
         secondaryBtn: "Success Stories",
-        image: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?q=80&w=1200&auto=format&fit=crop",
-        color: "#EF4444"
+        image: "https://fcom-micro-saas.s3.eu-north-1.amazonaws.com/ed-tech/1775772822781-Firefly_A_dramatic_before-and-after_transformation_split_image_of_a_young_Bangladeshi_male_st_68116.png",
+        color: "#0e69fb"
     }
 ];
 

@@ -54,13 +54,13 @@ const formatFileSize = (bytes?: number | string): string => {
 
 const DEFAULT_SLIDE: IHeroSlide = {
     tag: "NEXT-GEN LEARNING",
-    title: "Master AI-Driven Development",
-    highlight: "AI-Driven",
-    description: "Harness the power of Artificial Intelligence to build faster, smarter, and more efficient applications.",
+    title: "AI শিখুন, এগিয়ে থাকুন",
+    highlight: "AI শিখুন",
+    description: "ক্যারিয়ারে এগিয়ে থাকতে এবং অর্থ উপার্জনে — AI-এর কোনো বিকল্প নেই",
     primaryBtn: "Start AI Journey",
     secondaryBtn: "Free AI Workshop",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop",
-    color: "#6C5DD3",
+    image: "https://fcom-micro-saas.s3.eu-north-1.amazonaws.com/ed-tech/1775772148294-Firefly_Gemini_Flash.png",
+    color: "#2465ff",
     order: 0,
     isActive: true
 };
