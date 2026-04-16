@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import CreateStudentModal from "@/app/components/CreateStudentModal";
 import EditStudentModal from "@/app/components/EditStudentModal";
@@ -10,7 +10,7 @@ import AddPaymentModal from "@/app/components/AddPaymentModal";
 
 const ITEMS_PER_PAGE = 5;
 
-export default function StudentsPage() {
+function StudentsPageContent() {
     const searchParams = useSearchParams();
     const mode = searchParams.get('mode'); // 'offline' or 'online'
     
@@ -355,5 +355,13 @@ export default function StudentsPage() {
                 />
             )}
         </div>
+    );
+}
+
+export default function StudentsPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-gray-400">Loading page...</div>}>
+            <StudentsPageContent />
+        </Suspense>
     );
 }
