@@ -1,9 +1,13 @@
 import React from "react";
+export const revalidate = 3600;
 import Link from "next/link";
 import { Metadata } from "next";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import WhatsappButton from "@/app/components/WhatsappButton";
+import connectToDatabase from "@/lib/db";
+import User from "@/models/User";
+import Course from "@/models/Course";
 
 interface Instructor {
     _id: string;
@@ -18,11 +22,36 @@ interface Instructor {
 
 async function getInstructor(slug: string): Promise<Instructor | null> {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-        const res = await fetch(`${baseUrl}/api/instructors/${slug}`, { next: { revalidate: 3600 } });
-        if (!res.ok) return null;
-        const data = await res.json();
-        return data.success ? data.data : null;
+        await connectToDatabase();
+
+        // Find instructor by ID (if valid ObjectId) or by slug
+        let user: any = null;
+        const isObjectId = slug.length === 24 && /^[0-9a-fA-F]+$/.test(slug);
+
+        if (isObjectId) {
+            user = await User.findById(slug).select('-password -email -staffPermissions -mobileNo -presentAddress -fatherName -motherName -guardianMobileNo -nidNo').lean();
+        }
+
+        // Fallback to searching by slug if not found by ID or if not an ObjectId
+        if (!user) {
+            user = await User.findOne({ slug }).select('-password -email -staffPermissions -mobileNo -presentAddress -fatherName -motherName -guardianMobileNo -nidNo').lean();
+        }
+
+        if (!user || user.role !== 'teacher') {
+            return null;
+        }
+
+        // Fetch courses for this instructor
+        const courses = await Course.find({ 
+            assignedTeachers: user._id,
+            status: 'Active' 
+        }).select('title slug subtitle thumbnail regularFee discountPercentage duration courseMode totalStudents').sort({ createdAt: -1 }).lean();
+
+        return {
+            ...user,
+            _id: user._id.toString(),
+            courses: courses.map((c: any) => ({ ...c, _id: c._id.toString() }))
+        };
     } catch (err) {
         console.error("Error fetching instructor:", err);
         return null;
