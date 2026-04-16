@@ -313,6 +313,12 @@ export default function CourseDetails() {
 
     const discountedPrice = course.regularFee * (1 - course.discountPercentage / 100);
 
+    const displayBatches = (course.assignedBatches && course.assignedBatches.length > 0)
+        ? course.assignedBatches
+        : (course.batches && course.batches.length > 0)
+            ? course.batches
+            : [];
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] text-[#1A1D1F] flex flex-col">
             <Header />
@@ -479,40 +485,57 @@ export default function CourseDetails() {
                 </div>
 
                 {/* Batch Information Bar */}
-                {course.batches && course.batches.length > 0 && (
+                {displayBatches.length > 0 && (
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden mb-16">
-                        <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-100">
-                            <div className="p-8">
-                                <span className="block text-gray-500 text-xs font-bold uppercase mb-2">ব্যাচ শুরু</span>
-                                <span className="px-3 py-1 bg-gray-100 rounded-md font-extrabold text-gray-800">
-                                    {course.batches[0]?.startDate}
-                                </span>
-                            </div>
-                            <div className="p-8">
-                                <span className="block text-gray-500 text-xs font-bold uppercase mb-2">
-                                    <span className="mr-2">📅</span>লাইভ ক্লাস
-                                </span>
-                                <span className="font-extrabold text-gray-800">
-                                    {course.batches[0]?.classTime}
-                                </span>
-                            </div>
-                            <div className="p-8">
-                                <span className="block text-gray-500 text-xs font-bold uppercase mb-3">
-                                    <span className="mr-2">⏰</span>ক্লাস শুরু হতে বাকি
-                                </span>
-                                <CountdownTimer targetDate={course.batches[0]?.startDate} />
-                            </div>
-                            <div className="p-8">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <span className="block text-gray-500 text-xs font-bold uppercase mb-2 text-[#EF4444]">
-                                            <span className="mr-2">🎓</span>ভর্তি চলছে
+                        {displayBatches.map((batch: any, idx: number) => {
+                            const startDate = batch.startDate;
+                            const classTime = batch.timing || batch.classTime;
+                            const batchName = batch.name || (idx === 0 && course.batchNumber ? course.batchNumber : `${idx + 1}${idx === 0 ? 'st' : idx === 1 ? 'nd' : idx === 2 ? 'rd' : 'th'} Batch`);
+
+                            return (
+                                <div key={idx} className={`grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-100 ${idx > 0 ? 'border-t border-gray-100' : ''}`}>
+                                    <div className="p-8">
+                                        <span className="block text-gray-500 text-xs font-bold uppercase mb-2">ব্যাচ শুরু</span>
+                                        <span className="px-3 py-1 bg-gray-100 rounded-md font-extrabold text-gray-800">
+                                            {startDate || "শীঘ্রই শুরু হবে"}
                                         </span>
-                                        <span className="font-extrabold text-gray-800 text-xl">{course.batchNumber || '১ম ব্যাচে'}</span>
+                                    </div>
+                                    <div className="p-8">
+                                        <span className="block text-gray-500 text-xs font-bold uppercase mb-2">
+                                            <span className="mr-2">📅</span>লাইভ ক্লাস
+                                        </span>
+                                        <span className="font-extrabold text-gray-800">
+                                            {classTime || "সময় নির্ধারণ করা হয়নি"}
+                                        </span>
+                                    </div>
+                                    <div className="p-8">
+                                        <span className="block text-gray-500 text-xs font-bold uppercase mb-3">
+                                            <span className="mr-2">⏰</span>ক্লাস শুরু হতে বাকি
+                                        </span>
+                                        {startDate ? (
+                                            <CountdownTimer targetDate={startDate} />
+                                        ) : (
+                                            <div className="text-gray-400 font-bold">Coming Soon</div>
+                                        )}
+                                    </div>
+                                    <div className="p-8">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="block text-gray-500 text-xs font-bold uppercase mb-1 text-[#EF4444]">
+                                                <span className="mr-2">🎓</span>ভর্তি চলছে
+                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-extrabold text-gray-800 text-xl">{batchName}</span>
+                                                {batch.type && (
+                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${batch.type === 'Online Batch' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}`}>
+                                                        {batch.type === 'Online Batch' ? 'Online' : 'Offline'}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            );
+                        })}
                     </div>
                 )}
 
