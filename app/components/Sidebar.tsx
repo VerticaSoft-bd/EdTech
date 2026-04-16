@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const Sidebar: React.FC = () => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [isUsersOpen, setIsUsersOpen] = useState(false);
+    const [isStudentOpen, setIsStudentOpen] = useState(false);
     const [isOtherPagesOpen, setIsOtherPagesOpen] = useState(false);
     const [user, setUser] = useState<{ role: string; name: string } | null>(null);
     const [siteSettings, setSiteSettings] = useState<any>(null);
@@ -40,6 +42,9 @@ const Sidebar: React.FC = () => {
     useEffect(() => {
         if (pathname?.startsWith('/dashboard/users')) {
             setIsUsersOpen(true);
+        }
+        if (pathname?.startsWith('/dashboard/students')) {
+            setIsStudentOpen(true);
         }
         if (pathname?.startsWith('/dashboard/settings/other-pages')) {
             setIsOtherPagesOpen(true);
@@ -146,6 +151,42 @@ const Sidebar: React.FC = () => {
                     </Link>
                 )}
 
+                {/* Student Accordion Menu */}
+                {!isTeacher && (
+                    <div className="pt-1 pb-1">
+                        <button
+                            onClick={() => setIsStudentOpen(!isStudentOpen)}
+                            className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all group ${pathname?.startsWith('/dashboard/students') && !isStudentOpen
+                                ? 'bg-[#6C5DD3]/10 text-[#6C5DD3] font-bold'
+                                : 'text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F]'
+                                }`}
+                        >
+                            <div className="flex items-center gap-3">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <span className="text-sm font-bold">Student</span>
+                            </div>
+                            <svg
+                                className={`transition-transform duration-200 ${isStudentOpen ? 'rotate-180 text-[#1A1D1F]' : 'text-gray-400'}`}
+                                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                            >
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+
+                        {/* Nested Sub-links */}
+                        {isStudentOpen && (
+                            <div className="flex flex-col gap-1 mt-1 pl-11 pr-2 animate-in slide-in-from-top-2 duration-200">
+                                <Link href="/dashboard/students?mode=offline" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/students' && searchParams.get('mode') === 'offline' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
+                                    Offline Student
+                                </Link>
+                                <Link href="/dashboard/students?mode=online" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/students' && searchParams.get('mode') === 'online' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
+                                    Online Student
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Users Accordion Menu */}
                 {!isTeacher && (
                     <div className="pt-1 pb-1">
@@ -171,9 +212,6 @@ const Sidebar: React.FC = () => {
                         {/* Nested Sub-links */}
                         {isUsersOpen && (
                             <div className="flex flex-col gap-1 mt-1 pl-11 pr-2 animate-in slide-in-from-top-2 duration-200">
-                                <Link href="/dashboard/students" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/students' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
-                                    Student
-                                </Link>
                                 <Link href="/dashboard/users/teacher" className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${pathname === '/dashboard/users/teacher' ? 'text-[#6C5DD3] bg-[#6C5DD3]/5 font-bold' : 'text-gray-500 hover:text-[#1A1D1F] hover:bg-gray-50'}`}>
                                     Teacher
                                 </Link>

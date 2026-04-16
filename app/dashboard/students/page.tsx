@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import CreateStudentModal from "@/app/components/CreateStudentModal";
 import EditStudentModal from "@/app/components/EditStudentModal";
 import ViewStudentModal from "@/app/components/ViewStudentModal";
@@ -10,6 +11,9 @@ import AddPaymentModal from "@/app/components/AddPaymentModal";
 const ITEMS_PER_PAGE = 5;
 
 export default function StudentsPage() {
+    const searchParams = useSearchParams();
+    const mode = searchParams.get('mode'); // 'offline' or 'online'
+    
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -42,8 +46,17 @@ export default function StudentsPage() {
     }, []);
 
     const totalPages = Math.ceil(students.length / ITEMS_PER_PAGE);
+    
+    // Filter students based on mode
+    const filteredStudents = students.filter(student => {
+        if (!mode) return true;
+        const studentMode = (student.courseMode || student.courseType || 'Online').toLowerCase();
+        return studentMode.includes(mode.toLowerCase());
+    });
+
+    const filteredTotalPages = Math.ceil(filteredStudents.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentStudents = students.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const currentStudents = filteredStudents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
@@ -71,13 +84,15 @@ export default function StudentsPage() {
     return (
         <div className="space-y-6 pb-8">
             <div className="flex items-center justify-end">
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2"
-                >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    Add Student
-                </button>
+                {(!mode || mode === 'offline') && (
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2"
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Add Student
+                    </button>
+                )}
             </div>
 
             <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
@@ -241,7 +256,7 @@ export default function StudentsPage() {
                 {/* Pagination */}
                 <div className="p-6 border-t border-gray-100 flex items-center justify-between">
                     <p className="text-xs text-gray-500 font-medium">
-                        Showing <span className="text-[#1A1D1F] font-bold">{startIndex + 1}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, students.length)}</span> of <span className="text-[#1A1D1F] font-bold">{students.length}</span> students
+                        Showing <span className="text-[#1A1D1F] font-bold">{startIndex + 1}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, filteredStudents.length)}</span> of <span className="text-[#1A1D1F] font-bold">{filteredStudents.length}</span> students
                     </p>
 
                     <div className="flex items-center gap-2">
@@ -253,7 +268,7 @@ export default function StudentsPage() {
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                         </button>
 
-                        {Array.from({ length: totalPages }).map((_, idx) => {
+                        {Array.from({ length: filteredTotalPages }).map((_, idx) => {
                             const page = idx + 1;
                             return (
                                 <button
@@ -271,8 +286,8 @@ export default function StudentsPage() {
 
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className={`p-2 rounded-xl transition-all ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-[#1A1D1F]'}`}
+                            disabled={currentPage === filteredTotalPages}
+                            className={`p-2 rounded-xl transition-all ${currentPage === filteredTotalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100 hover:text-[#1A1D1F]'}`}
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
                         </button>

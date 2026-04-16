@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
     '/dashboard': { title: 'Dashboard', subtitle: 'Welcome back, Admin' },
@@ -22,6 +22,7 @@ const pageTitles: Record<string, { title: string; subtitle: string }> = {
 
 const DashboardTopBar: React.FC = () => {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [user, setUser] = React.useState<{ name: string; role: string } | null>(null);
 
     React.useEffect(() => {
@@ -39,11 +40,23 @@ const DashboardTopBar: React.FC = () => {
     const userRole = user?.role || 'Admin';
 
     // Find exact match first, then try prefix match for dynamic routes
-    const pageInfo = pageTitles[pathname || ''] ||
+    let pageInfo = { ...(pageTitles[pathname || ''] ||
         Object.entries(pageTitles)
             .filter(([key]) => key !== '/dashboard' && pathname?.startsWith(key))
             .sort((a, b) => b[0].length - a[0].length)[0]?.[1] ||
-        { title: 'Dashboard', subtitle: `Welcome back, ${userDisplayName}` };
+        { title: 'Dashboard', subtitle: `Welcome back, ${userDisplayName}` }) };
+
+    // Dynamic title overrides based on query params
+    if (pathname === '/dashboard/students') {
+        const mode = searchParams.get('mode');
+        if (mode === 'offline') {
+            pageInfo.title = 'Offline Students';
+            pageInfo.subtitle = 'Offline student management';
+        } else if (mode === 'online') {
+            pageInfo.title = 'Online Students';
+            pageInfo.subtitle = 'Online student management';
+        }
+    }
 
     // Override the dashboard subtitle to be personalized
     if (pathname === '/dashboard') {
