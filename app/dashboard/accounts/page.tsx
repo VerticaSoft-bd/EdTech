@@ -20,15 +20,16 @@ interface ExpenseData {
     date: string; notes?: string; paidBy?: string;
 }
 interface StudentData {
-    _id: string; fullName: string; courseName: string; totalCourseFee: number;
+    _id: string; fullName: string; email: string; courseName: string; totalCourseFee: number;
     paidAmount: number; dueAmount: number; mobileNo: string; avatar?: string;
+    courseMode?: string;
 }
 
 const TABS = [
     { id: 'overview', label: 'Overview', icon: 'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z' },
     { id: 'expenses', label: 'Daily / Monthly Expenses', icon: 'M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' },
     { id: 'employees', label: 'Employees & Payroll', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75' },
-    { id: 'dues', label: 'Student Dues', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+    { id: 'dues', label: 'Course Payment and Dues', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
 ];
 const EXPENSE_CATEGORIES = ['Rent', 'Utilities', 'Supplies', 'Marketing', 'Transport', 'Food', 'Maintenance', 'Internet', 'Salary Advance', 'Other'];
 
@@ -81,6 +82,9 @@ export default function AccountsPage() {
     // ─── STUDENT DUES state ────────────────────
     const [students, setStudents] = useState<StudentData[]>([]);
     const [studentsLoading, setStudentsLoading] = useState(false);
+    const [studentSubTab, setStudentSubTab] = useState<'dues' | 'paid'>('dues');
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedStudentForPayment, setSelectedStudentForPayment] = useState<StudentData | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
@@ -161,9 +165,12 @@ export default function AccountsPage() {
         s.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.courseName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    const totalPages = Math.ceil(filteredStudents.length / ITEMS_PER_PAGE);
+    const filteredBySubTab = filteredStudents.filter(s => 
+        studentSubTab === 'dues' ? (s.dueAmount || 0) > 0 : (s.dueAmount || 0) <= 0
+    );
+    const totalPages = Math.ceil(filteredBySubTab.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentStudents = filteredStudents.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const currentStudents = filteredBySubTab.slice(startIndex, startIndex + ITEMS_PER_PAGE);
     const overallTotal = filteredStudents.reduce((a, c) => a + (c.totalCourseFee || 0), 0);
     const overallPaid = filteredStudents.reduce((a, c) => a + (c.paidAmount || 0), 0);
     const overallDue = filteredStudents.reduce((a, c) => a + (c.dueAmount || 0), 0);
@@ -389,8 +396,20 @@ export default function AccountsPage() {
                         <MetricCard label="Total Due" value={overallDue} color="red" icon="M12 8v4m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
                     </div>
                     <div className="bg-white rounded-[24px] shadow-sm border border-gray-50 overflow-hidden">
-                        <div className="p-6 border-b border-gray-50 flex items-center justify-between">
-                            <h2 className="text-lg font-bold text-[#1A1D1F]">Fee Transactions</h2>
+                        <div className="p-6 border-b border-gray-50 flex items-center justify-between flex-wrap gap-4">
+                            <div className="flex items-center gap-6">
+                                <h2 className="text-lg font-bold text-[#1A1D1F]">Course Payments</h2>
+                                <div className="bg-[#F4F4F4] rounded-xl p-1 flex gap-1">
+                                    <button onClick={() => { setStudentSubTab('dues'); setCurrentPage(1); }}
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${studentSubTab === 'dues' ? 'bg-[#6C5DD3] text-white shadow-md' : 'text-gray-500 hover:text-[#1A1D1F]'}`}>
+                                        Dues
+                                    </button>
+                                    <button onClick={() => { setStudentSubTab('paid'); setCurrentPage(1); }}
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${studentSubTab === 'paid' ? 'bg-[#6C5DD3] text-white shadow-md' : 'text-gray-500 hover:text-[#1A1D1F]'}`}>
+                                        Fully Paid
+                                    </button>
+                                </div>
+                            </div>
                             <div className="relative">
                                 <input type="text" placeholder="Search student or course..." value={searchTerm}
                                     onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
@@ -408,6 +427,7 @@ export default function AccountsPage() {
                                         <th className="p-4 font-medium text-right">Paid Amount</th>
                                         <th className="p-4 font-medium text-right">Due Amount</th>
                                         <th className="p-4 font-medium text-center">Status</th>
+                                        <th className="p-4 font-medium text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody className="text-sm">
@@ -434,6 +454,16 @@ export default function AccountsPage() {
                                                     {(student.dueAmount || 0) <= 0 ? 'Clear' : 'Due'}
                                                 </span>
                                             </td>
+                                            <td className="p-4 text-center">
+                                                {student.dueAmount > 0 && student.courseMode?.toLowerCase().includes('offline') && (
+                                                    <button 
+                                                        onClick={() => { setSelectedStudentForPayment(student); setShowPaymentModal(true); }}
+                                                        className="px-3 py-1.5 bg-[#6C5DD3] text-white rounded-lg text-xs font-bold hover:bg-[#5a4cb5] transition-colors"
+                                                    >
+                                                        Pay Due
+                                                    </button>
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -441,7 +471,7 @@ export default function AccountsPage() {
                         </div>
                         {!studentsLoading && totalPages > 1 && (
                             <div className="p-4 border-t border-gray-50 flex items-center justify-between bg-white text-sm">
-                                <span className="text-gray-500">Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, filteredStudents.length)} of {filteredStudents.length}</span>
+                                <span className="text-gray-500">Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, filteredBySubTab.length)} of {filteredBySubTab.length}</span>
                                 <div className="flex items-center gap-2">
                                     <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
                                         className={`p-2 rounded-xl transition-all ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-100'}`}>
@@ -470,6 +500,9 @@ export default function AccountsPage() {
             )}
             {showEmployeeModal && (
                 <EmployeeModal editing={editingEmployee} onClose={() => { setShowEmployeeModal(false); setEditingEmployee(null); }} onSuccess={() => { setShowEmployeeModal(false); setEditingEmployee(null); fetchEmployees(); fetchSummary(); }} />
+            )}
+            {showPaymentModal && selectedStudentForPayment && (
+                <DuePaymentModal student={selectedStudentForPayment} onClose={() => { setShowPaymentModal(false); setSelectedStudentForPayment(null); }} onSuccess={() => { setShowPaymentModal(false); setSelectedStudentForPayment(null); fetchStudents(); fetchSummary(); }} />
             )}
         </div>
     );
@@ -967,6 +1000,108 @@ function EmployeeModal({ editing, onClose, onSuccess }: { editing: EmployeeData 
                         </form>
                     </div>
                 )}
+            </div>
+        </div>
+    );
+}
+
+// --- DUE PAYMENT MODAL -------------------------------
+function DuePaymentModal({ student, onClose, onSuccess }: { student: StudentData; onClose: () => void; onSuccess: () => void }) {
+    const [form, setForm] = useState({
+        amount: student.dueAmount.toString(),
+        method: 'Cash',
+        description: `Due payment for ${student.fullName} - ${student.courseName}`
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+        try {
+            const res = await fetch('/api/transactions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: parseFloat(form.amount),
+                    email: student.email,
+                    courseName: student.courseName,
+                    method: form.method,
+                    description: form.description
+                }),
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.message);
+            toast.success('Payment recorded and student record updated!');
+            onSuccess();
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-[24px] shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    <h3 className="text-xl font-bold text-[#1A1D1F]">Make Due Payment</h3>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                    </button>
+                </div>
+                <div className="px-6 py-6 space-y-4">
+                    <div className="bg-[#6C5DD3]/5 p-4 rounded-xl border border-[#6C5DD3]/10">
+                        <p className="text-xs font-bold text-[#6C5DD3] uppercase tracking-wider mb-2">Student Information</p>
+                        <p className="text-sm font-bold text-[#1A1D1F]">{student.fullName}</p>
+                        <p className="text-xs text-gray-500 mb-2">{student.email}</p>
+                        <div className="flex justify-between items-center pt-2 border-t border-[#6C5DD3]/10">
+                            <span className="text-xs text-gray-500">Course:</span>
+                            <span className="text-xs font-bold text-[#1A1D1F]">{student.courseName}</span>
+                        </div>
+                        <div className="flex justify-between items-center mt-1">
+                            <span className="text-xs text-gray-500">Total Fee:</span>
+                            <span className="text-xs font-bold text-[#1A1D1F]">৳{student.totalCourseFee.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between items-center mt-1">
+                            <span className="text-xs text-gray-500">Remaining Due:</span>
+                            <span className="text-xs font-bold text-red-500">৳{student.dueAmount.toLocaleString()}</span>
+                        </div>
+                    </div>
+
+                    {error && <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl">{error}</div>}
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Payment Amount (৳) *</label>
+                            <input type="number" required min="1" max={student.dueAmount} step="any" value={form.amount} onChange={e => setForm({ ...form, amount: e.target.value })}
+                                className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border-none focus:ring-2 focus:ring-[#6C5DD3] outline-none text-[#1A1D1F] transition-all font-bold" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method *</label>
+                            <select value={form.method} onChange={e => setForm({ ...form, method: e.target.value })}
+                                className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border-none focus:ring-2 focus:ring-[#6C5DD3] outline-none text-[#1A1D1F] transition-all">
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Mobile Banking">Mobile Banking (Bkash/Nagad)</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2}
+                                className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border-none focus:ring-2 focus:ring-[#6C5DD3] outline-none text-[#1A1D1F] transition-all resize-none" placeholder="Notes..." />
+                        </div>
+                        <div className="pt-2 flex justify-end gap-3">
+                            <button type="button" onClick={onClose} disabled={loading} className="px-5 py-2.5 rounded-[12px] font-semibold text-gray-500 hover:bg-gray-100 transition-colors">Cancel</button>
+                            <button type="submit" disabled={loading}
+                                className="px-6 py-2.5 bg-[#6C5DD3] text-white rounded-[12px] font-semibold hover:bg-[#5b4eb3] transition-colors disabled:opacity-50 flex items-center gap-2">
+                                {loading ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> : 'Record Payment'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
