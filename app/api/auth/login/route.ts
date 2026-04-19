@@ -52,7 +52,7 @@ export async function POST(request: Request) {
         }
 
         const token = jwt.sign(
-            { id: user._id, role: user.role },
+            { id: user._id.toString(), role: user.role, email: user.email, name: user.name },
             jwtSecret,
             { expiresIn: '30d' } // Token lives for 30 days
         );

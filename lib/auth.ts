@@ -45,13 +45,13 @@ export async function getAuthenticatedUser(req?: NextRequest) {
     if (!token) return null;
 
     const payload = await verifyToken(token);
-    if (!payload || !payload.id) return null;
+    if (!payload || (!payload.id && !payload.userId)) return null;
 
     try {
         await dbConnect();
 
         // Ensure ID is a string to prevent CastErrors if token payload is malformed
-        const userId = String(payload.id);
+        const userId = String(payload.id || payload.userId);
 
         const user = await User.findById(userId).select('-password');
         if (user) return user;
