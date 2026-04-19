@@ -95,17 +95,17 @@ function StudentsPageContent() {
                 )}
             </div>
 
-            <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-[32px] shadow-sm border border-gray-100">
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="border-b border-gray-100 bg-gray-50/50">
-                            <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
+                            <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider rounded-tl-[32px]">Student</th>
                             <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Course Info</th>
                             <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Type</th>
                             <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
                             <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Fee Status</th>
                             <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider">Progress</th>
-                            <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Action</th>
+                            <th className="p-6 text-xs font-bold text-gray-400 uppercase tracking-wider text-right rounded-tr-[32px]">Action</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -181,7 +181,7 @@ function StudentsPageContent() {
                                         </div>
                                     </td>
                                     <td className="p-6 text-right">
-                                        <div className="relative inline-block text-left">
+                                        <div className={`relative inline-block text-left ${openActionMenuId === (student._id || student.id) ? 'z-50' : ''}`}>
                                             <button
                                                 onClick={() => setOpenActionMenuId(openActionMenuId === (student._id || student.id) ? null : (student._id || student.id))}
                                                 className="p-2 hover:bg-gray-200 rounded-lg text-gray-400 hover:text-[#1A1D1F] transition-colors"
@@ -192,7 +192,7 @@ function StudentsPageContent() {
                                             {openActionMenuId === (student._id || student.id) && (
                                                 <>
                                                     <div className="fixed inset-0 z-10" onClick={() => setOpenActionMenuId(null)}></div>
-                                                    <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100 p-2 z-20">
+                                                    <div className="absolute right-0 mt-2 w-36 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] border border-gray-100 p-2 z-50">
                                                         <button
                                                             onClick={() => { setSelectedStudent(student); setIsViewModalOpen(true); setOpenActionMenuId(null); }}
                                                             className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-[#1A1D1F] rounded-lg transition-colors"
@@ -254,7 +254,7 @@ function StudentsPageContent() {
                 </table>
 
                 {/* Pagination */}
-                <div className="p-6 border-t border-gray-100 flex items-center justify-between">
+                <div className="p-6 border-t border-gray-100 flex items-center justify-between rounded-b-[32px] bg-white">
                     <p className="text-xs text-gray-500 font-medium">
                         Showing <span className="text-[#1A1D1F] font-bold">{startIndex + 1}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, filteredStudents.length)}</span> of <span className="text-[#1A1D1F] font-bold">{filteredStudents.length}</span> students
                     </p>
