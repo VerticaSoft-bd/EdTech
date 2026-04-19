@@ -26,6 +26,9 @@ export default async function StudentDashboard() {
   // Fetch student enrollments
   const enrollments = await Student.find({ email: user.email }).lean();
 
+  const badgesCount = enrollments.length;
+  const certificatesCount = enrollments.filter((e: any) => e.progress === 100).length;
+
   // Extract course names to query rich course data
   const enrolledCourseNames = enrollments.map(e => e.courseName);
 
@@ -64,21 +67,12 @@ export default async function StudentDashboard() {
               </p>
             </div>
             <div className="flex items-center gap-3 text-white text-xs font-semibold">
-              <div className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#6C5DD3] to-[#8F85EA] shadow-lg shadow-[#6C5DD3]/20 flex items-center gap-2">
-                <div className="p-1 bg-white/20 rounded-full">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
-                </div>
-                <div className="flex flex-col leading-none gap-0.5">
-                  <span className="text-[13px]">100</span>
-                  <span className="opacity-80 text-[10px] font-normal">Point</span>
-                </div>
-              </div>
               <div className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FFAB7B] to-[#FFCF9D] shadow-lg shadow-[#FFAB7B]/20 flex items-center gap-2">
                 <div className="p-1 bg-white/20 rounded-full">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 2l3 7h7l-5 5 2 7-7-4-7 4 2-7-5-5h7z" /></svg>
                 </div>
                 <div className="flex flex-col leading-none gap-0.5">
-                  <span className="text-[13px]">24</span>
+                  <span className="text-[13px]">{badgesCount.toString().padStart(2, '0')}</span>
                   <span className="opacity-80 text-[10px] font-normal">Badge</span>
                 </div>
               </div>
@@ -87,7 +81,7 @@ export default async function StudentDashboard() {
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /></svg>
                 </div>
                 <div className="flex flex-col leading-none gap-0.5">
-                  <span className="text-[13px]">08</span>
+                  <span className="text-[13px]">{certificatesCount.toString().padStart(2, '0')}</span>
                   <span className="opacity-80 text-[10px] font-normal">Certificates</span>
                 </div>
               </div>
