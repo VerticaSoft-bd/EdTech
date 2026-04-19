@@ -40,7 +40,9 @@ export async function POST(request: Request) {
                 continue;
             }
 
-            const message = template.replace(/\[NAME\]/g, student.fullName);
+            const message = template
+                .replace(/\[NAME\]/g, student.fullName)
+                .replace(/\[AMOUNT\]/g, student.dueAmount.toString());
             
             try {
                 const response = await sendSMS(student.mobileNo, message);

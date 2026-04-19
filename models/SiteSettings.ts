@@ -57,7 +57,7 @@ const SiteSettingsSchema = new mongoose.Schema({
         newUserTeacher: { type: String, default: 'Welcome [NAME]! Your teacher account is created.' },
         forgotPasswordOtp: { type: String, default: 'Your OTP is [OTP].' },
         paymentSuccess: { type: String, default: 'Payment successful for [NAME].' },
-        paymentDue: { type: String, default: '[NAME], you have a pending payment.' }
+        paymentDue: { type: String, default: 'Hi [NAME], this is a reminder that you have a pending payment of [AMOUNT]. Please settle it soon.' }
     }
 }, { timestamps: true });
 

@@ -21,7 +21,7 @@ const DEFAULT_TEMPLATES: ISmsTemplates = {
     newUserTeacher: 'Welcome [NAME]! Your teacher account has been successfully created. We are excited to have you!',
     forgotPasswordOtp: 'Your OTP for password reset is [OTP]. It is valid for 10 minutes.',
     paymentSuccess: 'Hi [NAME], your payment has been successfully received. Thank you!',
-    paymentDue: 'Hi [NAME], this is a reminder regarding your pending payment. Please settle it soon.'
+    paymentDue: 'Hi [NAME], this is a reminder that you have a pending payment of [AMOUNT]. Please settle it soon.'
 };
 
 export default function SmsTemplatesPage() {
@@ -83,12 +83,13 @@ export default function SmsTemplatesPage() {
     const labelClasses = "text-sm font-bold text-gray-700 ml-1";
     const sectionClasses = "bg-white rounded-[2rem] p-8 shadow-sm border border-gray-100";
 
-    const TemplateCard = ({ title, description, value, onChange, placeholder }: { 
+    const TemplateCard = ({ title, description, value, onChange, placeholder, shortcodes = ["[NAME]"] }: { 
         title: string; 
         description: string; 
         value: string; 
         onChange: (val: string) => void;
         placeholder: string;
+        shortcodes?: string[];
     }) => (
         <div className="space-y-3">
             <div className="flex justify-between items-end">
@@ -96,8 +97,12 @@ export default function SmsTemplatesPage() {
                     <label className={labelClasses}>{title}</label>
                     <p className="text-xs text-gray-400 font-medium ml-1">{description}</p>
                 </div>
-                <div className="px-2 py-1 bg-[#6C5DD3]/10 text-[#6C5DD3] text-[10px] font-black rounded-lg">
-                    SHORTCODE: [NAME]
+                <div className="flex gap-2">
+                    {shortcodes.map(code => (
+                        <div key={code} className="px-2 py-1 bg-[#6C5DD3]/10 text-[#6C5DD3] text-[10px] font-black rounded-lg">
+                            {code}
+                        </div>
+                    ))}
                 </div>
             </div>
             <textarea 
@@ -138,7 +143,8 @@ export default function SmsTemplatesPage() {
                     <h4 className="text-amber-900 font-bold text-sm">How to use Shortcodes</h4>
                     <p className="text-amber-700 text-xs mt-1 leading-relaxed">
                         Use <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[NAME]</code> anywhere in your message to automatically insert the user's full name. 
-                        For the OTP template, also use <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[OTP]</code> to insert the 6-digit verification code.
+                        For the OTP template, use <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[OTP]</code>.
+                        For Payment Due reminders, you can use <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[AMOUNT]</code> to show the outstanding balance.
                     </p>
                 </div>
             </div>
@@ -234,6 +240,7 @@ export default function SmsTemplatesPage() {
                         value={templates.paymentDue}
                         onChange={(v) => setTemplates({...templates, paymentDue: v})}
                         placeholder="Hi [NAME], you have a pending..."
+                        shortcodes={["[NAME]", "[AMOUNT]"]}
                     />
                 </div>
             </div>
