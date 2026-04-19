@@ -1,5 +1,6 @@
 import dbConnect from '@/lib/db';
 import Transaction from '@/models/Transaction';
+import Student from '@/models/Student';
 import React from 'react';
 import PrintInvoiceButton from '@/app/components/PrintInvoiceButton';
 import { notFound } from 'next/navigation';
@@ -21,6 +22,32 @@ export default async function InvoicePage({ params }: { params: Promise<{ transa
         month: 'long',
         day: 'numeric'
     });
+
+    // Fetch student and payment history
+    const student = await Student.findOne({ email: userEmail, courseName: courseName });
+    
+    // Get all completed transactions for this student and course to calculate previous payments
+    const allStudentTransactions = await Transaction.find({
+        'metadata.email': userEmail,
+        'metadata.courseName': courseName,
+        status: 'completed'
+    }).sort({ createdAt: 1 }).lean();
+
+    // Calculate previous paid sum (before this transaction)
+    let previousPaid = 0;
+    for (const tx of allStudentTransactions) {
+        const txDate = new Date(tx.createdAt).getTime();
+        const currentTxDate = new Date(transaction.createdAt).getTime();
+        
+        if (txDate < currentTxDate) {
+            previousPaid += tx.amount;
+        }
+    }
+
+    const totalPaidSoFar = previousPaid + transaction.amount;
+    const fullCourseFee = student?.totalCourseFee || transaction.amount;
+    const dueAmount = Math.max(0, fullCourseFee - totalPaidSoFar);
+    const isFullPaid = dueAmount <= 0;
 
     return (
         <div className="min-h-screen bg-[#F8F9FB] py-12 px-4 print:bg-white print:py-0 print:px-0">
@@ -67,7 +94,21 @@ export default async function InvoicePage({ params }: { params: Promise<{ transa
                                 <p className="font-bold text-gray-900">{courseName}</p>
                                 <p className="text-xs text-gray-500 mt-1">Course Enrollment Fee</p>
                             </div>
-                            <p className="text-xl font-black text-gray-900">৳{transaction.amount.toLocaleString()}</p>
+                            <div className="text-right">
+                                <p className="text-xl font-black text-gray-900">৳{transaction.amount.toLocaleString()}</p>
+                                <p className="text-[10px] text-gray-400 mt-1">Current Payment</p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mb-6 px-2">
+                            <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Full Course Fee</p>
+                                <p className="text-lg font-black text-gray-700">৳{fullCourseFee.toLocaleString()}</p>
+                            </div>
+                            <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Previous Paid</p>
+                                <p className="text-lg font-black text-gray-700">৳{previousPaid.toLocaleString()}</p>
+                            </div>
                         </div>
                         
                         <div className="space-y-3 px-2">
@@ -85,10 +126,30 @@ export default async function InvoicePage({ params }: { params: Promise<{ transa
                     </div>
 
                     {/* Total Section */}
-                    <div className="bg-[#6C5DD3]/5 rounded-3xl p-8 flex flex-col items-center justify-center text-center border border-[#6C5DD3]/10">
-                        <span className="text-[10px] font-bold text-[#6C5DD3] uppercase tracking-[0.2em] mb-2">Total Amount Paid</span>
-                        <h2 className="text-4xl font-black text-[#6C5DD3]">৳{transaction.amount.toLocaleString()}</h2>
-                        <p className="text-[10px] text-[#6C5DD3]/60 mt-4 font-medium italic">Handcrafted with care for your education</p>
+                    <div className="bg-[#6C5DD3]/5 rounded-3xl p-8 border border-[#6C5DD3]/10">
+                        <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+                            <div className="text-center sm:text-left">
+                                <span className="text-[10px] font-bold text-[#6C5DD3] uppercase tracking-[0.2em] mb-2 block">Total Amount Paid</span>
+                                <h2 className="text-4xl font-black text-[#6C5DD3]">৳{transaction.amount.toLocaleString()}</h2>
+                            </div>
+                            
+                            <div className="h-px w-full sm:h-12 sm:w-px bg-[#6C5DD3]/20" />
+
+                            <div className="text-center sm:text-right">
+                                {isFullPaid ? (
+                                    <div className="flex flex-col items-center sm:items-end">
+                                        <span className="text-[10px] font-bold text-green-600 uppercase tracking-[0.2em] mb-2 block">Status</span>
+                                        <h2 className="text-2xl font-black text-green-600">FULL PAID</h2>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center sm:items-end">
+                                        <span className="text-[10px] font-bold text-orange-600 uppercase tracking-[0.2em] mb-2 block">Due Amount</span>
+                                        <h2 className="text-4xl font-black text-orange-600">৳{dueAmount.toLocaleString()}</h2>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <p className="text-[10px] text-[#6C5DD3]/60 mt-6 font-medium italic text-center">Handcrafted with care for your education</p>
                     </div>
 
                     {/* Footer Note */}
