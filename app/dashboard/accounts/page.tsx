@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
+import TransactionHistoryModal from '@/app/components/TransactionHistoryModal';
 
 // ─── Types ───────────────────────────────────────────────────────
 interface SummaryData {
@@ -84,7 +85,9 @@ export default function AccountsPage() {
     const [studentsLoading, setStudentsLoading] = useState(false);
     const [studentSubTab, setStudentSubTab] = useState<'dues' | 'paid'>('dues');
     const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [showHistoryModal, setShowHistoryModal] = useState(false);
     const [selectedStudentForPayment, setSelectedStudentForPayment] = useState<StudentData | null>(null);
+    const [selectedStudentForHistory, setSelectedStudentForHistory] = useState<StudentData | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [isBulkSmsLoading, setIsBulkSmsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -164,6 +167,18 @@ export default function AccountsPage() {
         else if (activeTab === 'employees') fetchEmployees();
         else if (activeTab === 'dues') fetchStudents();
     }, [activeTab, expenseType, fetchExpenses, fetchEmployees, fetchStudents]);
+
+    // Keep active modal student data in sync with background refreshes
+    useEffect(() => {
+        if (selectedStudentForHistory) {
+            const updated = students.find(s => s._id === selectedStudentForHistory._id);
+            if (updated) setSelectedStudentForHistory(updated);
+        }
+        if (selectedStudentForPayment) {
+            const updated = students.find(s => s._id === selectedStudentForPayment._id);
+            if (updated) setSelectedStudentForPayment(updated);
+        }
+    }, [students]);
 
     // ─── DELETE HANDLERS ──────────────────────────
     const handleDeleteExpense = async (id: string) => {
@@ -495,14 +510,23 @@ export default function AccountsPage() {
                                                 </span>
                                             </td>
                                             <td className="p-4 text-center">
-                                                {student.dueAmount > 0 && student.courseMode?.toLowerCase().includes('offline') && (
+                                                <div className="flex items-center justify-center gap-2">
                                                     <button 
-                                                        onClick={() => { setSelectedStudentForPayment(student); setShowPaymentModal(true); }}
-                                                        className="px-3 py-1.5 bg-[#6C5DD3] text-white rounded-lg text-xs font-bold hover:bg-[#5a4cb5] transition-colors"
+                                                        onClick={() => { setSelectedStudentForHistory(student); setShowHistoryModal(true); }}
+                                                        className="p-1.5 text-gray-400 hover:text-[#6C5DD3] hover:bg-[#6C5DD3]/5 rounded-lg transition-all"
+                                                        title="Transaction History"
                                                     >
-                                                        Pay Due
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                                                     </button>
-                                                )}
+                                                    {(student.dueAmount || 0) > 0 && (
+                                                        <button 
+                                                            onClick={() => { setSelectedStudentForPayment(student); setShowPaymentModal(true); }}
+                                                            className="px-3 py-1.5 bg-[#6C5DD3] text-white rounded-lg text-xs font-bold hover:bg-[#5a4cb5] transition-colors"
+                                                        >
+                                                            Pay Due
+                                                        </button>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -543,6 +567,14 @@ export default function AccountsPage() {
             )}
             {showPaymentModal && selectedStudentForPayment && (
                 <DuePaymentModal student={selectedStudentForPayment} onClose={() => { setShowPaymentModal(false); setSelectedStudentForPayment(null); }} onSuccess={() => { setShowPaymentModal(false); setSelectedStudentForPayment(null); fetchStudents(); fetchSummary(); }} />
+            )}
+            {showHistoryModal && selectedStudentForHistory && (
+                <TransactionHistoryModal 
+                    isOpen={showHistoryModal} 
+                    student={selectedStudentForHistory} 
+                    onClose={() => { setShowHistoryModal(false); setSelectedStudentForHistory(null); }} 
+                    onUpdate={() => { fetchStudents(); fetchSummary(); }} 
+                />
             )}
         </div>
     );

@@ -85,8 +85,12 @@ export async function POST(req: NextRequest) {
         });
 
         // 3. Update student record
-        student.paidAmount += Number(amount);
-        student.dueAmount = Math.max(0, student.totalCourseFee - student.paidAmount);
+        const previousPaid = student.paidAmount || 0;
+        student.paidAmount = Number((previousPaid + Number(amount)).toFixed(2));
+        student.dueAmount = Math.max(0, Number((student.totalCourseFee - student.paidAmount).toFixed(2)));
+        
+        console.log(`[Payment] Success: Student ${student.email} balance updated. Previous: ${previousPaid}, New Paid: ${student.paidAmount}, New Due: ${student.dueAmount}`);
+        
         await student.save();
 
         return NextResponse.json({

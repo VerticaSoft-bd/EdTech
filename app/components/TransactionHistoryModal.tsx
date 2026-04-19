@@ -79,11 +79,11 @@ export default function TransactionHistoryModal({ isOpen, onClose, student, onUp
                             <div className="flex items-center gap-6">
                                 <div className="text-right">
                                     <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Total Paid</p>
-                                    <p className="text-lg font-extrabold text-[#4BD37B]">৳{student.paidAmount || 0}</p>
+                                    <p className="text-lg font-extrabold text-[#4BD37B]">৳{(transactions.reduce((acc, txn) => acc + (txn.amount || 0), 0)).toLocaleString()}</p>
                                 </div>
                                 <div className="text-right border-l border-gray-100 pl-6">
                                     <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Course Due</p>
-                                    <p className="text-lg font-extrabold text-[#FF4C4C]">৳{(student.totalCourseFee - student.paidAmount) || 0}</p>
+                                    <p className="text-lg font-extrabold text-[#FF4C4C]">৳{(student.totalCourseFee - transactions.reduce((acc, txn) => acc + (txn.amount || 0), 0)).toLocaleString()}</p>
                                 </div>
                             </div>
                         </div>
