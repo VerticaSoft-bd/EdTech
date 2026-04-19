@@ -100,7 +100,7 @@ export default function TestimonialVideoModal({ isOpen, onClose, videoUrl, stude
                                 </div>
 
                                 <p className="text-white/60 text-[11px] font-medium leading-relaxed">
-                                    Member of Streva Community • Verified Review
+                                    Verified Review
                                 </p>
                             </div>
                         </div>

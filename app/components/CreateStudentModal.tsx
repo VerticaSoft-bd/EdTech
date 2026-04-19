@@ -177,25 +177,8 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
             });
 
             const data = await response.json();
-
             if (data.success) {
                 toast.success(data.message);
-
-                // Also optionally create a basic user account for login
-                try {
-                    await fetch('/api/users', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            name: formData.fullName,
-                            email: formData.email,
-                            password: "password123", // Default password or consider adding password field
-                            role: "student"
-                        })
-                    });
-                } catch (e) {
-                    console.error("Failed to auto-create user auth account", e);
-                }
 
                 // Reset form
                 setFormData({

@@ -26,6 +26,9 @@ export interface IUser extends Document {
     image?: string;
     expertise?: string[];
     slug?: string;
+    needsPasswordSetup?: boolean;
+    magicLoginToken?: string;
+    magicLoginTokenExpires?: Date;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -87,6 +90,9 @@ const UserSchema: Schema<IUser> = new Schema({
     slug: { type: String, unique: true, sparse: true },
     resetPasswordOTP: { type: String },
     resetPasswordOTPExpire: { type: Date },
+    needsPasswordSetup: { type: Boolean, default: false },
+    magicLoginToken: { type: String },
+    magicLoginTokenExpires: { type: Date },
 }, { timestamps: true });
 
 // Pre-save hook to hash the password and generate slug before saving

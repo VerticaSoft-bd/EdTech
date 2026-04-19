@@ -13,6 +13,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
 import { CheckCircle, XCircle, Clock, Download, FileText } from "lucide-react";
+import ClientDashboardWrapper from "./ClientDashboardWrapper";
 
 export default async function StudentDashboard() {
   const user = await getAuthenticatedUser();
@@ -50,6 +51,7 @@ export default async function StudentDashboard() {
   return (
     <div className="min-h-screen bg-white text-[#1A1D1F] scroll-smooth">
       <Header />
+      <ClientDashboardWrapper needsPasswordSetup={!!user.needsPasswordSetup} />
 
       <main className="max-w-[1600px] mx-auto p-6 md:p-8 grid grid-cols-12 gap-8">
         <div className="col-span-12">

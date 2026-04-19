@@ -9,6 +9,7 @@ interface ISmsTemplates {
     forgotPasswordOtp: string;
     paymentSuccess: string;
     paymentDue: string;
+    offlineStudentSignup: string;
 }
 
 interface ISiteSettings {
@@ -21,7 +22,8 @@ const DEFAULT_TEMPLATES: ISmsTemplates = {
     newUserTeacher: 'Welcome [NAME]! Your teacher account has been successfully created. We are excited to have you!',
     forgotPasswordOtp: 'Your OTP for password reset is [OTP]. It is valid for 10 minutes.',
     paymentSuccess: 'Hi [NAME], your payment has been successfully received. Thank you!',
-    paymentDue: 'Hi [NAME], this is a reminder that you have a pending payment of [AMOUNT]. Please settle it soon.'
+    paymentDue: 'Hi [NAME], this is a reminder that you have a pending payment of [AMOUNT]. Please settle it soon.',
+    offlineStudentSignup: '[NAME], setup your password [LINK] - YouthINS'
 };
 
 export default function SmsTemplatesPage() {
@@ -145,6 +147,7 @@ export default function SmsTemplatesPage() {
                         Use <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[NAME]</code> anywhere in your message to automatically insert the user's full name. 
                         For the OTP template, use <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[OTP]</code>.
                         For Payment Due reminders, you can use <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[AMOUNT]</code> to show the outstanding balance.
+                        For Offline Signup, use <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[COURSE]</code> and <code className="bg-amber-100 px-1.5 py-0.5 rounded font-black text-[#6C5DD3]">[LINK]</code>.
                     </p>
                 </div>
             </div>
@@ -174,6 +177,17 @@ export default function SmsTemplatesPage() {
                         value={templates.newUserTeacher}
                         onChange={(v) => setTemplates({...templates, newUserTeacher: v})}
                         placeholder="Welcome [NAME]..."
+                    />
+                </div>
+                
+                <div className="mt-8 pt-8 border-t border-gray-100 max-w-xl">
+                    <TemplateCard 
+                        title="Offline Student Registration"
+                        description="Sent to offline students with a magic login link"
+                        value={templates.offlineStudentSignup}
+                        onChange={(v) => setTemplates({...templates, offlineStudentSignup: v})}
+                        placeholder="[NAME], setup your password..."
+                        shortcodes={["[NAME]", "[COURSE]", "[LINK]"]}
                     />
                 </div>
             </div>

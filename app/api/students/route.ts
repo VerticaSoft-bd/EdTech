@@ -3,6 +3,10 @@ import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
 import Course from '@/models/Course';
 import Coupon from '@/models/Coupon';
+import User from '@/models/User';
+import SiteSettings from '@/models/SiteSettings';
+import { sendSMS } from '@/lib/sms';
+import crypto from 'crypto';
 
 export async function POST(request: Request) {
     try {
@@ -51,6 +55,62 @@ export async function POST(request: Request) {
                 { $inc: { usageCount: 1 } }
             );
         }
+
+        // --- SMART ONBOARDING LOGIC ---
+        // 1. Create or Find User account
+        let user = await User.findOne({ email: body.email });
+        const isNewUser = !user;
+
+        if (!user) {
+            user = await User.create({
+                name: body.fullName,
+                email: body.email,
+                password: crypto.randomBytes(16).toString('hex'), // Random temp password
+                role: 'student',
+                mobileNo: body.mobileNo,
+                needsPasswordSetup: true
+            });
+        }
+
+        // 2. If Offline Student, generate magic token and send SMS
+        const normalizedMode = (courseMode || '').toLowerCase();
+        const isOffline = normalizedMode.includes('offline');
+
+        console.log(`[Onboarding] Flow triggered for student: ${body.fullName}`);
+        console.log(`[Onboarding] Course: ${body.courseName}, Detected Mode: ${courseMode}, IsOffline: ${isOffline}`);
+
+        if (isOffline) {
+            console.log(`[Onboarding] Generating magic link for ${body.fullName}...`);
+            const magicToken = crypto.randomBytes(32).toString('hex');
+            user.magicLoginToken = magicToken;
+            user.magicLoginTokenExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+            await user.save();
+
+            // 3. Fetch SMS Template
+            const settings = await SiteSettings.findOne();
+            const template = settings?.smsTemplates?.offlineStudentSignup || 
+                "[NAME], setup your password [LINK] - YouthINS";
+            
+            const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+            const magicLink = `${appUrl}/api/auth/magic-login?token=${magicToken}`;
+
+            const smsMessage = template
+                .replace('[NAME]', body.fullName)
+                .replace('[COURSE]', body.courseName)
+                .replace('[LINK]', magicLink);
+
+            console.log(`[Onboarding] Sending SMS to ${body.mobileNo}...`);
+            const smsResult = await sendSMS(body.mobileNo, smsMessage);
+            
+            if (smsResult.success) {
+                console.log(`[Onboarding] SMS sent successfully to ${body.fullName}`);
+            } else {
+                console.error(`[Onboarding] SMS Failed: ${smsResult.message}`);
+            }
+        } else {
+            console.log(`[Onboarding] Skipping SMS link as student is not offline.`);
+        }
+        // --- END SMART ONBOARDING LOGIC ---
 
         return NextResponse.json({
             success: true,
