@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
 import Batch from '@/models/Batch';
+import { sendSMS } from '@/lib/sms';
 
 export async function POST(request: Request) {
     try {
@@ -24,6 +25,11 @@ export async function POST(request: Request) {
         // Increment Batch enrollment if batchId is provided
         if (body.batchId) {
             await Batch.findByIdAndUpdate(body.batchId, { $inc: { enrolledStudents: 1 } });
+        }
+
+        // Send enrollment confirmation SMS
+        if (newStudent.mobileNo) {
+            await sendSMS(newStudent.mobileNo, `Congratulations ${newStudent.fullName}! You have successfully enrolled in ${newStudent.courseName}. Thank you for choosing EdTech.`);
         }
 
         return NextResponse.json({

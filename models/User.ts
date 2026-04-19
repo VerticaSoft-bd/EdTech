@@ -85,6 +85,8 @@ const UserSchema: Schema<IUser> = new Schema({
     image: { type: String },
     expertise: { type: [String], default: [] },
     slug: { type: String, unique: true, sparse: true },
+    resetPasswordOTP: { type: String },
+    resetPasswordOTPExpire: { type: Date },
 }, { timestamps: true });
 
 // Pre-save hook to hash the password and generate slug before saving

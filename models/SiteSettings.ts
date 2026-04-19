@@ -48,6 +48,10 @@ const SiteSettingsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
     }],
+    smsConfig: {
+        apiKey: { type: String, default: '' },
+        senderId: { type: String, default: '' }
+    }
 }, { timestamps: true });
 
 if (mongoose.models.SiteSettings) {

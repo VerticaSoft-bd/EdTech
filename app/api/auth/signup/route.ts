@@ -2,11 +2,12 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import User from '@/models/User';
 import { signToken } from '@/lib/auth';
+import { sendSMS } from '@/lib/sms';
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, email, password } = body;
+        const { name, email, password, mobileNo } = body;
 
         // Basic validation
         if (!name || !email || !password) {
@@ -33,7 +34,13 @@ export async function POST(request: Request) {
             name,
             email,
             password,
+            mobileNo
         });
+
+        // Send welcome SMS
+        if (mobileNo) {
+            await sendSMS(mobileNo, `Congratulations ${name}! Your account has been created successfully. Welcome to EdTech.`);
+        }
 
         // Remove password from response for security
         const userWithoutPassword = {
