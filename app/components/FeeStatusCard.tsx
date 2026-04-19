@@ -17,7 +17,7 @@ const FeeStatusCard: React.FC<FeeStatusProps> = ({
     const isLocked = totalFee > 0 && paidAmount < totalFee;
 
     return (
-        <div className={`rounded-[32px] p-6 text-white relative overflow-hidden shadow-xl transition-all hover:scale-[1.02] ${isLocked ? 'bg-gradient-to-br from-[#FF4C4C] to-[#e43b3b] shadow-[#FF4C4C]/30' : 'bg-gradient-to-br from-[#6C5DD3] to-[#8E8AFF] shadow-[#6C5DD3]/30'}`}>
+        <div className={`rounded-2xl p-6 text-white relative overflow-hidden shadow-xl transition-all hover:scale-[1.02] ${isLocked ? 'bg-gradient-to-br from-[#FF4C4C] to-[#e43b3b] shadow-[#FF4C4C]/30' : 'bg-gradient-to-br from-[#6C5DD3] to-[#8E8AFF] shadow-[#6C5DD3]/30'}`}>
             {/* Noise Texture */}
             <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
 

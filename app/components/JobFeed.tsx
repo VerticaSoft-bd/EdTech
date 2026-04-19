@@ -29,7 +29,7 @@ const jobs = [
 
 const JobFeed: React.FC = () => {
     return (
-        <div className="bg-white p-6 rounded-[32px] shadow-sm">
+        <div className="bg-white p-6 rounded-2xl shadow-sm">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-[#1A1D1F] flex items-center gap-2">
                     Recommended Jobs
@@ -40,7 +40,7 @@ const JobFeed: React.FC = () => {
 
             <div className="space-y-4">
                 {jobs.map(job => (
-                    <div key={job.id} className="group flex items-center gap-4 p-3 rounded-2xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 cursor-pointer">
+                    <div key={job.id} className="group flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 cursor-pointer">
                         <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-500 group-hover:bg-white group-hover:shadow-sm transition-all">
                             {job.logo}
                         </div>
@@ -56,7 +56,7 @@ const JobFeed: React.FC = () => {
             </div>
 
             <div className="mt-6 pt-4 border-t border-gray-100">
-                <div className="bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] rounded-2xl p-4 flex items-center justify-between relative overflow-hidden group cursor-pointer">
+                <div className="bg-gradient-to-r from-[#8E8AFF] to-[#6C5DD3] rounded-xl p-4 flex items-center justify-between relative overflow-hidden group cursor-pointer">
                     <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
                     <div className="relative z-10 text-white">
                         <h4 className="font-bold text-sm">AI CV Builder</h4>

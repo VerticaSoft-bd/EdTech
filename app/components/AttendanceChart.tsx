@@ -10,7 +10,7 @@ const AttendanceChart: React.FC<AttendanceProps> = ({ present, limit }) => {
     const isNearLimit = percentage > 80;
 
     return (
-        <div className="bg-white p-6 rounded-[32px] shadow-sm flex flex-col h-full bg-white shadow-sm">
+        <div className="bg-white p-6 rounded-2xl shadow-sm flex flex-col h-full bg-white shadow-sm">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-[#1A1D1F] flex items-center gap-2">
                     Attendance

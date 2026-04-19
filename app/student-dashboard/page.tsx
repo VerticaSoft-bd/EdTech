@@ -101,7 +101,7 @@ export default async function StudentDashboard() {
         </div>
 
         {/* Feature Banner */}
-        <div className="col-span-12 relative overflow-hidden bg-gradient-to-r from-white to-[#E2E6FF] p-6 rounded-[24px] shadow-sm border border-white">
+        <div className="col-span-12 relative overflow-hidden bg-gradient-to-r from-white to-[#E2E6FF] p-6 rounded-2xl shadow-sm border border-white">
           <div className="absolute top-0 right-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
           <div className="absolute right-0 top-0 w-1/3 h-full bg-gradient-to-l from-[#6C5DD3] to-transparent opacity-30"></div>
           <div className="relative z-10 flex items-start justify-between">
@@ -174,10 +174,10 @@ export default async function StudentDashboard() {
                     <Link
                       href={`/student-dashboard/courses/${course.slug}/progress`}
                       key={course._id.toString()}
-                      className="bg-[#F6F8FA] p-2 rounded-[32px] shadow-sm hover:shadow-md transition-shadow group cursor-pointer block"
+                      className="bg-[#F6F8FA] p-2 rounded-2xl shadow-sm hover:shadow-md transition-shadow group cursor-pointer block"
                     >
                       <div
-                        className={`h-[180px] rounded-[24px] bg-gradient-to-r ${gradients[colorIdx]} relative p-6 flex flex-col justify-between overflow-hidden`}
+                        className={`h-[180px] rounded-xl bg-gradient-to-r ${gradients[colorIdx]} relative p-6 flex flex-col justify-between overflow-hidden`}
                       >
                         {/* Noise Background & Decorative Stars */}
                         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-40"></div>
@@ -244,7 +244,7 @@ export default async function StudentDashboard() {
                 })}
               </div>
             ) : (
-              <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-10 mt-4 text-center">
+              <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-10 mt-4 text-center">
                 <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-gray-500" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
                 </div>
@@ -300,11 +300,11 @@ export default async function StudentDashboard() {
                     <Link
                       href={`/student-dashboard/courses/${course.slug}/progress`}
                       key={course._id.toString()}
-                      className="bg-[#F0F2F4] p-4 rounded-[20px] shadow-sm flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow group cursor-pointer"
+                      className="bg-[#F0F2F4] p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-center gap-4 hover:shadow-md transition-shadow group cursor-pointer"
                     >
                       {/* Thumbnail */}
                       <div
-                        className={`w-[120px] h-[70px] rounded-[20px] bg-gradient-to-br ${thumbGradient} relative p-4 flex flex-col justify-center shrink-0 overflow-hidden`}
+                        className={`w-[120px] h-[70px] rounded-xl bg-gradient-to-br ${thumbGradient} relative p-4 flex flex-col justify-center shrink-0 overflow-hidden`}
                       >
                         {/* Noise & Sparkles for Thumbnail */}
                         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30"></div>
@@ -402,7 +402,7 @@ export default async function StudentDashboard() {
                   );
                 })
               ) : (
-                <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center text-gray-500 text-sm">
+                <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-6 text-center text-gray-500 text-sm">
                   No learning content in progress.
                 </div>
               )}
@@ -418,7 +418,7 @@ export default async function StudentDashboard() {
               </h2>
             </div>
             
-            <div className="bg-white rounded-[24px] border border-gray-100 overflow-hidden shadow-sm">
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -506,7 +506,7 @@ export default async function StudentDashboard() {
           </div>
 
           {/* Attendance History List */}
-          <div className="bg-white p-6 rounded-[32px] shadow-sm border border-gray-50">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-50">
             <h3 className="font-bold text-[#1A1D1F] mb-4 flex items-center justify-between">
               Recent Attendance
               <span className="text-[10px] text-gray-400 font-normal uppercase tracking-widest">Last 5 Classes</span>
@@ -514,7 +514,7 @@ export default async function StudentDashboard() {
             <div className="space-y-3">
               {attendanceHistory.length > 0 ? (
                 attendanceHistory.map((record: any) => (
-                  <div key={record._id.toString()} className="flex items-center justify-between p-3 bg-gray-50 rounded-2xl hover:bg-gray-100/50 transition-colors">
+                  <div key={record._id.toString()} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100/50 transition-colors">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg ${
                         record.status === 'Present' ? 'bg-green-100 text-green-600' :
@@ -563,7 +563,7 @@ export default async function StudentDashboard() {
               </h2>
             </div>
             
-            <div className="bg-white rounded-[32px] border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>

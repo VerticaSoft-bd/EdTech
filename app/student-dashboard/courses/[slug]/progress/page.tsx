@@ -122,7 +122,7 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                     {/* Left Column: Progress Content */}
                     <div className="col-span-12 lg:col-span-8 space-y-8">
                         {/* Progress Visualizer */}
-                        <div className="bg-white p-8 rounded-[40px] shadow-xl shadow-gray-200/40 border border-white/60 relative overflow-hidden">
+                        <div className="bg-white p-8 rounded-2xl shadow-xl shadow-gray-200/40 border border-white/60 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#6C5DD3]/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
                             
                             <h3 className="text-2xl font-bold text-[#1A1D1F] mb-8 flex items-center gap-3">
@@ -150,7 +150,7 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="bg-[#F8F9FE] p-6 rounded-[32px] border border-[#EEEEFF]">
+                                    <div className="bg-[#F8F9FE] p-6 rounded-2xl border border-[#EEEEFF]">
                                         <div className="flex items-center gap-4 mb-4">
                                             <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#6C5DD3]">
                                                 <BookOpen size={24} />
@@ -169,7 +169,7 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                         </div>
                                     </div>
 
-                                    <div className="bg-[#FFF9F5] p-6 rounded-[32px] border border-[#FFEEE0]">
+                                    <div className="bg-[#FFF9F5] p-6 rounded-2xl border border-[#FFEEE0]">
                                         <div className="flex items-center gap-4 mb-4">
                                             <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#FFAB7B]">
                                                 <Calendar size={24} />
@@ -196,7 +196,7 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                             </h3>
                             <div className="grid gap-3">
                                 {course.modules?.slice(0, isOffline ? 4 : 8).map((module: any, idx: number) => (
-                                    <div key={idx} className="bg-white p-5 rounded-[24px] border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow group">
+                                    <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow group">
                                         <div className="flex items-center gap-5">
                                             <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-400 group-hover:bg-[#6C5DD3] group-hover:text-white transition-all">
                                                 {String(idx + 1).padStart(2, '0')}
@@ -226,7 +226,7 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
 
                     {/* Right Column: Attendance Tracker */}
                     <div className="col-span-12 lg:col-span-4">
-                        <section className="bg-white p-8 rounded-[40px] shadow-xl shadow-gray-200/20 border border-white/60 sticky top-28">
+                        <section className="bg-white p-8 rounded-2xl shadow-xl shadow-gray-200/20 border border-white/60 sticky top-28">
                             <h3 className="text-xl font-bold text-[#1A1D1F] mb-8 flex items-center justify-between">
                                 Attendance Log
                                 <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest bg-gray-50 px-3 py-1 rounded-full">Historical View</span>
@@ -276,7 +276,7 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="text-center py-20 px-6 bg-gray-50/50 rounded-[32px] border border-dashed border-gray-200">
+                                    <div className="text-center py-20 px-6 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
                                         <Calendar size={32} className="mx-auto text-gray-300 mb-4" />
                                         <p className="text-sm text-gray-400 font-medium font-italic">No classes marked yet for this course.</p>
                                     </div>

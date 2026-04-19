@@ -239,7 +239,7 @@ export default function ProfileView({ basePath }: ProfileViewProps) {
         
         {/* Sidebar Nav */}
         <div className="xl:col-span-4">
-          <div className="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 flex flex-col gap-6 sticky top-28">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col gap-6 sticky top-28">
             <div className="flex items-center gap-4">
                <div className="w-16 h-16 bg-gradient-to-br from-[#FFAB7B] to-[#FFCF9D] rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-[#FFAB7B]/20">
                   {formData.name ? formData.name.substring(0, 2).toUpperCase() : 'US'}
@@ -278,7 +278,7 @@ export default function ProfileView({ basePath }: ProfileViewProps) {
 
         {/* Form Container */}
         <div className="xl:col-span-8">
-          <form onSubmit={handleSubmit} className="bg-white rounded-[24px] p-6 sm:p-8 shadow-sm border border-gray-100 w-full">
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 w-full">
             
             <div className="mb-8">
               <h3 className="text-xl font-bold flex items-center gap-2 mb-1">
@@ -663,7 +663,7 @@ export default function ProfileView({ basePath }: ProfileViewProps) {
             onClick={handlePasswordModalClose}
           ></div>
           
-          <div className="relative bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div className="relative bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
             <div className="px-8 pt-8 pb-10">
               <div className="flex items-center justify-between mb-8">
                  <div className="flex items-center gap-3">
