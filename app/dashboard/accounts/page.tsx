@@ -86,6 +86,7 @@ export default function AccountsPage() {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [selectedStudentForPayment, setSelectedStudentForPayment] = useState<StudentData | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isBulkSmsLoading, setIsBulkSmsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
 
@@ -131,6 +132,31 @@ export default function AccountsPage() {
         } catch { toast.error('Failed to load students'); }
         finally { setStudentsLoading(false); }
     }, []);
+
+    const handleSendBulkSms = async () => {
+        const studentsWithDues = students.filter(s => (s.dueAmount || 0) > 0);
+        if (studentsWithDues.length === 0) {
+            toast.error('No students found with outstanding dues.');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to send reminder SMS to all ${studentsWithDues.length} students with dues?`)) return;
+
+        setIsBulkSmsLoading(true);
+        try {
+            const res = await fetch('/api/accounts/bulk-sms-dues', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                toast.success(`Successfully sent ${data.data.success} SMS, failed ${data.data.failed}.`);
+            } else {
+                toast.error(data.message || 'Failed to send bulk SMS');
+            }
+        } catch {
+            toast.error('An error occurred during bulk SMS process');
+        } finally {
+            setIsBulkSmsLoading(false);
+        }
+    };
 
     useEffect(() => { fetchSummary(); }, [fetchSummary]);
     useEffect(() => {
@@ -410,11 +436,25 @@ export default function AccountsPage() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="relative">
-                                <input type="text" placeholder="Search student or course..." value={searchTerm}
-                                    onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                                    className="pl-10 pr-4 py-2 bg-[#F4F4F4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all w-64" />
-                                <svg className="absolute left-3 top-2.5 text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={handleSendBulkSms}
+                                    disabled={isBulkSmsLoading}
+                                    className={`px-4 py-2 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-all flex items-center gap-2 ${isBulkSmsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    {isBulkSmsLoading ? (
+                                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                                    ) : (
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
+                                    )}
+                                    Send Bulk SMS
+                                </button>
+                                <div className="relative">
+                                    <input type="text" placeholder="Search student or course..." value={searchTerm}
+                                        onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                                        className="pl-10 pr-4 py-2 bg-[#F4F4F4] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all w-64" />
+                                    <svg className="absolute left-3 top-2.5 text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                                </div>
                             </div>
                         </div>
                         <div className="overflow-x-auto">
