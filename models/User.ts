@@ -29,6 +29,8 @@ export interface IUser extends Document {
     needsPasswordSetup?: boolean;
     magicLoginToken?: string;
     magicLoginTokenExpires?: Date;
+    resetPasswordOTP?: string;
+    resetPasswordOTPExpire?: Date;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

@@ -62,13 +62,13 @@ export async function getAuthenticatedUser(req?: NextRequest) {
     // Fallback: return payload data from JWT so middleware/pages don't think they are unauthenticated
     // and cause potential redirect loops to /login if the DB is just temporarily down.
     return {
-        _id: payload.id,
-        id: payload.id,
+        _id: String(payload.id || payload.userId || ''),
+        id: String(payload.id || payload.userId || ''),
         role: payload.role as string,
         email: payload.email as string,
         name: payload.name as string,
         dbError: true
-    };
+    } as any;
 }
 
 export function unauthorizedResponse() {
