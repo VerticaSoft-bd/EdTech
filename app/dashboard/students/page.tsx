@@ -44,6 +44,14 @@ function StudentsPageContent() {
     useEffect(() => {
         fetchStudents();
     }, []);
+    
+    // Keep active modal student data in sync with background refreshes
+    useEffect(() => {
+        if (selectedStudent) {
+            const updated = students.find(s => (s._id || s.id) === (selectedStudent._id || selectedStudent.id));
+            if (updated) setSelectedStudent(updated);
+        }
+    }, [students]);
 
     const totalPages = Math.ceil(students.length / ITEMS_PER_PAGE);
     
