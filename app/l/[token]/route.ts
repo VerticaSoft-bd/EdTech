@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
     request: Request,
-    { params }: { params: { token: string } }
+    { params }: { params: Promise<{ token: string }> }
 ) {
     try {
-        const { token } = params;
+        const { token } = await params;
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
         
         // Construct the full magic login URL
