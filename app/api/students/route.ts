@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
         if (isOffline) {
             console.log(`[Onboarding] Generating magic link for ${body.fullName}...`);
-            const magicToken = crypto.randomBytes(32).toString('hex');
+            const magicToken = crypto.randomBytes(8).toString('hex');
             user.magicLoginToken = magicToken;
             user.magicLoginTokenExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
             await user.save();
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
                 "[NAME], setup your password [LINK] - YouthINS";
             
             const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-            const magicLink = `${appUrl}/api/auth/magic-login?token=${magicToken}`;
+            const magicLink = `${appUrl}/l/${magicToken}`;
 
             const smsMessage = template
                 .replace('[NAME]', body.fullName)
