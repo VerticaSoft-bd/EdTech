@@ -4,6 +4,7 @@ import Student from '@/models/Student';
 import Course from '@/models/Course';
 import Coupon from '@/models/Coupon';
 import User from '@/models/User';
+import Transaction from '@/models/Transaction';
 import SiteSettings from '@/models/SiteSettings';
 import { sendSMS } from '@/lib/sms';
 import crypto from 'crypto';
@@ -48,6 +49,24 @@ export async function POST(request: Request) {
             courseMode
         });
 
+        // Create initial transaction if a deposit was made
+        if (body.paidAmount > 0) {
+            const transactionId = `INV-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+            await Transaction.create({
+                type: 'course_purchase',
+                amount: body.paidAmount,
+                status: 'completed',
+                method: body.paymentMethod || 'Cash',
+                transactionId: transactionId,
+                description: `Initial deposit for ${body.courseName}`,
+                metadata: {
+                    email: body.email,
+                    courseName: body.courseName,
+                    fullName: body.fullName
+                }
+            });
+        }
+
         // If coupon applied, increment usageCount
         if (body.appliedCoupon) {
             await Coupon.findOneAndUpdate(
@@ -55,6 +74,7 @@ export async function POST(request: Request) {
                 { $inc: { usageCount: 1 } }
             );
         }
+
 
         // --- SMART ONBOARDING LOGIC ---
         // 1. Create or Find User account

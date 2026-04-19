@@ -57,6 +57,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
         avatar: '',
         couponCode: '',
         privacyPolicyAccepted: false,
+        paymentMethod: 'Cash',
     });
 
     const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
@@ -182,7 +183,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
 
                 // Reset form
                 setFormData({
-                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', couponCode: '', privacyPolicyAccepted: false,
+                    courseName: '', fullName: '', fatherName: '', motherName: '', residentialStatus: 'Resident', maritalStatus: 'Single', gender: 'Male', dateOfBirth: '', presentAddress: '', depositCourseFee: '', country: '', email: '', nidNo: '', education: '', mobileNo: '', guardianMobileNo: '', avatar: '', couponCode: '', privacyPolicyAccepted: false, paymentMethod: 'Cash',
                 });
                 setAppliedCoupon(null);
 
@@ -440,6 +441,31 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                             >
                                                 {isApplyingCoupon ? '...' : 'Apply'}
                                             </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-4">
+                                        <label className="text-sm font-bold text-gray-700">Payment Type / Method <span className="text-red-500">*</span></label>
+                                        <div className="relative mt-1">
+                                            <select
+                                                name="paymentMethod"
+                                                value={formData.paymentMethod}
+                                                onChange={handleChange}
+                                                required
+                                                className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F] appearance-none"
+                                            >
+                                                <option value="Cash">Cash</option>
+                                                <option value="bKash">bKash</option>
+                                                <option value="Nagad">Nagad</option>
+                                                <option value="Rocket">Rocket</option>
+                                                <option value="Bank Transfer">Bank Transfer</option>
+                                                <option value="Others">Others</option>
+                                            </select>
+                                            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </div>
                                         </div>
                                     </div>
 

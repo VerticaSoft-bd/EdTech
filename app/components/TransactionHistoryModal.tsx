@@ -76,9 +76,15 @@ export default function TransactionHistoryModal({ isOpen, onClose, student, onUp
                                     <p className="text-xs text-gray-500">{student.mobileNo}</p>
                                 </div>
                             </div>
-                            <div className="text-right">
-                                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Course Due</p>
-                                <p className="text-xl font-extrabold text-[#FF4C4C]">৳{(student.totalCourseFee - student.paidAmount) || 0}</p>
+                            <div className="flex items-center gap-6">
+                                <div className="text-right">
+                                    <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Total Paid</p>
+                                    <p className="text-lg font-extrabold text-[#4BD37B]">৳{student.paidAmount || 0}</p>
+                                </div>
+                                <div className="text-right border-l border-gray-100 pl-6">
+                                    <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Course Due</p>
+                                    <p className="text-lg font-extrabold text-[#FF4C4C]">৳{(student.totalCourseFee - student.paidAmount) || 0}</p>
+                                </div>
                             </div>
                         </div>
 
@@ -130,10 +136,14 @@ export default function TransactionHistoryModal({ isOpen, onClose, student, onUp
                                                     <Link 
                                                         href={`/invoice/${txn.transactionId}`}
                                                         target="_blank"
-                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-[#6C5DD3] hover:text-white rounded-lg text-[11px] font-bold transition-all shadow-sm group-hover:shadow-md"
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-[#6C5DD3] hover:text-white rounded-lg text-[11px] font-bold transition-all shadow-sm group-hover:shadow-md border border-gray-100"
                                                     >
-                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                                                        Invoice
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                                            <rect x="6" y="14" width="12" height="8"></rect>
+                                                        </svg>
+                                                        Print
                                                     </Link>
                                                 </td>
                                             </tr>

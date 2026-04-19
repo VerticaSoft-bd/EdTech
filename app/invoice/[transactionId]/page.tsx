@@ -3,6 +3,7 @@ import Transaction from '@/models/Transaction';
 import React from 'react';
 import PrintInvoiceButton from '@/app/components/PrintInvoiceButton';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 
 export default async function InvoicePage({ params }: { params: Promise<{ transactionId: string }> }) {
     await dbConnect();
@@ -18,77 +19,109 @@ export default async function InvoicePage({ params }: { params: Promise<{ transa
     const date = new Date(transaction.updatedAt || transaction.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        day: 'numeric'
     });
 
     return (
-        <div className="max-w-3xl mx-auto p-10 bg-white min-h-screen text-black">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-6 mb-8 gap-4">
-                <div>
-                    <h1 className="text-4xl font-extrabold text-[#6C5DD3]">INVOICE</h1>
-                    <p className="text-gray-500 mt-2 text-sm font-medium">Transaction: {transaction.transactionId}</p>
-                </div>
-                <div className="sm:text-right">
-                    <h2 className="text-2xl font-bold text-gray-900">Youth Ins</h2>
-                    <p className="text-gray-500 text-sm">support@youthins.com</p>
-                    <p className="text-gray-500 text-sm">Dhaka, Bangladesh</p>
-                </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row justify-between mb-10 gap-6">
-                <div>
-                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Billed To</h3>
-                    <p className="text-lg font-bold text-gray-900">{userName}</p>
-                    <p className="text-gray-600">{userEmail}</p>
-                </div>
-                <div className="sm:text-right">
-                    <div className="mb-2">
-                        <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider block mb-1">Invoice Date</span>
-                        <p className="text-gray-900 font-medium">{date}</p>
-                    </div>
-                    <div>
-                        <span className="text-sm font-semibold text-gray-400 uppercase tracking-wider block mb-1">Status</span>
-                        <p className="text-green-600 font-bold uppercase">{transaction.status}</p>
-                    </div>
-                    {transaction.processedBy && (
-                        <div className="mt-2">
-                            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1">Processed By</span>
-                            <p className="text-gray-700 font-medium text-xs italic">{transaction.processedBy}</p>
+        <div className="min-h-screen bg-[#F8F9FB] py-12 px-4 print:bg-white print:py-0 print:px-0">
+            <div className="max-w-[600px] mx-auto bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] overflow-hidden print:shadow-none print:max-w-none print:w-full border border-gray-100 print:border-none">
+                {/* Header Section */}
+                <div className="bg-[#6C5DD3] p-10 text-white relative overflow-hidden print:bg-white print:text-black print:border-b-2 print:border-gray-100 print:p-6 print:pb-8">
+                    {/* Decorative element */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 print:hidden" />
+                    
+                    <div className="relative z-10 flex justify-between items-start">
+                        <div>
+                            <img src="/images/logo.png" alt="Logo" className="h-12 mb-6 brightness-0 invert print:brightness-100 print:invert-0" />
+                            <h1 className="text-4xl font-black tracking-tight mb-1">INVOICE</h1>
+                            <p className="text-white/70 font-medium text-sm">No. {transaction.transactionId}</p>
                         </div>
-                    )}
+                        <div className="text-right">
+                            <h2 className="text-xl font-bold mb-1">Youth Ins</h2>
+                            <p className="text-white/70 text-xs">support@youthins.com</p>
+                            <p className="text-white/70 text-xs">Dhaka, Bangladesh</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="p-10 print:p-6">
+                    {/* Information Grid */}
+                    <div className="grid grid-cols-2 gap-8 mb-10 pb-10 border-b border-gray-100">
+                        <div>
+                            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-3">Invoice To</h3>
+                            <p className="text-lg font-bold text-gray-900 leading-tight">{userName}</p>
+                            <p className="text-sm text-gray-500 mt-1">{userEmail}</p>
+                        </div>
+                        <div className="text-right">
+                            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-3">Issue Date</h3>
+                            <p className="text-lg font-bold text-gray-900 leading-tight">{date}</p>
+                            <p className="text-sm text-green-500 font-bold mt-1 uppercase tracking-wider">{transaction.status}</p>
+                        </div>
+                    </div>
+
+                    {/* Transaction Details */}
+                    <div className="mb-10">
+                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-6">Payment Details</h3>
+                        <div className="flex justify-between items-center p-6 bg-gray-50 rounded-2xl border border-gray-100/50 mb-4">
+                            <div>
+                                <p className="font-bold text-gray-900">{courseName}</p>
+                                <p className="text-xs text-gray-500 mt-1">Course Enrollment Fee</p>
+                            </div>
+                            <p className="text-xl font-black text-gray-900">৳{transaction.amount.toLocaleString()}</p>
+                        </div>
+                        
+                        <div className="space-y-3 px-2">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-500">Method</span>
+                                <span className="font-bold text-gray-900">{transaction.method || 'N/A'}</span>
+                            </div>
+                            {transaction.processedBy && (
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-500">Processed By</span>
+                                    <span className="font-medium text-gray-700 italic text-xs">{transaction.processedBy}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Total Section */}
+                    <div className="bg-[#6C5DD3]/5 rounded-3xl p-8 flex flex-col items-center justify-center text-center border border-[#6C5DD3]/10">
+                        <span className="text-[10px] font-bold text-[#6C5DD3] uppercase tracking-[0.2em] mb-2">Total Amount Paid</span>
+                        <h2 className="text-4xl font-black text-[#6C5DD3]">৳{transaction.amount.toLocaleString()}</h2>
+                        <p className="text-[10px] text-[#6C5DD3]/60 mt-4 font-medium italic">Handcrafted with care for your education</p>
+                    </div>
+
+                    {/* Footer Note */}
+                    <div className="mt-10 pt-10 border-t border-gray-100 text-center">
+                        <p className="text-xs text-gray-400">
+                            This is a computer-generated invoice and does not require a physical signature.
+                        </p>
+                        <p className="text-sm font-bold text-gray-900 mt-4">Thank you for choosing Youth Ins!</p>
+                    </div>
                 </div>
             </div>
 
-            <table className="w-full text-left border-collapse mb-10">
-                <thead>
-                    <tr className="border-b-2 border-gray-200">
-                        <th className="py-3 px-2 font-bold text-gray-700">Description</th>
-                        <th className="py-3 px-2 text-right font-bold text-gray-700">Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr className="border-b border-gray-100">
-                        <td className="py-5 px-2">
-                            <p className="font-bold text-lg text-gray-900">{courseName}</p>
-                            <p className="text-sm text-gray-500 mt-1">Course Enrollment Fee</p>
-                        </td>
-                        <td className="py-5 px-2 text-right font-bold text-gray-900">৳{transaction.amount.toLocaleString()}</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td className="py-6 px-2 text-xl font-bold text-right border-t-2 border-gray-200">Total Paid</td>
-                        <td className="py-6 px-2 text-2xl font-extrabold text-right border-t-2 border-gray-200 text-[#6C5DD3]">৳{transaction.amount.toLocaleString()}</td>
-                    </tr>
-                </tfoot>
-            </table>
-
-            <div className="text-center text-sm text-gray-500 mt-16 pb-10">
-                <p className="font-medium text-gray-600">Thank you for your business!</p>
-                <PrintInvoiceButton />
+            {/* Action Buttons */}
+            <div className="max-w-[600px] mx-auto mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 print:hidden px-4">
+                <Link 
+                    href="/dashboard/students?mode=offline" 
+                    className="flex-1 w-full sm:w-auto px-8 py-3 bg-white text-gray-600 font-bold rounded-2xl border border-gray-200 hover:bg-gray-50 transition-all text-center"
+                >
+                    Back to Dashboard
+                </Link>
+                <div className="flex-1 w-full sm:w-auto scale-110">
+                    <PrintInvoiceButton />
+                </div>
             </div>
+            
+            <style dangerouslySetInnerHTML={{ __html: `
+                @media print {
+                    body { background: white !important; }
+                    .print\\:hidden { display: none !important; }
+                    @page { margin: 0; }
+                }
+            ` }} />
         </div>
     );
 }
+
