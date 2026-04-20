@@ -447,6 +447,8 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                    </div>
                                )}
                     </div>
+                </div>
+            </div>
 
                     {/* Right Column: Attendance Tracker */}
                     <div className="col-span-12 lg:col-span-4">
