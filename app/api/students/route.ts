@@ -111,7 +111,10 @@ export async function POST(request: Request) {
             const template = settings?.smsTemplates?.offlineStudentSignup || 
                 "[NAME], setup your password [LINK] - YouthINS";
             
-            const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+            const origin = new URL(request.url).origin;
+            const appUrl = (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes('localhost')) 
+                ? process.env.NEXT_PUBLIC_APP_URL 
+                : origin;
             const magicLink = `${appUrl}/l/${magicToken}`;
 
             const smsMessage = template

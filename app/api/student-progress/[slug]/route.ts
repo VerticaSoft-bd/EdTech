@@ -3,6 +3,8 @@ import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
 import Course from '@/models/Course';
 import Attendance from '@/models/Attendance';
+import Task from '@/models/Task';
+import TaskSubmission from '@/models/TaskSubmission';
 import User from '@/models/User';
 import { getAuthenticatedUser } from '@/lib/auth';
 
@@ -36,8 +38,7 @@ export async function GET(
             return NextResponse.json({ success: false, message: 'Enrollment not found' }, { status: 404 });
         }
 
-        // 3. Fetch attendance history, populating markedBy to get teacher info
-        // We need to ensure the User model is registered
+        // 3. Fetch attendance history
         const attendance = await Attendance.find({ 
             studentEmail: user.email, 
             courseName: course.title 
@@ -46,12 +47,35 @@ export async function GET(
         .populate('markedBy', 'name role')
         .lean();
 
+        // 4. Fetch tasks for this course
+        const tasks = await Task.find({ 
+            courseId: course._id,
+            status: 'Published'
+        }).sort({ createdAt: -1 }).lean();
+
+        // 5. Fetch submissions for these tasks by this student
+        const taskIds = tasks.map((t: any) => t._id);
+        const submissions = await TaskSubmission.find({
+            taskId: { $in: taskIds },
+            studentId: user._id
+        }).lean();
+
+        // Combine tasks with submission status
+        const tasksWithSubmissions = tasks.map((task: any) => {
+            const submission = submissions.find((s: any) => String(s.taskId) === String(task._id));
+            return {
+                ...task,
+                submission: submission || null
+            };
+        });
+
         return NextResponse.json({
             success: true,
             data: {
                 course,
                 student,
-                attendanceHistory: attendance
+                attendanceHistory: attendance,
+                tasks: tasksWithSubmissions
             }
         });
 

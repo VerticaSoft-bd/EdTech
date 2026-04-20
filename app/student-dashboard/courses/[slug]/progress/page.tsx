@@ -172,16 +172,19 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                     <div className="bg-[#FFF9F5] p-6 rounded-2xl border border-[#FFEEE0]">
                                         <div className="flex items-center gap-4 mb-4">
                                             <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#FFAB7B]">
-                                                <Calendar size={24} />
+                                                <Trophy size={24} />
                                             </div>
                                             <div>
-                                                <p className="text-xs font-bold text-gray-400 uppercase">Status</p>
-                                                <p className="text-lg font-bold text-[#1A1D1F]">{progress >= 100 ? 'Course Completed' : 'In Progress'}</p>
+                                                <p className="text-xs font-bold text-gray-400 uppercase">Task Score</p>
+                                                <p className="text-lg font-bold text-[#1A1D1F]">
+                                                    {data.tasks?.reduce((sum: number, t: any) => sum + (t.submission?.pointsEarned || 0), 0) || 0}
+                                                    <span className="text-xs text-gray-400 ml-1">Pts Earned</span>
+                                                </p>
                                             </div>
                                         </div>
                                         <div className="bg-white/50 rounded-2xl p-4">
                                             <p className="text-xs text-gray-500 leading-relaxed italic">
-                                                Last activity recorded on {format(new Date(student.updatedAt || new Date()), 'MMM dd, yyyy')}.
+                                                {data.tasks?.filter((t: any) => t.submission?.status === 'Graded').length || 0} of {data.tasks?.length || 0} tasks evaluated.
                                             </p>
                                         </div>
                                     </div>
@@ -189,35 +192,87 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                             </div>
                         </div>
 
-                         {/* Course Modules List (Visual Placeholder/Detail) */}
-                         <div className="space-y-4">
-                            <h3 className="text-xl font-bold text-[#1A1D1F] flex items-center gap-2 px-2">
-                                {isOffline ? 'Curriculum Preview' : 'Learning Pathway'}
-                            </h3>
-                            <div className="grid gap-3">
-                                {course.modules?.slice(0, isOffline ? 4 : 8).map((module: any, idx: number) => (
-                                    <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow group">
-                                        <div className="flex items-center gap-5">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-xs font-bold text-gray-400 group-hover:bg-[#6C5DD3] group-hover:text-white transition-all">
-                                                {String(idx + 1).padStart(2, '0')}
+                         {/* Course Content & Tasks Tabs */}
+                         <div className="space-y-6">
+                            <div className="flex items-center gap-6 border-b border-gray-100 px-2">
+                                <button className="pb-4 text-sm font-bold text-[#6C5DD3] border-b-2 border-[#6C5DD3] transition-all flex items-center gap-2">
+                                    <Target size={16} />
+                                    Tasks & Projects
+                                </button>
+                                <button className="pb-4 text-sm font-bold text-gray-400 hover:text-gray-600 transition-all flex items-center gap-2">
+                                    <Layout size={16} />
+                                    Curriculum
+                                </button>
+                            </div>
+
+                            <div className="grid gap-4">
+                                {data.tasks && data.tasks.length > 0 ? (
+                                    data.tasks.map((task: any) => (
+                                        <div key={task._id} className="bg-white p-6 rounded-3xl border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-all group">
+                                            <div className="flex items-center gap-5 flex-1 min-w-0">
+                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all ${
+                                                    task.type === 'MCQ' ? 'bg-blue-50 text-blue-500' :
+                                                    task.type === 'Project' ? 'bg-purple-50 text-purple-500' :
+                                                    'bg-orange-50 text-orange-500'
+                                                }`}>
+                                                    {task.type === 'MCQ' ? <CheckCircle size={24} /> : task.type === 'Project' ? <Layout size={24} /> : <FileText size={24} />}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-[#6C5DD3] bg-[#6C5DD3]/5 px-2 py-0.5 rounded">{task.type}</span>
+                                                        {task.deadline && (
+                                                            <span className="text-[10px] font-bold text-gray-400 flex items-center gap-1">
+                                                                <Clock size={10} />
+                                                                Due: {format(new Date(task.deadline), 'MMM dd')}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <h4 className="font-bold text-[#1A1D1F] text-lg truncate group-hover:text-[#6C5DD3] transition-colors">{task.title}</h4>
+                                                    <p className="text-xs text-gray-500 line-clamp-1 mt-1">{task.description}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h4 className="font-bold text-[#1A1D1F] group-hover:text-[#6C5DD3] transition-colors">{module.title || `Module ${idx + 1}`}</h4>
-                                                <p className="text-[11px] text-gray-400 font-medium">Estimated Time: {module.duration || '45 mins'}</p>
+
+                                            <div className="flex items-center gap-8 px-4 border-l border-gray-50 md:border-l md:pl-8">
+                                                <div className="text-center min-w-[60px]">
+                                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Score</p>
+                                                    <p className="text-lg font-black text-[#1A1D1F]">
+                                                        {task.submission?.pointsEarned !== undefined ? task.submission.pointsEarned : '--'}
+                                                        <span className="text-xs text-gray-300 font-bold ml-0.5">/{task.points}</span>
+                                                    </p>
+                                                </div>
+
+                                                <div className="text-center min-w-[80px]">
+                                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Status</p>
+                                                    {task.submission ? (
+                                                        <span className={`px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-tight ${
+                                                            task.submission.status === 'Graded' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' : 
+                                                            'bg-amber-100 text-amber-600'
+                                                        }`}>
+                                                            {task.submission.status === 'Graded' ? 'Completed' : 'Pending'}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-2.5 py-1 bg-gray-50 text-gray-400 rounded-xl text-[10px] font-black uppercase tracking-tight">Not Started</span>
+                                                    )}
+                                                </div>
+
+                                                <Link 
+                                                    href={`/student-dashboard/tasks/${task._id}/submit`}
+                                                    className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all ${
+                                                        task.submission?.status === 'Graded' 
+                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                                        : 'bg-[#1A1D1F] text-white shadow-xl shadow-gray-200 hover:-translate-y-0.5'
+                                                    }`}
+                                                >
+                                                    {task.submission ? 'View submission' : 'Start Task'}
+                                                </Link>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            {idx < student.attendedClasses ? (
-                                                <CheckCircle size={20} className="text-[#4BD37B]" />
-                                            ) : (
-                                                <PlayCircle size={20} className="text-gray-300" />
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                                {course.modules?.length > 8 && (
-                                    <div className="text-center py-4 text-sm font-bold text-[#6C5DD3] opacity-60">
-                                        + {course.modules.length - 8} more modules in this course
+                                    ))
+                                ) : (
+                                    <div className="bg-gray-50/50 py-16 rounded-3xl border border-dashed border-gray-200 text-center">
+                                        <Trophy size={40} className="mx-auto text-gray-200 mb-4" />
+                                        <h4 className="font-bold text-[#1A1D1F]">No tasks found for this course</h4>
+                                        <p className="text-sm text-gray-400 mt-1">Your teacher hasn't assigned any tasks yet.</p>
                                     </div>
                                 )}
                             </div>
@@ -226,18 +281,18 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
 
                     {/* Right Column: Attendance Tracker */}
                     <div className="col-span-12 lg:col-span-4">
-                        <section className="bg-white p-8 rounded-2xl shadow-xl shadow-gray-200/20 border border-white/60 sticky top-28">
+                        <section className="bg-white p-8 rounded-3xl shadow-xl shadow-gray-200/20 border border-white/60 sticky top-28">
                             <h3 className="text-xl font-bold text-[#1A1D1F] mb-8 flex items-center justify-between">
                                 Attendance Log
-                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest bg-gray-50 px-3 py-1 rounded-full">Historical View</span>
+                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest bg-gray-50 px-3 py-1 rounded-full">Record</span>
                             </h3>
 
-                            <div className="space-y-5">
+                            <div className="space-y-6">
                                 {attendanceHistory.length > 0 ? (
                                     attendanceHistory.map((record: any) => (
                                         <div key={record._id} className="relative group">
                                             {/* Step Connector */}
-                                            <div className="absolute left-[19px] top-10 bottom-[-10px] w-0.5 bg-gray-100 last:hidden"></div>
+                                            <div className="absolute left-[19px] top-10 bottom-[-10px] w-0.5 bg-gray-50 last:hidden"></div>
 
                                             <div className="flex gap-4">
                                                 <div className={`shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center relative z-10 transition-all ${
@@ -251,8 +306,8 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                                 </div>
                                                 <div className="flex-1 pb-4">
                                                     <div className="flex justify-between items-start mb-1">
-                                                        <p className="text-sm font-bold text-[#1A1D1F]">{format(new Date(record.date), 'MMMM dd, yyyy')}</p>
-                                                        <span className={`text-[10px] font-black uppercase tracking-tight py-1 px-2 rounded-lg ${
+                                                        <p className="text-sm font-bold text-[#1A1D1F]">{format(new Date(record.date), 'MMM dd, yyyy')}</p>
+                                                        <span className={`text-[9px] font-black uppercase tracking-tight py-1 px-2 rounded-lg ${
                                                             record.status === 'Present' ? 'bg-green-100 text-green-700' :
                                                             record.status === 'Absent' ? 'bg-red-100 text-red-700' :
                                                             'bg-amber-100 text-amber-700'
@@ -261,14 +316,12 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                                         </span>
                                                     </div>
                                                     
-                                                    {/* Teacher Attribution (The "Teacher kon mark dilo" part) */}
                                                     <div className="flex items-center gap-2 mt-2">
-                                                        <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center">
-                                                            <UserIcon size={10} className="text-gray-500" />
+                                                        <div className="w-5 h-5 rounded-full bg-gray-50 flex items-center justify-center">
+                                                            <UserIcon size={10} className="text-gray-400" />
                                                         </div>
-                                                        <p className="text-[10px] text-gray-500 font-medium">
-                                                            Marked by <span className="font-bold text-[#6C5DD3]">{record.markedBy?.name || 'Academic Office'}</span>
-                                                            {record.markedBy?.role && <span className="ml-1 text-gray-300">({record.markedBy.role})</span>}
+                                                        <p className="text-[9px] text-gray-400 font-medium">
+                                                            By <span className="font-bold text-[#6C5DD3]">{record.markedBy?.name || 'Office'}</span>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -276,9 +329,9 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="text-center py-20 px-6 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
-                                        <Calendar size={32} className="mx-auto text-gray-300 mb-4" />
-                                        <p className="text-sm text-gray-400 font-medium font-italic">No classes marked yet for this course.</p>
+                                    <div className="text-center py-20 px-6 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200">
+                                        <Calendar size={32} className="mx-auto text-gray-200 mb-4" />
+                                        <p className="text-xs text-gray-400 font-medium font-italic">No classes marked yet.</p>
                                     </div>
                                 )}
                             </div>
@@ -287,19 +340,19 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                             {attendanceHistory.length > 0 && (
                                 <div className="mt-10 pt-8 border-t border-gray-50 grid grid-cols-3 gap-2">
                                     <div className="text-center">
-                                        <div className="text-[14px] font-black text-[#4BD37B]">
+                                        <div className="text-lg font-black text-[#4BD37B]">
                                             {attendanceHistory.filter((r:any) => r.status === 'Present').length}
                                         </div>
                                         <div className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Present</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="text-[14px] font-black text-[#FF4C4C]">
+                                        <div className="text-lg font-black text-[#FF4C4C]">
                                             {attendanceHistory.filter((r:any) => r.status === 'Absent').length}
                                         </div>
                                         <div className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Absent</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="text-[14px] font-black text-[#FFAB7B]">
+                                        <div className="text-lg font-black text-[#FFAB7B]">
                                             {attendanceHistory.filter((r:any) => r.status === 'Late').length}
                                         </div>
                                         <div className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Late</div>
