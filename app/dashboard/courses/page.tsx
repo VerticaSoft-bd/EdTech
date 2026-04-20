@@ -25,8 +25,19 @@ export default function CoursesPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [userRole, setUserRole] = useState<string>('');
 
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                const user = JSON.parse(storedUser);
+                setUserRole(user.role || '');
+            } catch (e) {
+                console.error("Error parsing user");
+            }
+        }
+
         const fetchCourses = async () => {
             try {
                 const res = await fetch('/api/courses');
@@ -130,10 +141,12 @@ export default function CoursesPage() {
                         className="pl-10 pr-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 w-[240px]"
                     />
                 </div>
-                <Link href="/dashboard/courses/new" className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    Create New Course
-                </Link>
+                {userRole !== 'teacher' && (
+                    <Link href="/dashboard/courses/new" className="px-5 py-2.5 bg-[#6C5DD3] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#6C5DD3]/20 hover:bg-[#5a4cb5] transition-colors flex items-center gap-2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Create New Course
+                    </Link>
+                )}
             </div>
 
             {
@@ -191,20 +204,22 @@ export default function CoursesPage() {
                                                 <Link
                                                     href={`/dashboard/courses/edit/${course._id}`}
                                                     className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-[#6C5DD3] transition-colors shadow-sm"
-                                                    title="Edit Course"
+                                                    title={userRole === 'teacher' ? "Manage Course" : "Edit Course"}
                                                 >
                                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                                 </Link>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.preventDefault(); // Prevent accidental navigation if nested
-                                                        handleDelete(course._id, course.title);
-                                                    }}
-                                                    className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-red-500 hover:text-white transition-colors shadow-sm"
-                                                    title="Delete Course"
-                                                >
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                                                </button>
+                                                {userRole !== 'teacher' && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault(); // Prevent accidental navigation if nested
+                                                            handleDelete(course._id, course.title);
+                                                        }}
+                                                        className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-red-500 hover:text-white transition-colors shadow-sm"
+                                                        title="Delete Course"
+                                                    >
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
 
@@ -251,15 +266,17 @@ export default function CoursesPage() {
                         })}
 
                         {/* Add New Placeholder Card */}
-                        <div className="bg-gray-50 rounded-[24px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 cursor-pointer hover:border-[#6C5DD3] hover:bg-[#6C5DD3]/5 transition-all min-h-[350px] group">
-                            <Link href="/dashboard/courses/new" className="flex flex-col items-center justify-center w-full h-full">
-                                <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-[#6C5DD3] group-hover:scale-110 transition-all mb-4">
-                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                </div>
-                                <h3 className="font-bold text-gray-900 mb-1">Add New Course</h3>
-                                <p className="text-xs text-gray-500 text-center">Create a new course and start earning</p>
-                            </Link>
-                        </div>
+                        {userRole !== 'teacher' && (
+                            <div className="bg-gray-50 rounded-[24px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 cursor-pointer hover:border-[#6C5DD3] hover:bg-[#6C5DD3]/5 transition-all min-h-[350px] group">
+                                <Link href="/dashboard/courses/new" className="flex flex-col items-center justify-center w-full h-full">
+                                    <div className="w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-400 group-hover:text-[#6C5DD3] group-hover:scale-110 transition-all mb-4">
+                                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                    </div>
+                                    <h3 className="font-bold text-gray-900 mb-1">Add New Course</h3>
+                                    <p className="text-xs text-gray-500 text-center">Create a new course and start earning</p>
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 )
             }

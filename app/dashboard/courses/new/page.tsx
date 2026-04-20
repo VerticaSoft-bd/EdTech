@@ -14,6 +14,18 @@ export default function AddCoursePage() {
     const [imageError, setImageError] = useState('');
     const [teachers, setTeachers] = useState<any[]>([]);
     const [batchesList, setBatchesList] = useState<any[]>([]);
+    const [userRole, setUserRole] = useState<string | null>(null);
+
+    // Initial role check
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user && user.role) {
+            setUserRole(user.role);
+            if (user.role === 'teacher') {
+                router.push('/dashboard/courses');
+            }
+        }
+    }, [router]);
 
     // Fetch teachers and batches on mount
     useEffect(() => {
@@ -293,6 +305,17 @@ export default function AddCoursePage() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
+
+    if (userRole === 'teacher') {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6C5DD3] mx-auto"></div>
+                    <p className="mt-4 text-gray-500 font-medium">Redirecting...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8 pb-10">

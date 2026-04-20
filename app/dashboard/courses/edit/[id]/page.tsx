@@ -11,6 +11,7 @@ export default function EditCoursePage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [userRole, setUserRole] = useState<string>('');
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
     const [isBatchDropdownOpen, setIsBatchDropdownOpen] = useState(false);
     const [imageError, setImageError] = useState('');
@@ -19,6 +20,16 @@ export default function EditCoursePage() {
 
     // Fetch teachers, batches and course data on mount
     useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                const user = JSON.parse(storedUser);
+                setUserRole(user.role || '');
+            } catch (e) {
+                console.error("Error parsing user");
+            }
+        }
+
         const fetchInitialData = async () => {
             try {
                 const teachersRes = await fetch('/api/users?role=teacher');
@@ -187,6 +198,8 @@ export default function EditCoursePage() {
         moduleId: '',
         isPublished: false
     });
+
+    const isTeacher = userRole === 'teacher';
 
     const handleInputChange = (field: string, value: any) => {
         setCourseData(prev => ({ ...prev, [field]: value }));
@@ -526,8 +539,9 @@ export default function EditCoursePage() {
                                             type="text"
                                             value={courseData.title}
                                             onChange={(e) => handleInputChange('title', e.target.value)}
+                                            readOnly={isTeacher}
                                             placeholder="e.g. Advanced UI/UX Design Masterclass"
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                            className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                         />
                                     </div>
 
@@ -537,8 +551,9 @@ export default function EditCoursePage() {
                                             type="text"
                                             value={courseData.subtitle}
                                             onChange={(e) => handleInputChange('subtitle', e.target.value)}
+                                            readOnly={isTeacher}
                                             placeholder="e.g. Master design tools and build a professional portfolio"
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                            className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                         />
                                     </div>
 
@@ -548,7 +563,8 @@ export default function EditCoursePage() {
                                             <select
                                                 value={courseData.courseMode}
                                                 onChange={(e) => handleInputChange('courseMode', e.target.value)}
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] appearance-none cursor-pointer"
+                                                disabled={isTeacher}
+                                                className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] appearance-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white cursor-pointer'}`}
                                             >
                                                 <option>Offline Class</option>
                                                 <option>Online Class</option>
@@ -561,8 +577,9 @@ export default function EditCoursePage() {
                                                 type="text"
                                                 value={courseData.duration}
                                                 onChange={(e) => handleInputChange('duration', e.target.value)}
+                                                readOnly={isTeacher}
                                                 placeholder="e.g. 6 Months"
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                                className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                             />
                                         </div>
                                     </div>
@@ -570,8 +587,8 @@ export default function EditCoursePage() {
                                      <div className="relative">
                                         <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assigned Batches (নির্ধারিত ব্যাচ)</label>
                                         <div 
-                                            onClick={() => setIsBatchDropdownOpen(!isBatchDropdownOpen)}
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium flex items-center justify-between cursor-pointer hover:bg-white transition-all text-[#1A1D1F]"
+                                            onClick={() => !isTeacher && setIsBatchDropdownOpen(!isBatchDropdownOpen)}
+                                            className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium flex items-center justify-between transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 hover:bg-white cursor-pointer'}`}
                                         >
                                             <div className="flex items-center gap-2">
                                                 {courseData.assignedBatches.length === 0 ? (
@@ -655,8 +672,9 @@ export default function EditCoursePage() {
                                                 type="number"
                                                 value={courseData.totalLectures || ''}
                                                 onChange={(e) => handleInputChange('totalLectures', parseInt(e.target.value) || 0)}
+                                                readOnly={isTeacher}
                                                 placeholder="52"
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                                className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                             />
                                         </div>
                                         <div>
@@ -665,8 +683,9 @@ export default function EditCoursePage() {
                                                 type="number"
                                                 value={courseData.totalProjects || ''}
                                                 onChange={(e) => handleInputChange('totalProjects', parseInt(e.target.value) || 0)}
+                                                readOnly={isTeacher}
                                                 placeholder="20"
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                                className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                             />
                                         </div>
                                     </div>
@@ -681,9 +700,10 @@ export default function EditCoursePage() {
                                     <textarea
                                         value={courseData.fullDetails}
                                         onChange={(e) => handleInputChange('fullDetails', e.target.value)}
+                                        readOnly={isTeacher}
                                         placeholder="Comprehensive description of the course, what students will learn, output, etc."
                                         rows={6}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F] resize-y"
+                                        className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] resize-y ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                     />
                                 </div>
 
@@ -700,30 +720,35 @@ export default function EditCoursePage() {
                                                         newAudience[index] = e.target.value;
                                                         handleInputChange('targetAudience', newAudience);
                                                     }}
+                                                    readOnly={isTeacher}
                                                     placeholder="e.g. যারা একদম শূন্য থেকে শিখতে চান"
-                                                    className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                                    className={`flex-1 px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                                 />
-                                                <button
-                                                    onClick={() => {
-                                                        const newAudience = courseData.targetAudience.filter((_, i) => i !== index);
-                                                        handleInputChange('targetAudience', newAudience);
-                                                    }}
-                                                    className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                                                >
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                                                </button>
+                                                {!isTeacher && (
+                                                    <button
+                                                        onClick={() => {
+                                                            const newAudience = courseData.targetAudience.filter((_, i) => i !== index);
+                                                            handleInputChange('targetAudience', newAudience);
+                                                        }}
+                                                        className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                                                    >
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                    </button>
+                                                )}
                                             </div>
                                         ))}
                                         {courseData.targetAudience.length === 0 && (
                                             <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No target audience items added yet.</div>
                                         )}
-                                        <button
-                                            onClick={() => setCourseData(prev => ({ ...prev, targetAudience: [...prev.targetAudience, ''] }))}
-                                            className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"
-                                        >
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
-                                            Add Audience (যোগ করুন)
-                                        </button>
+                                        {!isTeacher && (
+                                            <button
+                                                onClick={() => setCourseData(prev => ({ ...prev, targetAudience: [...prev.targetAudience, ''] }))}
+                                                className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"
+                                            >
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                Add Audience (যোগ করুন)
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
@@ -836,6 +861,7 @@ export default function EditCoursePage() {
                                         <input
                                             type="file"
                                             accept="image/jpeg, image/png, image/webp"
+                                            disabled={isTeacher}
                                             onChange={e => {
                                                 setImageError('');
                                                 if (e.target.files && e.target.files.length > 0) {
@@ -852,7 +878,7 @@ export default function EditCoursePage() {
                                                     setThumbnailFile(file);
                                                 }
                                             }}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                            className={`absolute inset-0 w-full h-full opacity-0 z-20 ${isTeacher ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                         />
 
                                         {(thumbnailFile || courseData.thumbnail) ? (
@@ -891,8 +917,9 @@ export default function EditCoursePage() {
                                         type="text"
                                         value={courseData.introVideo}
                                         onChange={(e) => handleInputChange('introVideo', e.target.value)}
+                                        readOnly={isTeacher}
                                         placeholder="Paste video URL (YouTube, Vimeo)"
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                        className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                     />
                                 </div>
 
@@ -914,8 +941,8 @@ export default function EditCoursePage() {
                                                 type="button"
                                                 role="switch"
                                                 aria-checked={courseData.showAiLearningBanner}
-                                                onClick={() => handleInputChange('showAiLearningBanner', !courseData.showAiLearningBanner)}
-                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${courseData.showAiLearningBanner ? 'bg-blue-600' : 'bg-gray-300'}`}
+                                                onClick={() => !isTeacher && handleInputChange('showAiLearningBanner', !courseData.showAiLearningBanner)}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${courseData.showAiLearningBanner ? 'bg-blue-600' : 'bg-gray-300'} ${isTeacher ? 'cursor-not-allowed opacity-70' : ''}`}
                                             >
                                                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${courseData.showAiLearningBanner ? 'translate-x-6' : 'translate-x-1'}`} />
                                             </button>
@@ -929,8 +956,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiLearningBadge}
                                                     onChange={(e) => handleInputChange('aiLearningBadge', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="AI-Powered Learning"
-                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                 />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
@@ -940,8 +968,9 @@ export default function EditCoursePage() {
                                                         type="text"
                                                         value={courseData.aiLearningImageBadge1}
                                                         onChange={(e) => handleInputChange('aiLearningImageBadge1', e.target.value)}
+                                                        readOnly={isTeacher}
                                                         placeholder="AI"
-                                                        className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                        className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                     />
                                                 </div>
                                                 <div>
@@ -950,8 +979,9 @@ export default function EditCoursePage() {
                                                         type="text"
                                                         value={courseData.aiLearningImageBadge2}
                                                         onChange={(e) => handleInputChange('aiLearningImageBadge2', e.target.value)}
+                                                        readOnly={isTeacher}
                                                         placeholder="Driven"
-                                                        className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                        className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                     />
                                                 </div>
                                             </div>
@@ -964,8 +994,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiLearningTitle1}
                                                     onChange={(e) => handleInputChange('aiLearningTitle1', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="এই কোর্সে"
-                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                 />
                                             </div>
                                             <div>
@@ -974,8 +1005,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiLearningHighlight}
                                                     onChange={(e) => handleInputChange('aiLearningHighlight', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="AI ব্যবহার করে"
-                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                 />
                                             </div>
                                             <div>
@@ -984,8 +1016,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiLearningTitle2}
                                                     onChange={(e) => handleInputChange('aiLearningTitle2', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="শিখবেন কীভাবে কাজ করতে হয়"
-                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                 />
                                             </div>
                                         </div>
@@ -995,9 +1028,10 @@ export default function EditCoursePage() {
                                             <textarea
                                                 value={courseData.aiLearningDetails}
                                                 onChange={(e) => handleInputChange('aiLearningDetails', e.target.value)}
+                                                readOnly={isTeacher}
                                                 placeholder="শুধু কোড নয়, এই কোর্সে আপনি শিখবেন..."
                                                 rows={3}
-                                                className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F] resize-y"
+                                                className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] resize-y ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                             />
                                         </div>
 
@@ -1012,8 +1046,9 @@ export default function EditCoursePage() {
                                                         newFeatures[0] = e.target.value;
                                                         handleInputChange('aiFeatures', newFeatures);
                                                     }}
+                                                    readOnly={isTeacher}
                                                     placeholder="🤖 ChatGPT Integration"
-                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                 />
                                             </div>
                                             <div>
@@ -1026,8 +1061,9 @@ export default function EditCoursePage() {
                                                         newFeatures[1] = e.target.value;
                                                         handleInputChange('aiFeatures', newFeatures);
                                                     }}
+                                                    readOnly={isTeacher}
                                                     placeholder="⚡ GitHub Copilot"
-                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                 />
                                             </div>
                                             <div>
@@ -1040,8 +1076,9 @@ export default function EditCoursePage() {
                                                         newFeatures[2] = e.target.value;
                                                         handleInputChange('aiFeatures', newFeatures);
                                                     }}
+                                                    readOnly={isTeacher}
                                                     placeholder="🧠 AI Error Handling"
-                                                    className="w-full px-4 py-3 bg-white border border-blue-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-blue-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-blue-500/20'}`}
                                                 />
                                             </div>
                                         </div>
@@ -1054,6 +1091,7 @@ export default function EditCoursePage() {
                                                 <input
                                                     type="file"
                                                     accept="image/jpeg, image/png, image/webp"
+                                                    disabled={isTeacher}
                                                     onChange={e => {
                                                         if (e.target.files && e.target.files.length > 0) {
                                                             const file = e.target.files[0];
@@ -1063,7 +1101,7 @@ export default function EditCoursePage() {
                                                             setAiLearningBannerFile(file);
                                                         }
                                                     }}
-                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                                    className={`absolute inset-0 w-full h-full opacity-0 z-20 ${isTeacher ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                                 />
                                                 {(aiLearningBannerFile || courseData.aiLearningBannerUrl) ? (
                                                     <div className="absolute inset-0 w-full h-full group-thumbnail">
@@ -1151,8 +1189,8 @@ export default function EditCoursePage() {
                                                 type="button"
                                                 role="switch"
                                                 aria-checked={courseData.showAiJobReadyBanner}
-                                                onClick={() => handleInputChange('showAiJobReadyBanner', !courseData.showAiJobReadyBanner)}
-                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${courseData.showAiJobReadyBanner ? 'bg-purple-600' : 'bg-gray-300'}`}
+                                                onClick={() => !isTeacher && handleInputChange('showAiJobReadyBanner', !courseData.showAiJobReadyBanner)}
+                                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${courseData.showAiJobReadyBanner ? 'bg-purple-600' : 'bg-gray-300'} ${isTeacher ? 'cursor-not-allowed opacity-70' : ''}`}
                                             >
                                                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${courseData.showAiJobReadyBanner ? 'translate-x-6' : 'translate-x-1'}`} />
                                             </button>
@@ -1166,8 +1204,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiJobReadyBadge}
                                                     onChange={(e) => handleInputChange('aiJobReadyBadge', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="ক্যারিয়ার রেডি"
-                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-purple-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-purple-500/20'}`}
                                                 />
                                             </div>
                                             <div>
@@ -1176,8 +1215,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiJobReadyImageBadge}
                                                     onChange={(e) => handleInputChange('aiJobReadyImageBadge', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="Job Ready"
-                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-purple-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-purple-500/20'}`}
                                                 />
                                             </div>
                                         </div>
@@ -1189,8 +1229,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiJobReadyTitle1}
                                                     onChange={(e) => handleInputChange('aiJobReadyTitle1', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="কোর্স শেষে আপনি"
-                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-purple-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-purple-500/20'}`}
                                                 />
                                             </div>
                                             <div>
@@ -1199,8 +1240,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiJobReadyHighlight}
                                                     onChange={(e) => handleInputChange('aiJobReadyHighlight', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="চাকরির জন্য প্রস্তুত"
-                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-purple-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-purple-500/20'}`}
                                                 />
                                             </div>
                                             <div>
@@ -1209,8 +1251,9 @@ export default function EditCoursePage() {
                                                     type="text"
                                                     value={courseData.aiJobReadyTitle2}
                                                     onChange={(e) => handleInputChange('aiJobReadyTitle2', e.target.value)}
+                                                    readOnly={isTeacher}
                                                     placeholder="হয়ে যাবেন"
-                                                    className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F]"
+                                                    className={`w-full px-4 py-3 border border-purple-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-purple-500/20'}`}
                                                 />
                                             </div>
                                         </div>
@@ -1220,9 +1263,10 @@ export default function EditCoursePage() {
                                             <textarea
                                                 value={courseData.aiJobReadyDetails}
                                                 onChange={(e) => handleInputChange('aiJobReadyDetails', e.target.value)}
+                                                readOnly={isTeacher}
                                                 placeholder="প্রতিটি মডিউলে real-world project..."
                                                 rows={3}
-                                                className="w-full px-4 py-3 bg-white border border-purple-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all text-[#1A1D1F] resize-y"
+                                                className={`w-full px-4 py-3 border border-purple-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] resize-y ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-purple-500/20'}`}
                                             />
                                         </div>
                                         <div>
@@ -1234,6 +1278,7 @@ export default function EditCoursePage() {
                                                 <input
                                                     type="file"
                                                     accept="image/jpeg, image/png, image/webp"
+                                                    disabled={isTeacher}
                                                     onChange={e => {
                                                         if (e.target.files && e.target.files.length > 0) {
                                                             const file = e.target.files[0];
@@ -1243,7 +1288,7 @@ export default function EditCoursePage() {
                                                             setAiBannerFile(file);
                                                         }
                                                     }}
-                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                                    className={`absolute inset-0 w-full h-full opacity-0 z-20 ${isTeacher ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                                                 />
                                                 {(aiBannerFile || courseData.aiBannerUrl) ? (
                                                     <div className="absolute inset-0 w-full h-full group-thumbnail">
@@ -1341,8 +1386,9 @@ export default function EditCoursePage() {
                                             type="number"
                                             value={courseData.regularFee || ''}
                                             onChange={(e) => handleInputChange('regularFee', parseInt(e.target.value) || 0)}
+                                            readOnly={isTeacher}
                                             placeholder="30000"
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                            className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                         />
                                     </div>
                                     <div>
@@ -1351,8 +1397,9 @@ export default function EditCoursePage() {
                                             type="number"
                                             value={courseData.discountPercentage || ''}
                                             onChange={(e) => handleInputChange('discountPercentage', parseInt(e.target.value) || 0)}
+                                            readOnly={isTeacher}
                                             placeholder="40"
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]"
+                                            className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`}
                                         />
                                     </div>
                                 </div>
@@ -1388,7 +1435,8 @@ export default function EditCoursePage() {
                                                                 newTeachers[index] = e.target.value;
                                                                 handleInputChange('assignedTeachers', newTeachers);
                                                             }}
-                                                            className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 appearance-none cursor-pointer"
+                                                            disabled={isTeacher}
+                                                            className={`w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none transition-all appearance-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20 cursor-pointer'}`}
                                                         >
                                                             <option value="">Select a Teacher (শিক্ষক নির্বাচন করুন)</option>
                                                             {teachers.map(t => (
@@ -1399,16 +1447,18 @@ export default function EditCoursePage() {
                                                     </div>
                                                     <div className="flex items-center gap-2">
                                                         {index === 0 && <span className="px-2.5 py-1 bg-[#6C5DD3]/10 text-[#6C5DD3] rounded-lg text-xs font-bold border border-[#6C5DD3]/20">Primary (প্রধান)</span>}
-                                                        <button
-                                                            onClick={() => {
-                                                                const newTeachers = [...courseData.assignedTeachers];
-                                                                newTeachers.splice(index, 1);
-                                                                handleInputChange('assignedTeachers', newTeachers);
-                                                            }}
-                                                            className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
-                                                        >
-                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-                                                        </button>
+                                                        {!isTeacher && (
+                                                            <button
+                                                                onClick={() => {
+                                                                    const newTeachers = [...courseData.assignedTeachers];
+                                                                    newTeachers.splice(index, 1);
+                                                                    handleInputChange('assignedTeachers', newTeachers);
+                                                                }}
+                                                                className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                                                            >
+                                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                             )
@@ -1440,7 +1490,7 @@ export default function EditCoursePage() {
                                         )}
                                     </div>
 
-                                    {courseData.assignedTeachers.length > 0 && (
+                                    {courseData.assignedTeachers.length > 0 && !isTeacher && (
                                         <button
                                             onClick={() => handleInputChange('assignedTeachers', [...courseData.assignedTeachers, ""])}
                                             className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-4"
@@ -1469,8 +1519,9 @@ export default function EditCoursePage() {
                                                             newOpps[index].title = e.target.value;
                                                             handleInputChange('careerOpportunities', newOpps);
                                                         }}
+                                                        readOnly={isTeacher}
                                                         placeholder="Role Title (e.g. Graphic Designer)"
-                                                        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20"
+                                                        className={`w-full px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium focus:outline-none transition-all ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`}
                                                     />
                                                     <textarea
                                                         value={opp.description}
@@ -1479,21 +1530,24 @@ export default function EditCoursePage() {
                                                             newOpps[index].description = e.target.value;
                                                             handleInputChange('careerOpportunities', newOpps);
                                                         }}
+                                                        readOnly={isTeacher}
                                                         placeholder="Brief description of the opportunity"
                                                         rows={2}
-                                                        className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 resize-none"
+                                                        className={`w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none transition-all resize-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`}
                                                     ></textarea>
                                                 </div>
-                                                <button
-                                                    onClick={() => {
-                                                        const newOpps = [...courseData.careerOpportunities];
-                                                        newOpps.splice(index, 1);
-                                                        handleInputChange('careerOpportunities', newOpps);
-                                                    }}
-                                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-1 shrink-0"
-                                                >
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
-                                                </button>
+                                                {!isTeacher && (
+                                                    <button
+                                                        onClick={() => {
+                                                            const newOpps = [...courseData.careerOpportunities];
+                                                            newOpps.splice(index, 1);
+                                                            handleInputChange('careerOpportunities', newOpps);
+                                                        }}
+                                                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors mt-1 shrink-0"
+                                                    >
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>
+                                                    </button>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
@@ -1502,13 +1556,15 @@ export default function EditCoursePage() {
                                         <div className="text-sm text-gray-500 py-6 text-center border-2 border-dashed border-gray-100 rounded-xl mb-4 mt-2">No career opportunities added. (কোন ক্যারিয়ার সুযোগ যোগ করা হয়নি)</div>
                                     )}
 
-                                    <button
-                                        onClick={() => handleInputChange('careerOpportunities', [...courseData.careerOpportunities, { title: '', description: '' }])}
-                                        className="text-sm font-bold text-[#6C5DD3] hover:text-[#5a4cb5] flex items-center gap-1.5 mt-2"
-                                    >
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                                        Add Opportunity (সুযোগ যোগ করুন)
-                                    </button>
+                                    {!isTeacher && (
+                                        <button
+                                            onClick={() => handleInputChange('careerOpportunities', [...courseData.careerOpportunities, { title: '', description: '' }])}
+                                            className="text-sm font-bold text-[#6C5DD3] hover:text-[#5a4cb5] flex items-center gap-1.5 mt-2"
+                                        >
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                            Add Opportunity (সুযোগ যোগ করুন)
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -1527,7 +1583,7 @@ export default function EditCoursePage() {
 
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Batch Number (ব্যাচ নম্বর)</label>
-                                            <input type="text" value={courseData.batchNumber} onChange={(e) => handleInputChange('batchNumber', e.target.value)} placeholder="e.g. ১১তম ব্যাচ" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                            <input type="text" value={courseData.batchNumber} onChange={(e) => handleInputChange('batchNumber', e.target.value)} readOnly={isTeacher} placeholder="e.g. ১১তম ব্যাচ" className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`} />
                                         </div>
                                     </div>
                                 </div>
@@ -1541,15 +1597,15 @@ export default function EditCoursePage() {
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Date (তারিখ)</label>
-                                            <input type="text" value={courseData.demoClass.date} onChange={(e) => handleInputChange('demoClass', { ...courseData.demoClass, date: e.target.value })} placeholder="e.g. ৬ই মার্চ" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                            <input type="text" value={courseData.demoClass.date} onChange={(e) => handleInputChange('demoClass', { ...courseData.demoClass, date: e.target.value })} readOnly={isTeacher} placeholder="e.g. ৬ই মার্চ" className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`} />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Time (সময়)</label>
-                                            <input type="text" value={courseData.demoClass.time} onChange={(e) => handleInputChange('demoClass', { ...courseData.demoClass, time: e.target.value })} placeholder="e.g. রাত ১০:৩০টা" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                            <input type="text" value={courseData.demoClass.time} onChange={(e) => handleInputChange('demoClass', { ...courseData.demoClass, time: e.target.value })} readOnly={isTeacher} placeholder="e.g. রাত ১০:৩০টা" className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`} />
                                         </div>
                                         <div>
                                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Platform (প্ল্যাটফর্ম)</label>
-                                            <input type="text" value={courseData.demoClass.platform} onChange={(e) => handleInputChange('demoClass', { ...courseData.demoClass, platform: e.target.value })} placeholder="e.g. Zoom" className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
+                                            <input type="text" value={courseData.demoClass.platform} onChange={(e) => handleInputChange('demoClass', { ...courseData.demoClass, platform: e.target.value })} readOnly={isTeacher} placeholder="e.g. Zoom" className={`w-full px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`} />
                                         </div>
                                     </div>
                                     <div className="mt-6">
@@ -1557,11 +1613,20 @@ export default function EditCoursePage() {
                                         <div className="space-y-3">
                                             {courseData.demoClass.videoUrls?.map((url, index) => (
                                                 <div key={index} className="flex gap-2">
-                                                    <input type="text" value={url} onChange={(e) => { const n = [...(courseData.demoClass.videoUrls || [])]; n[index] = e.target.value; handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: n }); }} placeholder="e.g. https://www.youtube.com/watch?v=..." className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                                    <button onClick={() => handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: (courseData.demoClass.videoUrls || []).filter((_, i) => i !== index) })} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                    <input type="text" value={url} onChange={(e) => { const n = [...(courseData.demoClass.videoUrls || [])]; n[index] = e.target.value; handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: n }); }} readOnly={isTeacher} placeholder="e.g. https://www.youtube.com/watch?v=..." className={`flex-1 px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`} />
+                                                    {!isTeacher && (
+                                                        <button onClick={() => handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: (courseData.demoClass.videoUrls || []).filter((_, i) => i !== index) })} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                        </button>
+                                                    )}
                                                 </div>
                                             ))}
-                                            <button type="button" onClick={() => handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: [...(courseData.demoClass.videoUrls || []), ''] })} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Video Link (ভিডিও লিঙ্ক যোগ করুন)</button>
+                                            {!isTeacher && (
+                                                <button type="button" onClick={() => handleInputChange('demoClass', { ...courseData.demoClass, videoUrls: [...(courseData.demoClass.videoUrls || []), ''] })} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                    Add Video Link (ভিডিও লিঙ্ক যোগ করুন)
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -1576,25 +1641,34 @@ export default function EditCoursePage() {
                                         {courseData.tools.map((tool, index) => (
                                             <div key={index} className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-3">
                                                 <div className="flex gap-2">
-                                                    <input type="text" value={tool.name} onChange={(e) => { const n = [...courseData.tools]; n[index] = { ...n[index], name: e.target.value }; handleInputChange('tools', n); }} placeholder="e.g. Python, React, Django" className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-[#1A1D1F]" />
-                                                    <button onClick={() => { handleInputChange('tools', courseData.tools.filter((_, i) => i !== index)); const nf = [...toolImageFiles]; nf.splice(index, 1); setToolImageFiles(nf); }} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                    <input type="text" value={tool.name} onChange={(e) => { const n = [...courseData.tools]; n[index] = { ...n[index], name: e.target.value }; handleInputChange('tools', n); }} readOnly={isTeacher} placeholder="e.g. Python, React, Django" className={`flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`} />
+                                                    {!isTeacher && (
+                                                        <button onClick={() => { handleInputChange('tools', courseData.tools.filter((_, i) => i !== index)); const nf = [...toolImageFiles]; nf.splice(index, 1); setToolImageFiles(nf); }} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                        </button>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center gap-3">
                                                     {(toolImageFiles[index] || tool.image) && (
                                                         <img src={toolImageFiles[index] ? URL.createObjectURL(toolImageFiles[index]!) : tool.image} alt={tool.name} className="w-12 h-12 object-contain rounded-lg border border-gray-200 bg-white p-1" />
                                                     )}
-                                                    <label className="flex-1 cursor-pointer">
-                                                        <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-500 hover:border-[#6C5DD3] transition-colors">
+                                                    <label className={`flex-1 ${isTeacher ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+                                                        <div className={`flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-500 transition-colors ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white hover:border-[#6C5DD3]'}`}>
                                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                                                             {toolImageFiles[index] ? toolImageFiles[index]!.name : (tool.image ? 'Change Image (ছবি পরিবর্তন করুন)' : 'Upload Icon/Image (আইকন/ছবি আপলোড করুন)')}
                                                         </div>
-                                                        <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { const nf = [...toolImageFiles]; while (nf.length <= index) nf.push(null); nf[index] = e.target.files[0]; setToolImageFiles(nf); } }} />
+                                                        <input type="file" accept="image/*" disabled={isTeacher} className="hidden" onChange={(e) => { if (e.target.files?.[0]) { const nf = [...toolImageFiles]; while (nf.length <= index) nf.push(null); nf[index] = e.target.files[0]; setToolImageFiles(nf); } }} />
                                                     </label>
                                                 </div>
                                             </div>
                                         ))}
                                         {courseData.tools.length === 0 && <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No tools added yet. (এখন পর্যন্ত কোন টুল যোগ করা হয়নি)</div>}
-                                        <button onClick={() => { setCourseData(prev => ({ ...prev, tools: [...prev.tools, { name: '', image: '' }] })); setToolImageFiles(prev => [...prev, null]); }} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Tool (টুল যোগ করুন)</button>
+                                        {!isTeacher && (
+                                            <button onClick={() => { setCourseData(prev => ({ ...prev, tools: [...prev.tools, { name: '', image: '' }] })); setToolImageFiles(prev => [...prev, null]); }} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                Add Tool (টুল যোগ করুন)
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
@@ -1608,25 +1682,34 @@ export default function EditCoursePage() {
                                         {courseData.whatYouWillLearn.map((item, index) => (
                                             <div key={index} className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-3">
                                                 <div className="flex gap-2">
-                                                    <input type="text" value={item.text} onChange={(e) => { const n = [...courseData.whatYouWillLearn]; n[index] = { ...n[index], text: e.target.value }; handleInputChange('whatYouWillLearn', n); }} placeholder="e.g. পাইথন প্রোগ্রামিং শিখবেন" className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 transition-all text-[#1A1D1F]" />
-                                                    <button onClick={() => { handleInputChange('whatYouWillLearn', courseData.whatYouWillLearn.filter((_, i) => i !== index)); const nf = [...learnItemIconFiles]; nf.splice(index, 1); setLearnItemIconFiles(nf); }} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                    <input type="text" value={item.text} onChange={(e) => { const n = [...courseData.whatYouWillLearn]; n[index] = { ...n[index], text: e.target.value }; handleInputChange('whatYouWillLearn', n); }} readOnly={isTeacher} placeholder="e.g. পাইথন প্রোগ্রামিং শিখবেন" className={`flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`} />
+                                                    {!isTeacher && (
+                                                        <button onClick={() => { handleInputChange('whatYouWillLearn', courseData.whatYouWillLearn.filter((_, i) => i !== index)); const nf = [...learnItemIconFiles]; nf.splice(index, 1); setLearnItemIconFiles(nf); }} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                        </button>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center gap-3">
                                                     {(learnItemIconFiles[index] || item.icon) && (
                                                         <img src={learnItemIconFiles[index] ? URL.createObjectURL(learnItemIconFiles[index]!) : item.icon} alt="Icon" className="w-12 h-12 object-contain rounded-lg border border-gray-200 bg-white p-1" />
                                                     )}
-                                                    <label className="flex-1 cursor-pointer">
-                                                        <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-500 hover:border-[#6C5DD3] transition-colors">
+                                                    <label className={`flex-1 ${isTeacher ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+                                                        <div className={`flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-500 transition-colors ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white hover:border-[#6C5DD3]'}`}>
                                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                                                             {learnItemIconFiles[index] ? learnItemIconFiles[index]!.name : (item.icon ? 'Change Icon (আইকন পরিবর্তন করুন)' : 'Upload Icon/Image (আইকন/ছবি আপলোড করুন)')}
                                                         </div>
-                                                        <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { const nf = [...learnItemIconFiles]; while (nf.length <= index) nf.push(null); nf[index] = e.target.files[0]; setLearnItemIconFiles(nf); } }} />
+                                                        <input type="file" accept="image/*" disabled={isTeacher} className="hidden" onChange={(e) => { if (e.target.files?.[0]) { const nf = [...learnItemIconFiles]; while (nf.length <= index) nf.push(null); nf[index] = e.target.files[0]; setLearnItemIconFiles(nf); } }} />
                                                     </label>
                                                 </div>
                                             </div>
                                         ))}
                                         {courseData.whatYouWillLearn.length === 0 && <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No items added yet. (এখন পর্যন্ত কোন আইটেম যোগ করা হয়নি)</div>}
-                                        <button onClick={() => { setCourseData(prev => ({ ...prev, whatYouWillLearn: [...prev.whatYouWillLearn, { text: '', icon: '' }] })); setLearnItemIconFiles(prev => [...prev, null]); }} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Item (আইটেম যোগ করুন)</button>
+                                        {!isTeacher && (
+                                            <button onClick={() => { setCourseData(prev => ({ ...prev, whatYouWillLearn: [...prev.whatYouWillLearn, { text: '', icon: '' }] })); setLearnItemIconFiles(prev => [...prev, null]); }} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                Add Item (আইটেম যোগ করুন)
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
@@ -1640,29 +1723,38 @@ export default function EditCoursePage() {
                                         {courseData.benefits.map((benefit, index) => (
                                             <div key={index} className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-3">
                                                 <div className="grid grid-cols-4 gap-2">
-                                                    <input type="text" value={benefit.icon} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], icon: e.target.value }; handleInputChange('benefits', n); }} placeholder="🗓️ (Text Icon)" className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 text-center" />
-                                                    <input type="text" value={benefit.title} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], title: e.target.value }; handleInputChange('benefits', n); }} placeholder="Title" className="col-span-3 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                    <input type="text" value={benefit.icon} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], icon: e.target.value }; handleInputChange('benefits', n); }} readOnly={isTeacher} placeholder="🗓️ (Text Icon)" className={`px-4 py-2 border border-gray-200 rounded-lg text-sm transition-all focus:outline-none text-center ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`} />
+                                                    <input type="text" value={benefit.title} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], title: e.target.value }; handleInputChange('benefits', n); }} readOnly={isTeacher} placeholder="Title" className={`col-span-3 px-4 py-2 border border-gray-200 rounded-lg text-sm transition-all focus:outline-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`} />
                                                 </div>
                                                 <div className="flex gap-2">
-                                                    <input type="text" value={benefit.subtitle} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], subtitle: e.target.value }; handleInputChange('benefits', n); }} placeholder="Subtitle" className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
-                                                    <button onClick={() => { handleInputChange('benefits', courseData.benefits.filter((_, i) => i !== index)); const nf = [...benefitIconFiles]; nf.splice(index, 1); setBenefitIconFiles(nf); }} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                    <input type="text" value={benefit.subtitle} onChange={(e) => { const n = [...courseData.benefits]; n[index] = { ...n[index], subtitle: e.target.value }; handleInputChange('benefits', n); }} readOnly={isTeacher} placeholder="Subtitle" className={`flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm transition-all focus:outline-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`} />
+                                                    {!isTeacher && (
+                                                        <button onClick={() => { handleInputChange('benefits', courseData.benefits.filter((_, i) => i !== index)); const nf = [...benefitIconFiles]; nf.splice(index, 1); setBenefitIconFiles(nf); }} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                        </button>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center gap-3">
                                                     {(benefitIconFiles[index] || (benefit.icon && benefit.icon.startsWith('http'))) && (
                                                         <img src={benefitIconFiles[index] ? URL.createObjectURL(benefitIconFiles[index]!) : benefit.icon} alt="Benefit" className="w-12 h-12 object-contain rounded-lg border border-gray-200 bg-white p-1" />
                                                     )}
-                                                    <label className="flex-1 cursor-pointer">
-                                                        <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-500 hover:border-[#6C5DD3] transition-colors">
+                                                    <label className={`flex-1 ${isTeacher ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+                                                        <div className={`flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-500 transition-colors ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white hover:border-[#6C5DD3]'}`}>
                                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                                                             {benefitIconFiles[index] ? benefitIconFiles[index]!.name : (benefit.icon && benefit.icon.startsWith('http') ? 'Change Image (ছবি পরিবর্তন করুন)' : 'Upload Image (ছবি আপলোড করুন)')}
                                                         </div>
-                                                        <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files?.[0]) { const nf = [...benefitIconFiles]; while (nf.length <= index) nf.push(null); nf[index] = e.target.files[0]; setBenefitIconFiles(nf); } }} />
+                                                        <input type="file" accept="image/*" disabled={isTeacher} className="hidden" onChange={(e) => { if (e.target.files?.[0]) { const nf = [...benefitIconFiles]; while (nf.length <= index) nf.push(null); nf[index] = e.target.files[0]; setBenefitIconFiles(nf); } }} />
                                                     </label>
                                                 </div>
                                             </div>
                                         ))}
                                         {courseData.benefits.length === 0 && <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No benefits added yet. (এখন পর্যন্ত কোন সুবিধা যোগ করা হয়নি)</div>}
-                                        <button onClick={() => { handleInputChange('benefits', [...courseData.benefits, { icon: '', title: '', subtitle: '' }]); setBenefitIconFiles(prev => [...prev, null]); }} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Benefit (সুবিধা যোগ করুন)</button>
+                                        {!isTeacher && (
+                                            <button onClick={() => { handleInputChange('benefits', [...courseData.benefits, { icon: '', title: '', subtitle: '' }]); setBenefitIconFiles(prev => [...prev, null]); }} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                Add Benefit (সুবিধা যোগ করুন)
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
@@ -1675,13 +1767,22 @@ export default function EditCoursePage() {
                                     <div className="space-y-2">
                                         {courseData.successStories.map((story, index) => (
                                             <div key={index} className="flex gap-2">
-                                                <input type="text" value={story.name} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], name: e.target.value }; handleInputChange('successStories', n); }} placeholder="Student Name" className="w-1/3 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                                <input type="text" value={story.role} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], role: e.target.value }; handleInputChange('successStories', n); }} placeholder="Description" className="flex-1 px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white transition-all text-[#1A1D1F]" />
-                                                <button onClick={() => handleInputChange('successStories', courseData.successStories.filter((_, i) => i !== index))} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                <input type="text" value={story.name} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], name: e.target.value }; handleInputChange('successStories', n); }} readOnly={isTeacher} placeholder="Student Name" className={`w-1/3 px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`} />
+                                                <input type="text" value={story.role} onChange={(e) => { const n = [...courseData.successStories]; n[index] = { ...n[index], role: e.target.value }; handleInputChange('successStories', n); }} readOnly={isTeacher} placeholder="Description" className={`flex-1 px-4 py-3 border border-gray-100 rounded-xl text-sm font-medium focus:outline-none transition-all text-[#1A1D1F] ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50 focus:ring-2 focus:ring-[#6C5DD3]/20 focus:bg-white'}`} />
+                                                {!isTeacher && (
+                                                    <button onClick={() => handleInputChange('successStories', courseData.successStories.filter((_, i) => i !== index))} className="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                    </button>
+                                                )}
                                             </div>
                                         ))}
                                         {courseData.successStories.length === 0 && <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No success stories added yet. (এখন পর্যন্ত কোন সাফল্যের গল্প যোগ করা হয়নি)</div>}
-                                        <button onClick={() => handleInputChange('successStories', [...courseData.successStories, { name: '', role: '' }])} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Story (গল্প যোগ করুন)</button>
+                                        {!isTeacher && (
+                                            <button onClick={() => handleInputChange('successStories', [...courseData.successStories, { name: '', role: '' }])} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                Add Story (গল্প যোগ করুন)
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
@@ -1694,15 +1795,24 @@ export default function EditCoursePage() {
                                     <div className="space-y-3">
                                         {courseData.testimonials.map((review, index) => (
                                             <div key={index} className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
-                                                <input type="text" value={review.name} onChange={(e) => { const n = [...courseData.testimonials]; n[index] = { ...n[index], name: e.target.value }; handleInputChange('testimonials', n); }} placeholder="Reviewer Name" className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                <input type="text" value={review.name} onChange={(e) => { const n = [...courseData.testimonials]; n[index] = { ...n[index], name: e.target.value }; handleInputChange('testimonials', n); }} readOnly={isTeacher} placeholder="Reviewer Name" className={`w-full px-4 py-2 border border-gray-200 rounded-lg text-sm transition-all focus:outline-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`} />
                                                 <div className="flex gap-2">
-                                                    <textarea rows={2} value={review.text} onChange={(e) => { const n = [...courseData.testimonials]; n[index] = { ...n[index], text: e.target.value }; handleInputChange('testimonials', n); }} placeholder="Review text..." className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 resize-none"></textarea>
-                                                    <button onClick={() => handleInputChange('testimonials', courseData.testimonials.filter((_, i) => i !== index))} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                    <textarea rows={2} value={review.text} onChange={(e) => { const n = [...courseData.testimonials]; n[index] = { ...n[index], text: e.target.value }; handleInputChange('testimonials', n); }} readOnly={isTeacher} placeholder="Review text..." className={`flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm transition-all focus:outline-none resize-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`}></textarea>
+                                                    {!isTeacher && (
+                                                        <button onClick={() => handleInputChange('testimonials', courseData.testimonials.filter((_, i) => i !== index))} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0">
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
                                         {courseData.testimonials.length === 0 && <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No testimonials added yet. (এখন পর্যন্ত কোন রিভিউ যোগ করা হয়নি)</div>}
-                                        <button onClick={() => handleInputChange('testimonials', [...courseData.testimonials, { text: '', name: '' }])} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add Testimonial (রিভিউ যোগ করুন)</button>
+                                        {!isTeacher && (
+                                            <button onClick={() => handleInputChange('testimonials', [...courseData.testimonials, { text: '', name: '' }])} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                Add Testimonial (রিভিউ যোগ করুন)
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
@@ -1715,15 +1825,24 @@ export default function EditCoursePage() {
                                     <div className="space-y-3">
                                         {courseData.faqs.map((faq, index) => (
                                             <div key={index} className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
-                                                <input type="text" value={faq.question} onChange={(e) => { const n = [...courseData.faqs]; n[index] = { ...n[index], question: e.target.value }; handleInputChange('faqs', n); }} placeholder="Question" className="w-full px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20" />
+                                                <input type="text" value={faq.question} onChange={(e) => { const n = [...courseData.faqs]; n[index] = { ...n[index], question: e.target.value }; handleInputChange('faqs', n); }} readOnly={isTeacher} placeholder="Question" className={`w-full px-4 py-2 border border-gray-200 rounded-lg text-sm transition-all focus:outline-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`} />
                                                 <div className="flex gap-2">
-                                                    <textarea rows={2} value={faq.answer} onChange={(e) => { const n = [...courseData.faqs]; n[index] = { ...n[index], answer: e.target.value }; handleInputChange('faqs', n); }} placeholder="Answer..." className="flex-1 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 resize-none"></textarea>
-                                                    <button onClick={() => handleInputChange('faqs', courseData.faqs.filter((_, i) => i !== index))} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg></button>
+                                                    <textarea rows={2} value={faq.answer} onChange={(e) => { const n = [...courseData.faqs]; n[index] = { ...n[index], answer: e.target.value }; handleInputChange('faqs', n); }} readOnly={isTeacher} placeholder="Answer..." className={`flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm transition-all focus:outline-none resize-none ${isTeacher ? 'bg-gray-100 cursor-not-allowed' : 'bg-white focus:ring-2 focus:ring-[#6C5DD3]/20'}`}></textarea>
+                                                    {!isTeacher && (
+                                                        <button onClick={() => handleInputChange('faqs', courseData.faqs.filter((_, i) => i !== index))} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0">
+                                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
                                         {courseData.faqs.length === 0 && <div className="text-sm text-gray-500 text-center py-4 bg-gray-50 rounded-xl border border-gray-100">No FAQs added yet. (এখন পর্যন্ত কোন প্রশ্ন যোগ করা হয়নি)</div>}
-                                        <button onClick={() => handleInputChange('faqs', [...courseData.faqs, { question: '', answer: '' }])} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>Add FAQ (প্রশ্ন যোগ করুন)</button>
+                                        {!isTeacher && (
+                                            <button onClick={() => handleInputChange('faqs', [...courseData.faqs, { question: '', answer: '' }])} className="text-sm font-bold text-[#6C5DD3] hover:underline flex items-center gap-1 mt-2">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14" /><path d="M5 12h14" /></svg>
+                                                Add FAQ (প্রশ্ন যোগ করুন)
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
