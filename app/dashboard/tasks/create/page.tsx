@@ -91,10 +91,15 @@ export default function CreateTaskPage() {
         const loadingToast = showToast.loading("Creating task...");
 
         try {
+            const submissionData = {
+                ...formData,
+                mcqQuestions: formData.type === 'MCQ' ? formData.mcqQuestions : []
+            };
+
             const res = await fetch('/api/tasks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(submissionData)
             });
 
             const data = await res.json();

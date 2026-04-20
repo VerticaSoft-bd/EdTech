@@ -43,6 +43,12 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
+        
+        // Clean up mcqQuestions if not MCQ type to avoid validation errors
+        if (body.type !== 'MCQ') {
+            body.mcqQuestions = [];
+        }
+
         await dbConnect();
 
         const task = await Task.create({

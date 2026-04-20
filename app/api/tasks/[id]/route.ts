@@ -26,6 +26,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         }
 
         const body = await req.json();
+        
+        // Clean up mcqQuestions if not MCQ type
+        if (body.type && body.type !== 'MCQ') {
+            body.mcqQuestions = [];
+        }
+
         await dbConnect();
 
         const task = await Task.findByIdAndUpdate(id, body, { new: true, runValidators: true });

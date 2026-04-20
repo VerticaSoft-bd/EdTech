@@ -12,7 +12,8 @@ import {
     Award,
     MessageSquare,
     Search,
-    Filter
+    Filter,
+    Layout
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { showToast } from "@/lib/toast";
