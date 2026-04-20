@@ -13,7 +13,14 @@ import {
     Trophy,
     User as UserIcon,
     Calendar,
-    Target
+    Target,
+    Layout,
+    FileText,
+    ChevronDown,
+    ChevronUp,
+    Lock,
+    ExternalLink,
+    Download
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,6 +31,48 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<'tasks' | 'curriculum'>('tasks');
+    const [expandedModules, setExpandedModules] = useState<number[]>([]);
+    const [completingModule, setCompletingModule] = useState<string | null>(null);
+
+    const toggleModule = (index: number) => {
+        setExpandedModules(prev => 
+            prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+        );
+    };
+
+    const handleToggleModuleCompletion = async (moduleId: string) => {
+        if (!data?.student?._id) return;
+        setCompletingModule(moduleId);
+        try {
+            const isCompleted = data.student.completedModuleIds?.includes(moduleId);
+            const res = await fetch(`/api/students/${data.student._id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    completedModuleIds: isCompleted 
+                        ? data.student.completedModuleIds.filter((id: string) => id !== moduleId)
+                        : [...(data.student.completedModuleIds || []), moduleId]
+                })
+            });
+            const json = await res.json();
+            if (json.success) {
+                // Update local state
+                setData((prev: any) => ({
+                    ...prev,
+                    student: {
+                        ...prev.student,
+                        completedModuleIds: json.data.completedModuleIds,
+                        progress: json.data.progress // Assuming server recalculates progress
+                    }
+                }));
+            }
+        } catch (err) {
+            console.error("Failed to update module completion:", err);
+        } finally {
+            setCompletingModule(null);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -195,18 +244,25 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                          {/* Course Content & Tasks Tabs */}
                          <div className="space-y-6">
                             <div className="flex items-center gap-6 border-b border-gray-100 px-2">
-                                <button className="pb-4 text-sm font-bold text-[#6C5DD3] border-b-2 border-[#6C5DD3] transition-all flex items-center gap-2">
+                                <button 
+                                    onClick={() => setActiveTab('tasks')}
+                                    className={`pb-4 text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'tasks' ? 'text-[#6C5DD3] border-b-2 border-[#6C5DD3]' : 'text-gray-400 hover:text-gray-600'}`}
+                                >
                                     <Target size={16} />
                                     Tasks & Projects
                                 </button>
-                                <button className="pb-4 text-sm font-bold text-gray-400 hover:text-gray-600 transition-all flex items-center gap-2">
+                                <button 
+                                    onClick={() => setActiveTab('curriculum')}
+                                    className={`pb-4 text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'curriculum' ? 'text-[#6C5DD3] border-b-2 border-[#6C5DD3]' : 'text-gray-400 hover:text-gray-600'}`}
+                                >
                                     <Layout size={16} />
                                     Curriculum
                                 </button>
                             </div>
 
                             <div className="grid gap-4">
-                                {data.tasks && data.tasks.length > 0 ? (
+                                {activeTab === 'tasks' ? (
+                                    data.tasks && data.tasks.length > 0 ? (
                                     data.tasks.map((task: any) => (
                                         <div key={task._id} className="bg-white p-6 rounded-3xl border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition-all group">
                                             <div className="flex items-center gap-5 flex-1 min-w-0">
@@ -274,9 +330,122 @@ export default function CourseProgressPage({ params }: { params: Promise<{ slug:
                                         <h4 className="font-bold text-[#1A1D1F]">No tasks found for this course</h4>
                                         <p className="text-sm text-gray-400 mt-1">Your teacher hasn't assigned any tasks yet.</p>
                                     </div>
-                                )}
-                            </div>
-                        </div>
+                                )
+                               ) : (
+                                   /* Curriculum Tab */
+                                   <div className="space-y-4">
+                                       {course.modules.map((module: any, mIndex: number) => {
+                                           const moduleId = module._id || String(mIndex);
+                                           const isCompleted = student.completedModuleIds?.includes(moduleId);
+                                           const moduleResources = data.resources?.filter((r: any) => r.moduleId === moduleId) || [];
+                                           const isExpanded = expandedModules.includes(mIndex);
+
+                                           return (
+                                               <div key={mIndex} className="bg-white rounded-3xl border border-gray-100 overflow-hidden transition-all hover:shadow-sm">
+                                                   <div 
+                                                       className={`p-6 flex items-center justify-between cursor-pointer transition-colors ${isExpanded ? 'bg-gray-50/50' : 'hover:bg-gray-50/30'}`}
+                                                       onClick={() => toggleModule(mIndex)}
+                                                   >
+                                                       <div className="flex items-center gap-4">
+                                                           <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isCompleted ? 'bg-green-50 text-green-500' : 'bg-gray-50 text-gray-400'}`}>
+                                                               {isCompleted ? <CheckCircle size={20} /> : <BookOpen size={20} />}
+                                                           </div>
+                                                           <div>
+                                                               <h4 className={`font-bold text-lg ${isCompleted ? 'text-gray-400 line-through' : 'text-[#1A1D1F]'}`}>
+                                                                   {module.title}
+                                                               </h4>
+                                                               <p className="text-xs text-gray-500">
+                                                                   {module.topics.length} topics • {moduleResources.length} resources
+                                                               </p>
+                                                           </div>
+                                                       </div>
+                                                       <div className="flex items-center gap-4">
+                                                           <button 
+                                                               onClick={(e) => {
+                                                                   e.stopPropagation();
+                                                                   handleToggleModuleCompletion(moduleId);
+                                                               }}
+                                                               disabled={completingModule === moduleId}
+                                                               className={`px-4 py-2 rounded-xl text-xs font-black transition-all ${
+                                                                   isCompleted 
+                                                                   ? 'bg-green-50 text-green-600 hover:bg-green-100' 
+                                                                   : 'bg-[#6C5DD3]/10 text-[#6C5DD3] hover:bg-[#6C5DD3]/20'
+                                                               }`}
+                                                           >
+                                                               {completingModule === moduleId ? 'Updating...' : (isCompleted ? 'Completed' : 'Mark Complete')}
+                                                           </button>
+                                                           {isExpanded ? <ChevronUp size={20} className="text-gray-400" /> : <ChevronDown size={20} className="text-gray-400" />}
+                                                       </div>
+                                                   </div>
+
+                                                   {isExpanded && (
+                                                       <div className="p-6 pt-0 space-y-6 animate-in slide-in-from-top-2 duration-200">
+                                                           <div>
+                                                               <h5 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3 ml-2">Topics</h5>
+                                                               <div className="grid gap-2">
+                                                                   {module.topics.map((topic: any, tIndex: number) => (
+                                                                       <div key={tIndex} className="flex items-center gap-3 p-3 bg-gray-50/50 rounded-2xl border border-gray-100 text-sm font-medium text-gray-600">
+                                                                           <PlayCircle size={14} className="text-[#B4B1FF]" />
+                                                                           {topic.title}
+                                                                       </div>
+                                                                   ))}
+                                                               </div>
+                                                           </div>
+
+                                                           {moduleResources.length > 0 && (
+                                                               <div>
+                                                                   <h5 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3 ml-2">Resources</h5>
+                                                                   <div className="grid gap-3">
+                                                                       {moduleResources.map((res: any) => (
+                                                                           <div key={res._id}>
+                                                                               <div className={`p-4 rounded-3xl border flex items-center justify-between transition-all ${
+                                                                                   !isCompleted 
+                                                                                   ? 'bg-gray-50 border-gray-200 opacity-60' 
+                                                                                   : 'bg-white border-gray-100 hover:shadow-md'
+                                                                               }`}>
+                                                                                   <div className="flex items-center gap-4">
+                                                                                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                                                                                           !isCompleted ? 'bg-gray-200 text-gray-400' :
+                                                                                           res.type === 'Text' ? 'bg-orange-50 text-orange-500' : 'bg-blue-50 text-blue-500'
+                                                                                       }`}>
+                                                                                           {!isCompleted ? <Lock size={18} /> : 
+                                                                                            res.type === 'Text' ? <FileText size={18} /> : <ExternalLink size={18} />}
+                                                                                       </div>
+                                                                                       <div>
+                                                                                           <p className="text-sm font-bold text-[#1A1D1F]">{res.title}</p>
+                                                                                           <p className="text-[10px] text-gray-500">{!isCompleted ? 'Complete module to unlock' : (res.type === 'Text' ? 'Text Content' : 'External Link')}</p>
+                                                                                       </div>
+                                                                                   </div>
+                                                                                   {isCompleted && (
+                                                                                       res.type === 'Link' ? (
+                                                                                           <a 
+                                                                                               href={res.url} 
+                                                                                               target="_blank" 
+                                                                                               rel="noopener noreferrer"
+                                                                                               className="p-2 bg-[#6C5DD3]/10 text-[#6C5DD3] rounded-lg hover:bg-[#6C5DD3]/20 transition-all"
+                                                                                           >
+                                                                                               <ExternalLink size={18} />
+                                                                                           </a>
+                                                                                       ) : null
+                                                                                   )}
+                                                                               </div>
+                                                                               {isCompleted && res.type === 'Text' && (
+                                                                                   <div className="mt-2 p-4 bg-gray-50 rounded-2xl border border-gray-100 text-xs text-gray-600 leading-relaxed whitespace-pre-wrap">
+                                                                                       {res.url}
+                                                                                   </div>
+                                                                               )}
+                                                                           </div>
+                                                                       ))}
+                                                                   </div>
+                                                               </div>
+                                                           )}
+                                                       </div>
+                                                   )}
+                                               </div>
+                                           )
+                                       })}
+                                   </div>
+                               )}
                     </div>
 
                     {/* Right Column: Attendance Tracker */}

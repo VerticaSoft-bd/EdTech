@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import ComingSoonModal from './ComingSoonModal';
+import { formatDistanceToNow } from 'date-fns';
 
 export default function Header() {
     const [user, setUser] = useState<{ name: string; role: string } | null>(null);
@@ -11,6 +12,9 @@ export default function Header() {
     const [searchQuery, setSearchQuery] = useState('');
     const pathname = usePathname();
     const router = useRouter();
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -20,6 +24,26 @@ export default function Header() {
             } catch (error) {
                 console.error("Error parsing user from localStorage:", error);
             }
+        }
+
+        const fetchNotifications = async () => {
+            try {
+                const res = await fetch('/api/notifications');
+                const data = await res.json();
+                if (data.success) {
+                    setNotifications(data.data.notifications);
+                    setUnreadCount(data.data.unreadCount);
+                }
+            } catch (err) {
+                console.error("Failed to fetch notifications:", err);
+            }
+        };
+
+        if (storedUser) {
+            fetchNotifications();
+            // Set up polling for new notifications every 1 minute
+            const interval = setInterval(fetchNotifications, 60000);
+            return () => clearInterval(interval);
         }
     }, []);
 
@@ -185,38 +209,78 @@ export default function Header() {
                     <div className="flex items-center gap-3 shrink-0">
                         {user ? (
                             <>
-                                {/* <div className="hidden md:flex items-center gap-1 bg-gray-50 p-1 rounded-xl">
-                                    <button className="relative p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500 hover:text-[#1A1D1F]">
-                                        <svg
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
+                                    <div className="relative group">
+                                        <button 
+                                            onClick={() => {
+                                                setIsNotificationOpen(!isNotificationOpen);
+                                                if (!isNotificationOpen && unreadCount > 0) {
+                                                    // Mark as read when opening
+                                                    fetch('/api/notifications', { method: 'PATCH' });
+                                                    setUnreadCount(0);
+                                                }
+                                            }}
+                                            className="relative p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500 hover:text-[#1A1D1F]"
                                         >
-                                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                        </svg>
-                                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF754C] rounded-full ring-2 ring-gray-50"></span>
-                                    </button>
-                                    <button className="relative p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-500 hover:text-[#1A1D1F]">
-                                        <svg
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                                            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-                                        </svg>
-                                    </button>
-                                </div> */}
+                                            <svg
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                                                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                                            </svg>
+                                            {unreadCount > 0 && (
+                                                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF754C] rounded-full ring-2 ring-gray-50 animate-pulse"></span>
+                                            )}
+                                        </button>
+
+                                        {isNotificationOpen && (
+                                            <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-[100] overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                                                <div className="p-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
+                                                    <h3 className="font-bold text-sm text-[#1A1D1F]">Notifications</h3>
+                                                    {unreadCount > 0 && <span className="px-2 py-0.5 bg-[#6C5DD3] text-white text-[10px] font-bold rounded-full">{unreadCount} New</span>}
+                                                </div>
+                                                <div className="max-h-[400px] overflow-y-auto">
+                                                    {notifications.length === 0 ? (
+                                                        <div className="p-10 text-center">
+                                                            <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#A4A4A4" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                                            </div>
+                                                            <p className="text-xs text-gray-400 font-medium">All caught up!</p>
+                                                        </div>
+                                                    ) : (
+                                                        notifications.map((notif) => (
+                                                            <Link 
+                                                                key={notif._id} 
+                                                                href={notif.link || '#'}
+                                                                onClick={() => setIsNotificationOpen(false)}
+                                                                className={`block p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors ${!notif.isRead ? 'bg-[#6C5DD3]/5' : ''}`}
+                                                            >
+                                                                <p className="text-xs font-bold text-[#1A1D1F] mb-1">{notif.title}</p>
+                                                                <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed">{notif.message}</p>
+                                                                <p className="text-[9px] text-gray-400 mt-2">{formatDistanceToNow(new Date(notif.createdAt))} ago</p>
+                                                            </Link>
+                                                        ))
+                                                    )}
+                                                </div>
+                                                {notifications.length > 0 && (
+                                                    <div className="p-3 bg-gray-50/30 text-center">
+                                                        <button 
+                                                            onClick={() => setIsNotificationOpen(false)}
+                                                            className="text-[11px] font-bold text-[#6C5DD3] hover:underline"
+                                                        >
+                                                            Close
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
 
                                 <div className="h-8 w-[1px] bg-gray-200 mx-1 hidden md:block"></div>
 

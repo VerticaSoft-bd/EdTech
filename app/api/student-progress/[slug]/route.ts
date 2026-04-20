@@ -59,6 +59,13 @@ export async function GET(
             taskId: { $in: taskIds },
             studentId: user._id
         }).lean();
+        
+        // 6. Fetch resources for this course
+        const Resource = (await import('@/models/Resource')).default;
+        const resources = await Resource.find({ 
+            courseId: course._id,
+            isPublished: true 
+        }).sort({ order: 1 }).lean();
 
         // Combine tasks with submission status
         const tasksWithSubmissions = tasks.map((task: any) => {
@@ -75,7 +82,8 @@ export async function GET(
                 course,
                 student,
                 attendanceHistory: attendance,
-                tasks: tasksWithSubmissions
+                tasks: tasksWithSubmissions,
+                resources
             }
         });
 

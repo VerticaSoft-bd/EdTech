@@ -20,20 +20,42 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    return handleUpdate(request, params);
+}
+
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    return handleUpdate(request, params);
+}
+
+async function handleUpdate(request: Request, params: any) {
     try {
         const { id } = await params;
         const body = await request.json();
         await connectToDatabase();
+
+        const student = await Student.findById(id);
+        if (!student) {
+            return NextResponse.json({ success: false, message: 'Student not found' }, { status: 404 });
+        }
+
+        // If completedModuleIds is updated, we should recalculate progress
+        if (body.completedModuleIds) {
+            const Course = (await import('@/models/Course')).default;
+            const course = await Course.findOne({ title: student.courseName });
+            if (course && course.modules && course.modules.length > 0) {
+                // Calculate progress based on module completion
+                // Each module is worth (100 / totalModules) %
+                const totalModules = course.modules.length;
+                const completedCount = body.completedModuleIds.length;
+                body.progress = Math.round((completedCount / totalModules) * 100);
+            }
+        }
 
         const updatedStudent = await Student.findByIdAndUpdate(
             id,
             body,
             { new: true, runValidators: true }
         );
-
-        if (!updatedStudent) {
-            return NextResponse.json({ success: false, message: 'Student not found' }, { status: 404 });
-        }
 
         return NextResponse.json({
             success: true,
