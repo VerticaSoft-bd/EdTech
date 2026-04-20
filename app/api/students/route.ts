@@ -154,7 +154,54 @@ export async function GET(request: Request) {
     try {
         await connectToDatabase();
 
-        const students = await Student.find().sort({ createdAt: -1 });
+        const url = new URL(request.url);
+        const batchId = url.searchParams.get('batchId');
+
+        // Determine user role and ID
+        const { cookies } = await import('next/headers');
+        const { jwtVerify } = await import('jose');
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+        let userRole = '';
+        let userId = null;
+
+        if (token) {
+            try {
+                const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+                const { payload } = await jwtVerify(token, secret);
+                userRole = payload.role as string;
+                userId = payload.id;
+            } catch (err) {
+                // Ignore token errors
+            }
+        }
+
+        let query: any = {};
+        
+        if (batchId) {
+            query.batchId = batchId;
+        }
+
+        // If teacher, only show students from their assigned batches
+        if (userRole === 'teacher' && userId) {
+            const Batch = (await import('@/models/Batch')).default;
+            const teacherBatches = await Batch.find({ teachers: userId }).select('_id');
+            const batchIds = teacherBatches.map(b => b._id);
+            
+            if (batchId) {
+                // If a specific batchId was requested, ensure it belongs to the teacher
+                if (!batchIds.some(id => id.toString() === batchId)) {
+                    return NextResponse.json({ success: true, data: [] });
+                }
+            } else {
+                query.batchId = { $in: batchIds };
+            }
+        } else if (userRole === 'student' && userId) {
+            // Students can only see themselves (or maybe nothing from this list)
+            query.email = (await import('@/models/User')).default.findById(userId).then(u => u?.email);
+        }
+
+        const students = await Student.find(query).sort({ createdAt: -1 });
 
         return NextResponse.json({
             success: true,

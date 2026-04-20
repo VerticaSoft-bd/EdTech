@@ -9,9 +9,33 @@ export async function GET(req: Request) {
         const type = url.searchParams.get('type');
         const status = url.searchParams.get('status');
 
+        // Determine user role and ID
+        const { cookies } = await import('next/headers');
+        const { jwtVerify } = await import('jose');
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+        let userRole = '';
+        let userId = null;
+
+        if (token) {
+            try {
+                const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+                const { payload } = await jwtVerify(token, secret);
+                userRole = payload.role as string;
+                userId = payload.id;
+            } catch (err) {
+                // Ignore token errors
+            }
+        }
+
         const query: any = {};
         if (type) query.type = type;
         if (status) query.status = status;
+        
+        // If teacher, only show their assigned batches
+        if (userRole === 'teacher' && userId) {
+            query.teachers = userId;
+        }
 
         const batches = await Batch.find(query).populate('teachers', 'name email avatar').sort({ createdAt: -1 });
 
