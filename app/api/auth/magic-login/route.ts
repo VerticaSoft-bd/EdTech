@@ -38,20 +38,21 @@ export async function GET(request: Request) {
         user.magicLoginTokenExpires = undefined;
         await user.save();
 
-        // Set HTTP-Only Cookie
-        const cookieStore = await cookies();
-        cookieStore.set({
+        // Redirect to dashboard with setup flag
+        const response = NextResponse.redirect(new URL('/student-dashboard?setup=true', request.url));
+
+        // Set HTTP-Only Cookie on the response
+        response.cookies.set({
             name: 'token',
             value: jwtToken,
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'lax', // Lax is better for external redirect entry
             path: '/',
             maxAge: 7 * 24 * 60 * 60, // 7 days
         });
 
-        // Redirect to dashboard
-        return NextResponse.redirect(new URL('/student-dashboard', request.url));
+        return response;
 
     } catch (error: any) {
         console.error("Magic Login Error:", error);

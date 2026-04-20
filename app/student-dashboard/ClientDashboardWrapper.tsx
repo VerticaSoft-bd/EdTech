@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import PasswordSetupModal from "@/app/components/PasswordSetupModal";
+import { useSearchParams } from "next/navigation";
 
 interface ClientDashboardWrapperProps {
     needsPasswordSetup: boolean;
@@ -9,10 +10,16 @@ interface ClientDashboardWrapperProps {
 
 export default function ClientDashboardWrapper({ needsPasswordSetup: initialNeedsSetup }: ClientDashboardWrapperProps) {
     const [showModal, setShowModal] = useState(initialNeedsSetup);
+    const searchParams = useSearchParams();
+    const setupParam = searchParams.get('setup');
 
     useEffect(() => {
-        setShowModal(initialNeedsSetup);
-    }, [initialNeedsSetup]);
+        if (setupParam === 'true') {
+            setShowModal(true);
+        } else {
+            setShowModal(initialNeedsSetup);
+        }
+    }, [initialNeedsSetup, setupParam]);
 
     return (
         <PasswordSetupModal 
