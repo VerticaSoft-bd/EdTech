@@ -3,7 +3,7 @@ import type { NextRequest, NextFetchEvent } from 'next/server';
 import { jwtVerify } from 'jose';
 
 // This function can be marked `async` if using `await` inside
-export async function middleware(request: NextRequest, event: NextFetchEvent) {
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
     const { pathname, origin } = request.nextUrl;
     const authCookie = request.cookies.get('token');
 
@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
                 body: JSON.stringify({
                     path: pathname,
                     method: request.method,
-                    ip: request.headers.get('x-forwarded-for') || request.ip || 'unknown',
+                    ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || (request as any).ip || 'unknown',
                     userAgent: request.headers.get('user-agent') || 'unknown',
                 }),
                 keepalive: true,
