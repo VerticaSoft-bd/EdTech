@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 
 interface FeeStatusProps {
@@ -5,19 +7,23 @@ interface FeeStatusProps {
     paidAmount: number;
     nextDueDate: string;
     currency?: string;
+    onPayNow?: () => void;
+    onHistory?: () => void;
 }
 
 const FeeStatusCard: React.FC<FeeStatusProps> = ({
     totalFee,
     paidAmount,
     nextDueDate,
-    currency = "$"
+    currency = "$",
+    onPayNow,
+    onHistory
 }) => {
     const percentagePaid = totalFee > 0 ? Math.min(100, Math.max(0, (paidAmount / totalFee) * 100)) : 0;
     const isLocked = totalFee > 0 && paidAmount < totalFee;
 
     return (
-        <div className={`rounded-2xl p-6 text-white relative overflow-hidden shadow-xl transition-all hover:scale-[1.02] ${isLocked ? 'bg-gradient-to-br from-[#FF4C4C] to-[#e43b3b] shadow-[#FF4C4C]/30' : 'bg-gradient-to-br from-[#6C5DD3] to-[#8E8AFF] shadow-[#6C5DD3]/30'}`}>
+        <div className={`h-full rounded-2xl p-6 text-white relative overflow-hidden shadow-xl transition-all hover:scale-[1.02] ${isLocked ? 'bg-gradient-to-br from-[#FF4C4C] to-[#e43b3b] shadow-[#FF4C4C]/30' : 'bg-gradient-to-br from-[#6C5DD3] to-[#8E8AFF] shadow-[#6C5DD3]/30'}`}>
             {/* Noise Texture */}
             <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
 
@@ -67,13 +73,16 @@ const FeeStatusCard: React.FC<FeeStatusProps> = ({
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <a 
-                            href="#payment-history"
+                        <button 
+                            onClick={onHistory}
                             className="px-4 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-xl text-xs font-bold hover:bg-white/20 transition-all active:scale-95 flex items-center gap-2"
                         >
                             History
-                        </a>
-                        <button className="px-5 py-2.5 bg-white text-[#1A1D1F] rounded-xl text-xs font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-95 flex items-center gap-2">
+                        </button>
+                        <button 
+                            onClick={onPayNow}
+                            className="px-5 py-2.5 bg-white text-[#1A1D1F] rounded-xl text-xs font-bold hover:bg-opacity-90 transition-all shadow-lg active:scale-95 flex items-center gap-2"
+                        >
                             Pay Now
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                         </button>

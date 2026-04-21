@@ -24,7 +24,11 @@ export async function POST(request: Request) {
 
         // Increment Batch enrollment if batchId is provided
         if (body.batchId) {
-            await Batch.findByIdAndUpdate(body.batchId, { $inc: { enrolledStudents: 1 } });
+            const batchIds = Array.isArray(body.batchId) ? body.batchId : [body.batchId];
+            await Batch.updateMany(
+                { _id: { $in: batchIds } },
+                { $inc: { enrolledStudents: 1 } }
+            );
         }
 
         // Send enrollment confirmation SMS

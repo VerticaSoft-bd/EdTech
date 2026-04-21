@@ -62,9 +62,9 @@ const StudentSidebar: React.FC = () => {
                     <span className="text-sm font-bold">Assignments</span>
                 </Link>
 
-                <Link href="/student-dashboard/fees" className={getLinkClasses('/student-dashboard/fees')}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                    <span className="text-sm font-bold">Fee Status</span>
+                <Link href="/student-dashboard/payments" className={getLinkClasses('/student-dashboard/payments')}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
+                    <span className="text-sm font-bold">Payment History</span>
                 </Link>
 
                 <Link href="/student-dashboard/cv-maker" className={getLinkClasses('/student-dashboard/cv-maker')}>

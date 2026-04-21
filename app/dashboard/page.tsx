@@ -5,6 +5,7 @@ import RevenueChart from '../components/admin/RevenueChart';
 import RecentAdmissions from '../components/admin/RecentAdmissions';
 import QuickActions from '../components/admin/QuickActions';
 import CriticalAlerts from '../components/admin/CriticalAlerts';
+import WebRequestChart from '../components/admin/WebRequestChart';
 
 interface DashboardStats {
     totalRevenue: number;
@@ -18,8 +19,25 @@ interface DashboardStats {
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
+    const [webStats, setWebStats] = useState<{ today: number; percentageChange: string; allTimeTotal: number, chartData: { date: string; fullDate?: string; count: number }[] } | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<{ role: string } | null>(null);
+
+    const fetchWebStats = async (month?: number, year?: number) => {
+        try {
+            let url = '/api/admin/analytics/requests';
+            if (month && year) {
+                url += `?month=${month}&year=${year}`;
+            }
+            const res = await fetch(url);
+            const data = await res.json();
+            if (data.success) {
+                setWebStats(data.data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch web stats:', error);
+        }
+    };
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -44,7 +62,14 @@ export default function AdminDashboard() {
                 setIsLoading(false);
             }
         };
+
         fetchStats();
+        // Since only admins can see web stats, we don't strictly *need* to gate the fetch,
+        // but we assume it's best to fetch it simultaneously. The API enforces role anyway.
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+        if (parsedUser?.role === 'admin') {
+            fetchWebStats();
+        }
     }, []);
 
     const formatCurrency = (amount: number) => {
@@ -109,6 +134,36 @@ export default function AdminDashboard() {
                     <RecentAdmissions />
                 </div>
             </div>
+
+            {/* Web Request Analytics Section */}
+            {!isStaff && (
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="md:col-span-1 flex flex-col gap-6">
+                        <StatCard
+                            title="All-Time Requests"
+                            value={webStats === null ? '—' : webStats.allTimeTotal.toLocaleString()}
+                            change="Total to date"
+                            isPositive={true}
+                            color="bg-[#4BD37B]"
+                            icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path></svg>}
+                        />
+                        <StatCard
+                            title="Daily Web Requests"
+                            value={webStats === null ? '—' : webStats.today.toLocaleString()}
+                            change={webStats === null ? '...' : webStats.percentageChange}
+                            isPositive={isPositiveChange(webStats?.percentageChange || '0%')}
+                            color="bg-[#33C3FF]"
+                            icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>}
+                        />
+                    </div>
+                    <div className="md:col-span-3">
+                        <WebRequestChart data={webStats?.chartData || []} onMonthChange={(m, y) => {
+                            const parsedUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!) : null;
+                            if (parsedUser?.role === 'admin') fetchWebStats(m, y);
+                        }} />
+                    </div>
+                </div>
+            )}
 
             {/* Bottom Row: Quick Actions & Critical Alerts */}
             {!isStaff && (

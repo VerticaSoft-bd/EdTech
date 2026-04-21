@@ -59,7 +59,17 @@ function CheckoutContent() {
                 const res = await fetch(`/api/courses/${slug}`);
                 if (res.ok) {
                     const data = await res.json();
-                    setCourse(data.data);
+                    const fetchedCourse = data.data;
+                    setCourse(fetchedCourse);
+                    
+                    // Auto-select all batches for Hybrid courses
+                    if (fetchedCourse.courseMode === 'Hybrid' && fetchedCourse.assignedBatches?.length > 0) {
+                        const allBatchIds = fetchedCourse.assignedBatches.map((b: any) => b._id);
+                        setFormData(prev => ({ 
+                            ...prev, 
+                            batchId: allBatchIds 
+                        }));
+                    }
                 } else {
                     toast.error("Course not found");
                 }
@@ -99,6 +109,8 @@ function CheckoutContent() {
 
         const discountedPrice = course.regularFee * (1 - course.discountPercentage / 100);
         const paymentAmount = urlAmount ? parseInt(urlAmount) : discountedPrice;
+        
+        const isOffline = course.courseMode?.toLowerCase().includes('offline');
 
         const payload = {
             ...formData,
@@ -106,6 +118,7 @@ function CheckoutContent() {
             totalCourseFee: discountedPrice,
             paidAmount: 0,
             dueAmount: discountedPrice,
+            courseMode: isOffline ? 'Offline' : (course.courseMode || 'Online')
         };
 
         try {
@@ -119,7 +132,13 @@ function CheckoutContent() {
             const data = await res.json();
 
             if (res.ok || (data.message && data.message.includes('already registered'))) {
-                // Step 2: Initialize Payment via PayStation
+                if (isOffline) {
+                    toast.success("Registration successful! Please pay at our office.");
+                    router.push(`/checkout/success?mode=offline&courseName=${encodeURIComponent(course.title)}&email=${encodeURIComponent(formData.email)}`);
+                    return;
+                }
+
+                // Step 2: Initialize Payment via PayStation (only for online courses)
                 const payRes = await fetch('/api/payment/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -222,20 +241,63 @@ function CheckoutContent() {
 
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Select Course Batch & Schedule *</label>
-                                    <select required name="batchId" value={formData.batchId} onChange={handleInputChange} className="w-full px-4 py-3 bg-white text-black border-2 border-[#6C5DD3]/20 hover:border-[#6C5DD3]/50 rounded-xl focus:outline-none focus:border-[#6C5DD3] transition-colors shadow-sm cursor-pointer appearance-none">
-                                        <option value="" disabled>-- Select a batch --</option>
-                                        {course?.assignedBatches?.map((batch: any) => {
-                                            const availableSeats = batch.totalSeats - batch.enrolledStudents;
-                                            const isFull = availableSeats <= 0;
-                                            return (
-                                                <option key={batch._id} value={batch._id} disabled={isFull}>
-                                                    {batch.name} | {batch.type} | {batch.schedule} ({batch.timing}) {isFull ? '- [BATCH FULL]' : `- [${availableSeats} SEATS LEFT]`}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                    {course?.assignedBatches?.length === 0 && (
-                                        <p className="text-red-500 text-xs mt-2 font-bold">No batches currently available for this course.</p>
+                                    
+                                    {course?.courseMode === 'Hybrid' ? (
+                                        <div className="space-y-3">
+                                            <div className="p-5 bg-[#6C5DD3]/5 border-2 border-[#6C5DD3]/20 rounded-2xl">
+                                                <div className="flex items-center gap-3 mb-4">
+                                                    <div className="w-8 h-8 bg-[#6C5DD3] rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-[#6C5DD3]/20">
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-bold text-[#1A1D1F]">All Batches Pre-selected</p>
+                                                        <p className="text-[10px] text-gray-500 font-medium">Hybrid courses include all modules automatically.</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    {course?.assignedBatches?.map((batch: any) => (
+                                                        <div key={batch._id} className="flex items-center justify-between p-3 bg-white/80 rounded-xl border border-[#6C5DD3]/10 shadow-sm">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[11px] font-bold text-[#6C5DD3] uppercase tracking-wider">{batch.name}</span>
+                                                                <span className="text-xs text-gray-600 font-medium">{batch.type}</span>
+                                                            </div>
+                                                            <div className="text-right">
+                                                                <span className="text-[11px] font-bold text-gray-700 block">{batch.schedule}</span>
+                                                                <span className="text-[10px] text-gray-400">{batch.timing}</span>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <p className="text-[11px] text-[#6C5DD3] font-bold flex items-center gap-1.5 px-1">
+                                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"></path></svg>
+                                                You will be enrolled in all {course?.assignedBatches?.length} batch schedules listed above.
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="relative">
+                                                <select required name="batchId" value={formData.batchId} onChange={handleInputChange} className="w-full px-4 py-3 bg-white text-black border-2 border-[#6C5DD3]/20 hover:border-[#6C5DD3]/50 rounded-xl focus:outline-none focus:border-[#6C5DD3] transition-colors shadow-sm cursor-pointer appearance-none">
+                                                    <option value="" disabled>-- Select a batch --</option>
+                                                    {course?.assignedBatches?.map((batch: any) => {
+                                                        const availableSeats = batch.totalSeats - batch.enrolledStudents;
+                                                        const isFull = availableSeats <= 0;
+                                                        return (
+                                                            <option key={batch._id} value={batch._id} disabled={isFull}>
+                                                                {batch.name} | {batch.type} | {batch.schedule} ({batch.timing}) {isFull ? '- [BATCH FULL]' : `- [${availableSeats} SEATS LEFT]`}
+                                                            </option>
+                                                        );
+                                                    })}
+                                                </select>
+                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#6C5DD3]">
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                                </div>
+                                            </div>
+                                            {course?.assignedBatches?.length === 0 && (
+                                                <p className="text-red-500 text-xs mt-2 font-bold">No batches currently available for this course.</p>
+                                            )}
+                                        </>
                                     )}
                                 </div>
 
@@ -293,7 +355,7 @@ function CheckoutContent() {
                                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                                         Processing...
                                     </>
-                                ) : "Confirm & Pay"}
+                                ) : (course.courseMode?.toLowerCase().includes('offline') ? "Confirm & Pay at Office" : "Confirm & Pay")}
                             </button>
                         </form>
                     </div>
@@ -332,13 +394,17 @@ function CheckoutContent() {
                             </div>
 
                             <div className="flex justify-between items-center mb-8">
-                                <span className="font-bold text-[#1A1D1F] text-lg">Paiying Now</span>
+                                <span className="font-bold text-[#1A1D1F] text-lg">{course.courseMode?.toLowerCase().includes('offline') ? "Payable at Office" : "Paying Now"}</span>
                                 <span className="text-2xl font-extrabold text-[#6C5DD3]">৳{paymentAmount.toLocaleString()}</span>
                             </div>
 
-                            <div className="bg-blue-50 text-blue-800 text-sm p-4 rounded-xl flex items-start gap-3">
+                            <div className={`${course.courseMode?.toLowerCase().includes('offline') ? 'bg-orange-50 text-orange-800' : 'bg-blue-50 text-blue-800'} text-sm p-4 rounded-xl flex items-start gap-3`}>
                                 <svg className="w-5 h-5 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <p>You will be redirected to the secure payment gateway after confirming your details.</p>
+                                <p>
+                                    {course.courseMode?.toLowerCase().includes('offline') 
+                                        ? "You can complete your payment physically by visiting our office after registration." 
+                                        : "You will be redirected to the secure payment gateway after confirming your details."}
+                                </p>
                             </div>
                         </div>
                     </div>

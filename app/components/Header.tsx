@@ -332,6 +332,15 @@ export default function Header() {
                                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                                                 Profile
                                             </Link>
+                                            {user.role === 'student' && (
+                                                <Link
+                                                    href="/student-dashboard/payments"
+                                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-600 hover:text-[#1A1D1F] hover:bg-gray-50 rounded-lg transition-colors"
+                                                >
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
+                                                    Payment History
+                                                </Link>
+                                            )}
                                             <div className="h-[1px] bg-gray-100 my-1 mx-2"></div>
                                             <button
                                                 onClick={async () => {
@@ -404,7 +413,8 @@ export default function Header() {
                             { label: "Courses", href: "/courses" },
                             { label: "My Courses", href: user?.role === 'student' ? '/student-dashboard' : '/dashboard' },
                             { label: "CV Maker", href: "/cv/list" },
-                            { label: "Settings", href: user?.role === 'student' ? '/student-dashboard/profile' : '/dashboard/settings' }
+                            { label: "Settings", href: user?.role === 'student' ? '/student-dashboard/profile' : '/dashboard/settings' },
+                            ...(user?.role === 'student' ? [{ label: "Payments", href: "/student-dashboard/payments" }] : [])
                         ].map((item) => {
                             const isCVMaker = item.label === "CV Maker";
                             const isActive = item.href === "/"

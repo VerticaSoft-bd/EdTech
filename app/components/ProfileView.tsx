@@ -259,6 +259,15 @@ export default function ProfileView({ basePath }: ProfileViewProps) {
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                 Personal Info
               </button>
+              {formData.role === 'student' && (
+                <Link 
+                  href="/student-dashboard/payments"
+                  className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-[#1A1D1F] rounded-xl font-semibold transition-all w-full"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="2" y="5" width="20" height="14" rx="2" /><line x1="2" y1="10" x2="22" y2="10" /></svg>
+                  Payment History
+                </Link>
+              )}
             </nav>
             
             {/* Visual Decorative */}

@@ -1,11 +1,30 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import type { NextRequest, NextFetchEvent } from 'next/server';
 import { jwtVerify } from 'jose';
 
 // This function can be marked `async` if using `await` inside
-export async function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
+    const { pathname, origin } = request.nextUrl;
     const authCookie = request.cookies.get('token');
+
+    // Track Web Requests without blocking
+    try {
+        event.waitUntil(
+            fetch(`${origin}/api/analytics/track`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    path: pathname,
+                    method: request.method,
+                    ip: request.headers.get('x-forwarded-for') || request.ip || 'unknown',
+                    userAgent: request.headers.get('user-agent') || 'unknown',
+                }),
+                keepalive: true,
+            }).catch(() => {})
+        );
+    } catch (e) {
+        // Ignore telemetry errors
+    }
 
     // Handle "My Courses" redirect
     if (pathname === '/my-courses') {
