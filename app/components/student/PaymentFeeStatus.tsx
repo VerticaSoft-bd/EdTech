@@ -1,33 +1,46 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import FeeStatusCard from '../FeeStatusCard';
 import { toast, Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { ChevronDown, BookOpen } from 'lucide-react';
 
-interface PaymentFeeStatusProps {
-    totalFee: number;
+interface Enrollment {
+    _id: string;
+    courseName: string;
+    totalCourseFee: number;
     paidAmount: number;
     dueAmount: number;
-    nextDueDate: string;
+}
+
+interface PaymentFeeStatusProps {
+    enrollments: Enrollment[];
     currency: string;
     studentEmail: string;
 }
 
 const PaymentFeeStatus: React.FC<PaymentFeeStatusProps> = ({
-    totalFee,
-    paidAmount,
-    dueAmount,
-    nextDueDate,
+    enrollments,
     currency,
     studentEmail
 }) => {
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
+    const [selectedEnrollmentId, setSelectedEnrollmentId] = useState(enrollments[0]?._id);
+
+    const selectedEnrollment = useMemo(() => 
+        enrollments.find(e => e._id === selectedEnrollmentId) || enrollments[0],
+    [selectedEnrollmentId, enrollments]);
+
+    if (!selectedEnrollment) return null;
+
+    const { totalCourseFee, paidAmount, dueAmount, courseName } = selectedEnrollment;
+    const nextDueDate = dueAmount > 0 ? "Contact Office" : "Paid";
 
     const handlePayNow = async () => {
         if (dueAmount <= 0) {
-            toast.success("You have no outstanding dues. Thank you!");
+            toast.success("You have no outstanding dues for this course. Thank you!");
             return;
         }
 
@@ -40,7 +53,7 @@ const PaymentFeeStatus: React.FC<PaymentFeeStatusProps> = ({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     amount: dueAmount,
-                    courseName: "Due Payment",
+                    courseName: courseName || "Due Payment",
                     email: studentEmail
                 })
             });
@@ -78,10 +91,33 @@ const PaymentFeeStatus: React.FC<PaymentFeeStatusProps> = ({
     };
 
     return (
-        <div className="h-full">
+        <div className="h-full flex flex-col gap-4">
             <Toaster position="top-right" />
+            
+            {enrollments.length > 1 && (
+                <div className="relative group">
+                    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-[#6C5DD3]">
+                        <BookOpen size={18} />
+                    </div>
+                    <select 
+                        value={selectedEnrollmentId}
+                        onChange={(e) => setSelectedEnrollmentId(e.target.value)}
+                        className="w-full pl-12 pr-10 py-4 bg-[#F8FAFC] border border-gray-200 rounded-2xl appearance-none focus:outline-none focus:ring-2 focus:ring-[#6C5DD3]/20 focus:border-[#6C5DD3] transition-all font-bold text-[#1A1D1F] cursor-pointer shadow-sm hover:shadow-md"
+                    >
+                        {enrollments.map((env) => (
+                            <option key={env._id} value={env._id}>
+                                {env.courseName}
+                            </option>
+                        ))}
+                    </select>
+                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400 group-hover:text-[#6C5DD3] transition-colors">
+                        <ChevronDown size={20} />
+                    </div>
+                </div>
+            )}
+
             <FeeStatusCard
-                totalFee={totalFee}
+                totalFee={totalCourseFee}
                 paidAmount={paidAmount}
                 nextDueDate={nextDueDate}
                 currency={currency}

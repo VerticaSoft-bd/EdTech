@@ -27,10 +27,13 @@ export default async function PaymentHistoryPage() {
   // Fetch student enrollments for fee status
   const enrollments = await Student.find({ email: user.email }).lean();
 
-  const totalFee = enrollments.reduce((sum, e) => sum + (Number(e.totalCourseFee) || 0), 0);
-  const paidAmount = enrollments.reduce((sum, e) => sum + (Number(e.paidAmount) || 0), 0);
-  const dueAmount = enrollments.reduce((sum, e) => sum + (Number(e.dueAmount) || 0), 0);
-  const nextDueDate = enrollments.some(e => Number(e.dueAmount) > 0) ? "Contact Office" : "Paid";
+  const serializedEnrollments = enrollments.map((e: any) => ({
+    _id: e._id.toString(),
+    courseName: e.courseName,
+    totalCourseFee: Number(e.totalCourseFee) || 0,
+    paidAmount: Number(e.paidAmount) || 0,
+    dueAmount: Number(e.dueAmount) || 0,
+  }));
 
   return (
     <div className="min-h-screen bg-white text-[#1A1D1F] scroll-smooth">
@@ -52,10 +55,7 @@ export default async function PaymentHistoryPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             <div className="lg:col-span-1">
                 <PaymentFeeStatus 
-                    totalFee={totalFee}
-                    paidAmount={paidAmount}
-                    dueAmount={dueAmount}
-                    nextDueDate={nextDueDate}
+                    enrollments={serializedEnrollments}
                     currency="৳"
                     studentEmail={user.email}
                 />
