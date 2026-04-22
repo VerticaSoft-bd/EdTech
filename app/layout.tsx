@@ -50,9 +50,6 @@ export default function RootLayout({
   return (
     <html lang="bn" className={hindSiliguri.variable}>
       <GoogleTagManager gtmId="GTM-KHHNDDDG" />
-      <Suspense fallback={null}>
-        <FacebookPixel />
-      </Suspense>
       <head />
       <body
         className={`${hindSiliguri.className} antialiased`}
@@ -89,6 +86,9 @@ export default function RootLayout({
             },
           }}
         />
+        <Suspense fallback={null}>
+          <FacebookPixel />
+        </Suspense>
         {children}
       </body>
     </html>
