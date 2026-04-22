@@ -5,6 +5,8 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast, Toaster } from "react-hot-toast";
+import * as fp from "@/lib/fpixel";
+
 
 function CheckoutContent() {
     const { slug } = useParams();
@@ -61,6 +63,15 @@ function CheckoutContent() {
                     const data = await res.json();
                     const fetchedCourse = data.data;
                     setCourse(fetchedCourse);
+
+                    // Track AddToCart
+                    fp.event("AddToCart", {
+                        content_name: fetchedCourse.title,
+                        content_category: "Course",
+                        content_ids: [fetchedCourse.slug],
+                        value: urlAmount ? parseInt(urlAmount) : (fetchedCourse.regularFee * (1 - fetchedCourse.discountPercentage / 100)),
+                        currency: "BDT"
+                    });
                     
                     // Auto-select all batches for Hybrid courses
                     if (fetchedCourse.courseMode === 'Hybrid' && fetchedCourse.assignedBatches?.length > 0) {

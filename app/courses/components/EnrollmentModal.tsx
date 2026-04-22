@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import * as fp from "@/lib/fpixel";
+
 
 interface EnrollmentModalProps {
     isOpen: boolean;
@@ -39,6 +41,13 @@ export default function EnrollmentModal({ isOpen, onClose, course, discountedPri
     };
 
     const handleEnrollment = () => {
+        fp.event("InitiateCheckout", {
+            content_name: course.title,
+            content_category: "Course",
+            content_ids: [course.slug],
+            value: customAmount,
+            currency: "BDT"
+        });
         const user = localStorage.getItem("user");
         const token = localStorage.getItem("token");
 

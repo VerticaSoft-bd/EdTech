@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { GoogleTagManager } from '@next/third-parties/google';
+import FacebookPixel from "@/app/components/FacebookPixel";
+
 
 const hindSiliguri = Hind_Siliguri({
   subsets: ["latin", "bengali"],
@@ -47,6 +49,7 @@ export default function RootLayout({
   return (
     <html lang="bn" className={hindSiliguri.variable}>
       <GoogleTagManager gtmId="GTM-KHHNDDDG" />
+      <FacebookPixel />
       <head />
       <body
         className={`${hindSiliguri.className} antialiased`}

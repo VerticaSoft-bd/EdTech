@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { CheckCircle, ArrowRight, FileText, Banknote, MapPin, Tag, CreditCard, Calendar } from 'lucide-react';
 import React from 'react';
+import PurchaseTracker from './components/PurchaseTracker';
+
 
 export default async function SuccessPage({
     searchParams
@@ -77,6 +79,11 @@ export default async function SuccessPage({
 
         return (
             <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center">
+                <PurchaseTracker 
+                    amount={transaction?.amount || 0} 
+                    courseName={courseName} 
+                    transactionId={transactionId} 
+                />
                 <div className="max-w-2xl w-full">
                     {/* Success Header Card */}
                     <div className="bg-white rounded-t-2xl shadow-sm border border-gray-100 p-8 text-center relative overflow-hidden">
