@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
@@ -49,7 +50,9 @@ export default function RootLayout({
   return (
     <html lang="bn" className={hindSiliguri.variable}>
       <GoogleTagManager gtmId="GTM-KHHNDDDG" />
-      <FacebookPixel />
+      <Suspense fallback={null}>
+        <FacebookPixel />
+      </Suspense>
       <head />
       <body
         className={`${hindSiliguri.className} antialiased`}
