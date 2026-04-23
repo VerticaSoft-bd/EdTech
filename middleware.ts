@@ -3,25 +3,38 @@ import type { NextRequest, NextFetchEvent } from 'next/server';
 import { jwtVerify } from 'jose';
 
 // This function can be marked `async` if using `await` inside
-export async function proxy(request: NextRequest, event: NextFetchEvent) {
+export async function middleware(request: NextRequest, event: NextFetchEvent) {
     const { pathname, origin } = request.nextUrl;
     const authCookie = request.cookies.get('token');
 
     // Track Web Requests without blocking
     try {
-        event.waitUntil(
-            fetch(`${origin}/api/analytics/track`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    path: pathname,
-                    method: request.method,
-                    ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || (request as any).ip || 'unknown',
-                    userAgent: request.headers.get('user-agent') || 'unknown',
-                }),
-                keepalive: true,
-            }).catch(() => {})
-        );
+        const acceptHeader = request.headers.get('accept') || '';
+        const isPageRequest = acceptHeader.includes('text/html') || acceptHeader.includes('application/xhtml+xml');
+        
+        // For App Router soft navigations (RSC requests)
+        const isRscNavigation = request.headers.has('rsc') && 
+                              !request.headers.has('next-router-prefetch') && 
+                              !request.headers.has('next-action') &&
+                              request.headers.get('purpose') !== 'prefetch';
+                              
+        const isApiRoute = pathname.startsWith('/api/');
+
+        if (!isApiRoute && (isPageRequest || isRscNavigation)) {
+            event.waitUntil(
+                fetch(`${origin}/api/analytics/track`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        path: pathname,
+                        method: request.method,
+                        ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || (request as any).ip || 'unknown',
+                        userAgent: request.headers.get('user-agent') || 'unknown',
+                    }),
+                    keepalive: true,
+                }).catch(() => {})
+            );
+        }
     } catch (e) {
         // Ignore telemetry errors
     }
@@ -114,3 +127,5 @@ export const config = {
         '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
     ],
 };
+
+export default middleware;

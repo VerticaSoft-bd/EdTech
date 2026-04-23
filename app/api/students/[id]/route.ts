@@ -51,6 +51,13 @@ async function handleUpdate(request: Request, params: any) {
             }
         }
 
+        // Ensure dueAmount consistency
+        if (body.totalCourseFee !== undefined || body.paidAmount !== undefined) {
+            const currentFee = body.totalCourseFee !== undefined ? Number(body.totalCourseFee) : student.totalCourseFee;
+            const currentPaid = body.paidAmount !== undefined ? Number(body.paidAmount) : student.paidAmount;
+            body.dueAmount = Math.max(0, Number((currentFee - currentPaid).toFixed(2)));
+        }
+
         const updatedStudent = await Student.findByIdAndUpdate(
             id,
             body,

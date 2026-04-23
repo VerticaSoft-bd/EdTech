@@ -5,6 +5,7 @@ import dbConnect from '@/lib/db';
 import Transaction from '@/models/Transaction';
 import Student from '@/models/Student';
 import Course from '@/models/Course';
+import Expense from '@/models/Expense';
 
 export async function GET() {
     try {
@@ -34,7 +35,10 @@ export async function GET() {
         let teacherCourseIds: string[] = [];
         let teacherCourseTitles: string[] = []; // If transactions store courseName, this could help.
         let teacherFilter: any = {};
-        let teacherTransactionFilter: any = { type: 'course_purchase', status: 'completed' };
+        let teacherTransactionFilter: any = { 
+            type: { $in: ['course_purchase', 'manual_payment'] }, 
+            status: 'completed' 
+        };
 
         if (userRole === 'teacher' && userId) {
             // Find courses assigned to this teacher
@@ -48,7 +52,7 @@ export async function GET() {
             // To filter transactions (metadata.courseId or metadata.courseName)
             if (teacherCourseIds.length > 0) {
                  teacherTransactionFilter = {
-                     type: 'course_purchase',
+                     type: { $in: ['course_purchase', 'manual_payment'] },
                      status: 'completed',
                      $or: [
                          { 'metadata.courseId': { $in: teacherCourseIds } },
@@ -61,13 +65,25 @@ export async function GET() {
             }
         }
 
-        // Total Revenue from completed course purchases
-        // Total Revenue from completed course purchases
-        const revenueResult = await Transaction.aggregate([
-            { $match: teacherTransactionFilter },
-            { $group: { _id: null, total: { $sum: '$amount' } } }
+        // Total Due Payment & Collection (Filtered by teacher if applicable)
+        const studentDueFilter = userRole === 'teacher' 
+            ? { $or: [{ courseId: { $in: teacherCourseIds } }, { courseName: { $in: teacherCourseTitles } }] }
+            : {};
+            
+        const studentStats = await Student.aggregate([
+            { $match: studentDueFilter },
+            { $group: { 
+                _id: null, 
+                totalPaid: { $sum: '$paidAmount' },
+                totalDue: { $sum: '$dueAmount' }
+            } }
         ]);
-        const totalRevenue = revenueResult[0]?.total || 0;
+        
+        const totalCollection = studentStats[0]?.totalPaid || 0;
+        const totalDuePayment = studentStats[0]?.totalDue || 0;
+
+        // Total Revenue (Total Receivable: Collected + Due)
+        const totalRevenue = totalCollection + totalDuePayment;
 
         // Revenue last 30 days
         const revenueThisMonth = await Transaction.aggregate([
@@ -92,16 +108,27 @@ export async function GET() {
             ? await Student.countDocuments({ $or: [{ courseId: { $in: teacherCourseIds } }, { courseName: { $in: teacherCourseTitles } }] })
             : await Student.countDocuments();
 
+        // Enrollment filter (only course_purchase)
+        const enrollmentFilter: any = { 
+            type: 'course_purchase', 
+            status: 'completed' 
+        };
+        if (userRole === 'teacher' && userId) {
+            if (teacherCourseIds.length > 0) {
+                enrollmentFilter.$or = [
+                    { 'metadata.courseId': { $in: teacherCourseIds } },
+                    { 'metadata.courseName': { $in: teacherCourseTitles } }
+                ];
+            } else {
+                enrollmentFilter._id = null;
+            }
+        }
+
         // Total Enrollments (completed course purchases)
-        const totalEnrollments = userRole === 'teacher' && teacherCourseIds.length === 0 
-             ? 0 
-             : await Transaction.countDocuments(teacherTransactionFilter);
-        const enrollmentsThisMonth = userRole === 'teacher' && teacherCourseIds.length === 0
-             ? 0
-             : await Transaction.countDocuments({ ...teacherTransactionFilter, createdAt: { $gte: thirtyDaysAgo } });
-        const enrollmentsPrevMonth = userRole === 'teacher' && teacherCourseIds.length === 0
-             ? 0
-             : await Transaction.countDocuments({ ...teacherTransactionFilter, createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } });
+        const totalEnrollments = await Transaction.countDocuments(enrollmentFilter);
+        const enrollmentsThisMonth = await Transaction.countDocuments({ ...enrollmentFilter, createdAt: { $gte: thirtyDaysAgo } });
+        const enrollmentsPrevMonth = await Transaction.countDocuments({ ...enrollmentFilter, createdAt: { $gte: sixtyDaysAgo, $lt: thirtyDaysAgo } });
+        
         const enrollmentChange = enrollmentsPrevMonth > 0
             ? (((enrollmentsThisMonth - enrollmentsPrevMonth) / enrollmentsPrevMonth) * 100).toFixed(1)
             : enrollmentsThisMonth > 0 ? '+100' : '0';
@@ -123,6 +150,13 @@ export async function GET() {
                 } : {})
             });
 
+        // Total Expenses (Admins only, but we'll return it and let UI handle visibility)
+        const expenseResult = await Expense.aggregate([
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]);
+        const totalOfficeExpenses = expenseResult[0]?.total || 0;
+
+
         return NextResponse.json({
             success: true,
             data: {
@@ -133,6 +167,9 @@ export async function GET() {
                 totalEnrollments,
                 enrollmentChange: `${Number(enrollmentChange) >= 0 ? '+' : ''}${enrollmentChange}%`,
                 pendingPayments,
+                totalOfficeExpenses,
+                totalDuePayment,
+                totalGross: totalCollection
             }
         });
     } catch (error: any) {

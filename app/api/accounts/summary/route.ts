@@ -3,6 +3,7 @@ import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
 import Employee from '@/models/Employee';
 import Expense from '@/models/Expense';
+import Transaction from '@/models/Transaction';
 
 export async function GET() {
     try {
@@ -13,11 +14,23 @@ export async function GET() {
         const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
 
-        // Student financials
+        // Fetch students
         const students = await Student.find({});
-        const totalReceivable = students.reduce((acc, s) => acc + (s.totalCourseFee || 0), 0);
+
+        // Student financials
         const totalCollected = students.reduce((acc, s) => acc + (s.paidAmount || 0), 0);
         const totalDue = students.reduce((acc, s) => acc + (s.dueAmount || 0), 0);
+        
+        // Fix: Total Receivable should be the sum of what's collected and what's still due
+        const totalReceivable = totalCollected + totalDue;
+
+        // Fix: Calculate monthly collection from transactions for a proper monthly net balance
+        const monthlyTransactions = await Transaction.find({
+            status: 'completed',
+            type: { $in: ['course_purchase', 'manual_payment'] },
+            createdAt: { $gte: startOfMonth, $lte: endOfMonth }
+        });
+        const monthlyCollected = monthlyTransactions.reduce((acc, t) => acc + (t.amount || 0), 0);
 
         // Employee / Payroll
         const activeEmployees = await Employee.find({ status: 'active' });
@@ -25,15 +38,18 @@ export async function GET() {
         const totalPayroll = activeEmployees.reduce((acc, e) => acc + (e.monthlySalary || 0), 0);
 
         // Expenses this month
+        // Fix: Exclude 'Payroll' category from general expenses to avoid double counting with totalPayroll
         const monthlyExpenses = await Expense.find({
             type: 'monthly',
             date: { $gte: startOfMonth, $lte: endOfMonth },
+            category: { $ne: 'Payroll' }
         });
         const totalMonthlyExpenses = monthlyExpenses.reduce((acc, e) => acc + (e.amount || 0), 0);
 
         const dailyExpenses = await Expense.find({
             type: 'daily',
             date: { $gte: startOfMonth, $lte: endOfMonth },
+            category: { $ne: 'Payroll' }
         });
         const totalDailyExpenses = dailyExpenses.reduce((acc, e) => acc + (e.amount || 0), 0);
 
@@ -41,8 +57,8 @@ export async function GET() {
         const allExpenses = await Expense.find({});
         const totalAllExpenses = allExpenses.reduce((acc, e) => acc + (e.amount || 0), 0);
 
-        // Net balance = total collected - total payroll - total expenses (this month)
-        const netBalance = totalCollected - totalPayroll - totalMonthlyExpenses - totalDailyExpenses;
+        // Net balance = monthly collected - total payroll - total expenses (this month)
+        const netBalance = monthlyCollected - totalPayroll - totalMonthlyExpenses - totalDailyExpenses;
 
         return NextResponse.json({
             success: true,
@@ -52,6 +68,7 @@ export async function GET() {
                     totalCollected,
                     totalDue,
                     count: students.length,
+                    monthlyCollected
                 },
                 payroll: {
                     totalEmployees,

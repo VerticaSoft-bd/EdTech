@@ -44,8 +44,15 @@ export async function POST(request: Request) {
             );
         }
 
+        const paidAmount = Number(body.paidAmount || 0);
+        const totalCourseFee = Number(body.totalCourseFee || 0);
+        const dueAmount = Math.max(0, Number((totalCourseFee - paidAmount).toFixed(2)));
+
         const newStudent = await Student.create({
             ...body,
+            paidAmount,
+            totalCourseFee,
+            dueAmount,
             courseMode
         });
 

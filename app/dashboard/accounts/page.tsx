@@ -212,9 +212,9 @@ export default function AccountsPage() {
     const totalPages = Math.ceil(filteredBySubTab.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const currentStudents = filteredBySubTab.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-    const overallTotal = filteredStudents.reduce((a, c) => a + (c.totalCourseFee || 0), 0);
     const overallPaid = filteredStudents.reduce((a, c) => a + (c.paidAmount || 0), 0);
     const overallDue = filteredStudents.reduce((a, c) => a + (c.dueAmount || 0), 0);
+    const overallTotal = overallPaid + overallDue;
 
     // ───────────────────────────────────────
     // RENDER
