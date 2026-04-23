@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AddPaymentModal from "./AddPaymentModal";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 interface TransactionHistoryModalProps {
     isOpen: boolean;
@@ -13,6 +14,7 @@ export default function TransactionHistoryModal({ isOpen, onClose, student, onUp
     const [transactions, setTransactions] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isAddPaymentOpen, setIsAddPaymentOpen] = useState(false);
+    const [isConfirming, setIsConfirming] = useState<string | null>(null);
 
     const fetchTransactions = async () => {
         if (!student?.email) return;
@@ -30,6 +32,31 @@ export default function TransactionHistoryModal({ isOpen, onClose, student, onUp
         }
     };
 
+    const handleConfirm = async (transactionId: string) => {
+        if (!confirm("Are you sure you want to mark this pending payment as RECEIVED?")) return;
+        
+        setIsConfirming(transactionId);
+        try {
+            const res = await fetch("/api/transactions/confirm", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ transactionId }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success("Payment confirmed!");
+                fetchTransactions();
+                if (onUpdate) onUpdate();
+            } else {
+                toast.error(data.message || "Failed to confirm payment");
+            }
+        } catch (error) {
+            toast.error("Something went wrong");
+        } finally {
+            setIsConfirming(null);
+        }
+    };
+
     useEffect(() => {
         if (isOpen && student) {
             fetchTransactions();
@@ -37,6 +64,10 @@ export default function TransactionHistoryModal({ isOpen, onClose, student, onUp
     }, [isOpen, student]);
 
     if (!isOpen || !student) return null;
+
+    const completedTotal = transactions
+        .filter(txn => txn.status === 'completed')
+        .reduce((acc, txn) => acc + (txn.amount || 0), 0);
 
     return (
         <>
@@ -79,11 +110,11 @@ export default function TransactionHistoryModal({ isOpen, onClose, student, onUp
                             <div className="flex items-center gap-6">
                                 <div className="text-right">
                                     <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Total Paid</p>
-                                    <p className="text-lg font-extrabold text-[#4BD37B]">৳{(transactions.reduce((acc, txn) => acc + (txn.amount || 0), 0)).toLocaleString()}</p>
+                                    <p className="text-lg font-extrabold text-[#4BD37B]">৳{completedTotal.toLocaleString()}</p>
                                 </div>
                                 <div className="text-right border-l border-gray-100 pl-6">
                                     <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Course Due</p>
-                                    <p className="text-lg font-extrabold text-[#FF4C4C]">৳{(student.totalCourseFee - transactions.reduce((acc, txn) => acc + (txn.amount || 0), 0)).toLocaleString()}</p>
+                                    <p className="text-lg font-extrabold text-[#FF4C4C]">৳{(student.totalCourseFee - completedTotal).toLocaleString()}</p>
                                 </div>
                             </div>
                         </div>
@@ -124,13 +155,29 @@ export default function TransactionHistoryModal({ isOpen, onClose, student, onUp
                                                 </td>
                                                 <td className="p-4 font-bold text-[#4BD37B] text-right">৳{txn.amount.toLocaleString()}</td>
                                                 <td className="p-4 text-center">
-                                                    <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold ${
-                                                        txn.status === 'completed' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' : 
-                                                        txn.status === 'pending' ? 'bg-[#FFAB7B]/10 text-[#FFAB7B]' : 
-                                                        'bg-red-50 text-red-500'
-                                                    }`}>
-                                                        {txn.status}
-                                                    </span>
+                                                    <div className="flex flex-col items-center gap-1.5">
+                                                        <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold ${
+                                                            txn.status === 'completed' ? 'bg-[#4BD37B]/10 text-[#4BD37B]' : 
+                                                            txn.status === 'pending' ? 'bg-[#FFAB7B]/10 text-[#FFAB7B]' : 
+                                                            'bg-red-50 text-red-500'
+                                                        }`}>
+                                                            {txn.status}
+                                                        </span>
+                                                        {txn.status === 'pending' && (
+                                                            <button
+                                                                onClick={() => handleConfirm(txn._id)}
+                                                                disabled={isConfirming === txn._id}
+                                                                className="text-[10px] font-bold text-[#6C5DD3] hover:underline flex items-center gap-1"
+                                                            >
+                                                                {isConfirming === txn._id ? (
+                                                                    <div className="w-2 h-2 border border-[#6C5DD3]/20 border-t-[#6C5DD3] rounded-full animate-spin"></div>
+                                                                ) : (
+                                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                                )}
+                                                                Confirm
+                                                            </button>
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="p-4 text-right">
                                                     <Link 
