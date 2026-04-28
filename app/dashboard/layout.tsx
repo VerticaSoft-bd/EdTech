@@ -6,18 +6,36 @@ import { Suspense } from "react";
 import SiteSettings from "@/models/SiteSettings";
 import connectDB from "@/lib/db";
 
+import { cookies } from "next/headers";
+import { jwtVerify } from "jose";
+
 export async function generateMetadata(): Promise<Metadata> {
     try {
         await connectDB();
         const settings = await SiteSettings.findOne();
         const siteTitle = settings?.siteTitle || "Youthins";
+        
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+        let role = 'admin';
+
+        if (token) {
+            try {
+                const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+                const { payload } = await jwtVerify(token, secret);
+                role = payload.role as string;
+            } catch (err) { }
+        }
+
+        const dashboardTitle = role === 'teacher' ? "Teacher Dashboard" : "Admin Dashboard";
+
         return {
-            title: "Admin Dashboard",
-            description: "Futuristic EdTech Admin Dashboard",
+            title: `${dashboardTitle} | ${siteTitle}`,
+            description: `Futuristic EdTech ${dashboardTitle}`,
         };
     } catch {
         return {
-            title: "Admin Dashboard | Youthins",
+            title: "Dashboard | Youthins",
         };
     }
 }

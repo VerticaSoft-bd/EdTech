@@ -63,12 +63,8 @@ export default function SignupPage() {
                 const userRole = data.data?.role;
                 if (userRole === 'student') {
                     window.location.href = '/student-dashboard';
-                } else if (userRole === 'teacher') {
-                    window.location.href = '/teacher-dashboard';
-                } else if (userRole === 'admin' || userRole === 'staff') {
-                    window.location.href = '/dashboard';
                 } else {
-                    window.location.href = '/student-dashboard';
+                    window.location.href = '/dashboard';
                 }
             }
         } catch (err) {

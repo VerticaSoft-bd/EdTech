@@ -6,6 +6,7 @@ import RecentAdmissions from '../components/admin/RecentAdmissions';
 import QuickActions from '../components/admin/QuickActions';
 import CriticalAlerts from '../components/admin/CriticalAlerts';
 import WebRequestChart from '../components/admin/WebRequestChart';
+import TeacherDashboard from '../components/teacher/TeacherDashboard';
 
 interface DashboardStats {
     totalRevenue: number;
@@ -87,6 +88,11 @@ export default function AdminDashboard() {
 
     const role = user?.role || 'admin';
     const isStaff = role === 'staff';
+    const isTeacher = role === 'teacher';
+
+    if (isTeacher) {
+        return <TeacherDashboard />;
+    }
 
     return (
         <div className="space-y-6">

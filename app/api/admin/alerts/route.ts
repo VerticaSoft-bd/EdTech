@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { jwtVerify } from 'jose';
 import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
+import Course from '@/models/Course';
 
 interface Alert {
     id: string;
@@ -14,10 +17,39 @@ export async function GET() {
     try {
         await connectToDatabase();
 
+        // 0. Authenticate & Determine Role
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+        let userRole = 'admin';
+        let userId = null;
+
+        if (token) {
+            try {
+                const secret = new TextEncoder().encode(process.env.JWT_SECRET || '');
+                const { payload } = await jwtVerify(token, secret);
+                userRole = payload.role as string;
+                userId = payload.id;
+            } catch (err) {
+                console.error("Alerts API: Invalid token", err);
+            }
+        }
+
+        let teacherFilter: any = {};
+        if (userRole === 'teacher' && userId) {
+            const myCourses = await Course.find({ assignedTeachers: userId }).select('title').lean();
+            const teacherCourseTitles = myCourses.map((c: any) => c.title);
+            
+            if (teacherCourseTitles.length > 0) {
+                teacherFilter = { courseName: { $in: teacherCourseTitles } };
+            } else {
+                return NextResponse.json({ success: true, data: [] });
+            }
+        }
+
         const alerts: Alert[] = [];
 
         // 1. Payment Overdue Alerts
-        const overdueStudents = await Student.find({ dueAmount: { $gt: 0 } })
+        const overdueStudents = await Student.find({ ...teacherFilter, dueAmount: { $gt: 0 } })
             .select('fullName dueAmount')
             .limit(5)
             .lean();
@@ -33,8 +65,8 @@ export async function GET() {
         });
 
         // 2. Low Attendance Alerts (< 50%)
-        // We only check students who have at least 5 classes scheduled
         const lowAttendanceStudents = await Student.find({
+            ...teacherFilter,
             totalClasses: { $gte: 5 },
             $expr: {
                 $lt: [
@@ -60,6 +92,7 @@ export async function GET() {
 
         // 3. Critical Progress Alerts (< 10%)
         const lowProgressStudents = await Student.find({
+            ...teacherFilter,
             progress: { $lt: 10 },
             createdAt: { $lt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } // Enrolled more than 7 days ago
         })
@@ -83,7 +116,7 @@ export async function GET() {
 
         return NextResponse.json({
             success: true,
-            data: alerts.slice(0, 10) // Return top 10 most critical alerts
+            data: alerts.slice(0, 10)
         });
 
     } catch (error: any) {

@@ -78,7 +78,6 @@ export async function middleware(request: NextRequest, event: NextFetchEvent) {
 
             // Student Access Logic
             if (isStudentDashboardPath) {
-                if (userRole === 'teacher') return NextResponse.redirect(new URL('/teacher-dashboard', request.url));
                 if (userRole !== 'student') return NextResponse.redirect(new URL('/dashboard', request.url));
             }
 
