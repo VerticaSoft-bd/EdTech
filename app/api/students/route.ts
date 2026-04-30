@@ -35,11 +35,11 @@ export async function POST(request: Request) {
         const courseData = await Course.findOne({ title: body.courseName });
         const courseMode = courseData?.courseMode || 'Online';
 
-        // Check if student with same email exists
-        const existingStudent = await Student.findOne({ email: body.email });
-        if (existingStudent) {
+        // Check if student is already enrolled in this specific course
+        const existingEnrollment = await Student.findOne({ email: body.email, courseName: body.courseName });
+        if (existingEnrollment) {
             return NextResponse.json(
-                { success: false, message: 'Student with this email already exists' },
+                { success: false, message: 'Student is already enrolled in this course' },
                 { status: 400 }
             );
         }
@@ -56,12 +56,13 @@ export async function POST(request: Request) {
             courseMode
         });
 
+        let transactionId = null;
         // Create initial transaction if a deposit was made
-        if (body.paidAmount > 0) {
-            const transactionId = `INV-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        if (paidAmount > 0) {
+            transactionId = `INV-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
             await Transaction.create({
                 type: 'course_purchase',
-                amount: body.paidAmount,
+                amount: paidAmount,
                 status: 'completed',
                 method: body.paymentMethod || 'Cash',
                 transactionId: transactionId,
@@ -81,7 +82,6 @@ export async function POST(request: Request) {
                 { $inc: { usageCount: 1 } }
             );
         }
-
 
         // --- SMART ONBOARDING LOGIC ---
         // 1. Create or Find User account
@@ -145,7 +145,8 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             message: 'Student created successfully',
-            data: newStudent
+            data: newStudent,
+            invoiceId: transactionId
         }, { status: 201 });
 
     } catch (error: any) {
@@ -163,6 +164,7 @@ export async function GET(request: Request) {
 
         const url = new URL(request.url);
         const batchId = url.searchParams.get('batchId');
+        const email = url.searchParams.get('email');
 
         // Determine user role and ID
         const { cookies } = await import('next/headers');
@@ -187,6 +189,10 @@ export async function GET(request: Request) {
         
         if (batchId) {
             query.batchId = batchId;
+        }
+
+        if (email) {
+            query.email = email;
         }
 
         // If teacher, only show students from their assigned batches

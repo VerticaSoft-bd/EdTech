@@ -9,16 +9,36 @@ interface CoursePurchaseHistoryModalProps {
 export default function CoursePurchaseHistoryModal({ isOpen, onClose, student }: CoursePurchaseHistoryModalProps) {
     if (!isOpen || !student) return null;
 
-    // We don't have an external enrollments table, so we use the single associated course
-    const courses = [
-        {
-            name: student.courseName || 'Unassigned',
-            date: new Date(student.createdAt).toLocaleDateString(),
-            fee: student.totalCourseFee || 0,
-            status: student.status || 'Active',
-            progress: student.progress || 0,
+    const [courses, setCourses] = React.useState<any[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
+
+    const fetchEnrollments = async () => {
+        if (!student?.email) return;
+        setIsLoading(true);
+        try {
+            const res = await fetch(`/api/students?email=${encodeURIComponent(student.email)}`);
+            const data = await res.json();
+            if (data.success) {
+                setCourses(data.data.map((s: any) => ({
+                    name: s.courseName || 'Unassigned',
+                    date: new Date(s.createdAt).toLocaleDateString(),
+                    fee: s.totalCourseFee || 0,
+                    status: s.status || 'Active',
+                    progress: s.progress || 0,
+                })));
+            }
+        } catch (error) {
+            console.error("Failed to fetch enrollments:", error);
+        } finally {
+            setIsLoading(false);
         }
-    ];
+    };
+
+    React.useEffect(() => {
+        if (isOpen && student) {
+            fetchEnrollments();
+        }
+    }, [isOpen, student]);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-6">
@@ -59,7 +79,11 @@ export default function CoursePurchaseHistoryModal({ isOpen, onClose, student }:
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 text-sm">
-                                {courses.length === 0 || !courses[0].name || courses[0].name === 'Unassigned' ? (
+                                {isLoading ? (
+                                    <tr>
+                                        <td colSpan={4} className="p-8 text-center text-gray-500">Loading course history...</td>
+                                    </tr>
+                                ) : courses.length === 0 ? (
                                     <tr>
                                         <td colSpan={4} className="p-8 text-center text-gray-500">No course history found.</td>
                                     </tr>

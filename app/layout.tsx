@@ -4,6 +4,7 @@ import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { GoogleTagManager } from '@next/third-parties/google';
 import FacebookPixel from "@/app/components/FacebookPixel";
+import MicrosoftClarity from "@/app/components/MicrosoftClarity";
 
 
 const hindSiliguri = Hind_Siliguri({
@@ -88,6 +89,7 @@ export default function RootLayout({
         />
         <Suspense fallback={null}>
           <FacebookPixel />
+          <MicrosoftClarity />
         </Suspense>
         {children}
       </body>

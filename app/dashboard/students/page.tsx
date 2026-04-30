@@ -7,6 +7,7 @@ import ViewStudentModal from "@/app/components/ViewStudentModal";
 import TransactionHistoryModal from "@/app/components/TransactionHistoryModal";
 import CoursePurchaseHistoryModal from "@/app/components/CoursePurchaseHistoryModal";
 import AddPaymentModal from "@/app/components/AddPaymentModal";
+import AddCourseModal from "@/app/components/AddCourseModal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -21,6 +22,7 @@ function StudentsPageContent() {
     const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
     const [isCourseHistoryModalOpen, setIsCourseHistoryModalOpen] = useState(false);
     const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
+    const [isAddCourseModalOpen, setIsAddCourseModalOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
     const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
     const [students, setStudents] = useState<any[]>([]);
@@ -216,6 +218,13 @@ function StudentsPageContent() {
                                                             Edit
                                                         </button>
                                                         <button
+                                                            onClick={() => { setSelectedStudent(student); setIsAddCourseModalOpen(true); setOpenActionMenuId(null); }}
+                                                            className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-[#6C5DD3] hover:bg-[#6C5DD3]/5 rounded-lg transition-colors"
+                                                        >
+                                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
+                                                            Add Course
+                                                        </button>
+                                                        <button
                                                             onClick={() => { setSelectedStudent(student); setIsAddPaymentModalOpen(true); setOpenActionMenuId(null); }}
                                                             className="w-full flex items-center gap-2 text-left px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-[#1A1D1F] rounded-lg transition-colors"
                                                         >
@@ -359,6 +368,19 @@ function StudentsPageContent() {
                 <CoursePurchaseHistoryModal
                     isOpen={isCourseHistoryModalOpen}
                     onClose={() => { setIsCourseHistoryModalOpen(false); setSelectedStudent(null); }}
+                    student={selectedStudent}
+                />
+            )}
+
+            {selectedStudent && (
+                <AddCourseModal 
+                    isOpen={isAddCourseModalOpen}
+                    onClose={() => { setIsAddCourseModalOpen(false); setSelectedStudent(null); }}
+                    onSuccess={() => {
+                        fetchStudents();
+                        setIsAddCourseModalOpen(false);
+                        setSelectedStudent(null);
+                    }}
                     student={selectedStudent}
                 />
             )}
