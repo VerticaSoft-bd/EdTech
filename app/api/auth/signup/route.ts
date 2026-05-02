@@ -3,6 +3,7 @@ import connectToDatabase from '@/lib/db';
 import User from '@/models/User';
 import { signToken } from '@/lib/auth';
 import { sendSMS } from '@/lib/sms';
+import SiteSettings from '@/models/SiteSettings';
 
 export async function POST(request: Request) {
     try {
@@ -39,7 +40,12 @@ export async function POST(request: Request) {
 
         // Send welcome SMS
         if (mobileNo) {
-            await sendSMS(mobileNo, `Congratulations ${name}! Your account has been created successfully. Welcome to EdTech.`);
+            const settings = await SiteSettings.findOne().lean();
+            const template = (settings as any)?.smsTemplates?.newUserStudent || 
+                             (settings as any)?.smsTemplates?.['newUserStudent'] ||
+                             `Congratulations [NAME]! Your account has been created successfully. Welcome to EdTech.`;
+            const smsMessage = template.replace(/\[NAME\]/g, name);
+            await sendSMS(mobileNo, smsMessage);
         }
 
         // Remove password from response for security

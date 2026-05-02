@@ -33,10 +33,6 @@ const BatchSchema: Schema<IBatch> = new mongoose.Schema(
     { timestamps: true }
 );
 
-if (mongoose.models.Batch) {
-    delete mongoose.models.Batch;
-}
-
 const Batch: Model<IBatch> = mongoose.models.Batch || mongoose.model<IBatch>('Batch', BatchSchema);
 
 export default Batch;

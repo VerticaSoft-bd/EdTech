@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import User from '@/models/User';
 import { sendSMS } from '@/lib/sms';
+import SiteSettings from '@/models/SiteSettings';
 
 export async function POST(request: Request) {
     try {
@@ -27,7 +28,15 @@ export async function POST(request: Request) {
             await user.save();
 
             // Send SMS
-            const smsResult = await sendSMS(mobileNo, `Your EdTech password reset OTP is ${generatedOtp}. It will expire in 10 minutes.`);
+            const settings = await SiteSettings.findOne().lean();
+            const template = (settings as any)?.smsTemplates?.forgotPasswordOtp || 
+                             (settings as any)?.smsTemplates?.['forgotPasswordOtp'] ||
+                             `Your EdTech password reset OTP is [OTP]. It will expire in 10 minutes.`;
+            const smsMessage = template
+                .replace(/\[OTP\]/g, generatedOtp)
+                .replace(/\[NAME\]/g, user.name);
+                
+            const smsResult = await sendSMS(mobileNo, smsMessage);
 
             if (!smsResult.success) {
                 return NextResponse.json({ success: false, message: 'Failed to send SMS. Please try again.' }, { status: 500 });

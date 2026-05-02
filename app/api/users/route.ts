@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import User from '@/models/User';
+import SiteSettings from '@/models/SiteSettings';
+import { sendSMS } from '@/lib/sms';
 
 export async function POST(request: Request) {
     try {
@@ -42,8 +44,26 @@ export async function POST(request: Request) {
             email,
             password,
             role,
+            mobileNo: body.mobileNo, // Ensure mobileNo is saved
             staffPermissions: role === 'staff' ? (staffPermissions || []) : [],
         });
+
+        // Send Welcome SMS
+        if (body.mobileNo) {
+            const settings = await SiteSettings.findOne().lean();
+            let template = '';
+            
+            const smsTemplates = (settings as any)?.smsTemplates || {};
+            
+            if (role === 'teacher') {
+                template = smsTemplates.newUserTeacher || smsTemplates['newUserTeacher'] || `Welcome [NAME]! Your teacher account is created.`;
+            } else {
+                template = smsTemplates.newUserStudent || smsTemplates['newUserStudent'] || `Welcome [NAME]! Your account is created.`;
+            }
+
+            const smsMessage = template.replace(/\[NAME\]/g, name);
+            await sendSMS(body.mobileNo, smsMessage);
+        }
 
         // Remove password from response for security
         const userWithoutPassword = {

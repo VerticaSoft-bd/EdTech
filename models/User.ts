@@ -129,11 +129,6 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
     return await bcrypt.compare(candidatePassword, this.password as string);
 };
 
-// Clear mongoose cache for User to ensure staffPermissions (and future fields) are always updated in Next.js hot reload
-if (mongoose.models.User) {
-    delete mongoose.models.User;
-}
-
-const User: Model<IUser> = mongoose.model<IUser>('User', UserSchema);
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 
 export default User;

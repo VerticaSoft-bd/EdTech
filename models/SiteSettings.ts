@@ -62,10 +62,6 @@ const SiteSettingsSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-if (mongoose.models.SiteSettings) {
-    delete mongoose.models.SiteSettings;
-}
-
-const SiteSettings = mongoose.model('SiteSettings', SiteSettingsSchema);
+const SiteSettings = mongoose.models.SiteSettings || mongoose.model('SiteSettings', SiteSettingsSchema);
 
 export default SiteSettings;

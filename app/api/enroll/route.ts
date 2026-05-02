@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import Student from '@/models/Student';
 import Batch from '@/models/Batch';
+import SiteSettings from '@/models/SiteSettings';
 import { sendSMS } from '@/lib/sms';
 
 export async function POST(request: Request) {
@@ -33,7 +34,14 @@ export async function POST(request: Request) {
 
         // Send enrollment confirmation SMS
         if (newStudent.mobileNo) {
-            await sendSMS(newStudent.mobileNo, `Congratulations ${newStudent.fullName}! You have successfully enrolled in ${newStudent.courseName}. Thank you for choosing EdTech.`);
+            const settings = await SiteSettings.findOne().lean();
+            const template = (settings as any)?.smsTemplates?.newUserStudent || 
+                             (settings as any)?.smsTemplates?.['newUserStudent'] ||
+                             `Congratulations [NAME]! You have successfully enrolled in [COURSE]. Thank you for choosing EdTech.`;
+            const smsMessage = template
+                .replace(/\[NAME\]/g, newStudent.fullName)
+                .replace(/\[COURSE\]/g, newStudent.courseName);
+            await sendSMS(newStudent.mobileNo, smsMessage);
         }
 
         return NextResponse.json({

@@ -84,16 +84,6 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
 // Prevent duplicate enrollment in the same course
 StudentSchema.index({ email: 1, courseName: 1 }, { unique: true });
 
-// Clear Mongoose schema cache for hot-reloading in Next.js
-if (mongoose.models.Student) {
-    delete mongoose.models.Student;
-}
-
-const Student: Model<IStudent> = mongoose.model<IStudent>('Student', StudentSchema);
-
-// Sync indexes only when needed, not on every import which can cause timeouts if DB is not connected
-// Student.syncIndexes().catch((err) => {
-//     console.error('Error syncing Student indexes:', err);
-// });
+const Student: Model<IStudent> = mongoose.models.Student || mongoose.model<IStudent>('Student', StudentSchema);
 
 export default Student;

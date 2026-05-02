@@ -114,9 +114,10 @@ export async function POST(request: Request) {
             await user.save();
 
             // 3. Fetch SMS Template
-            const settings = await SiteSettings.findOne();
-            const template = settings?.smsTemplates?.offlineStudentSignup || 
-                "[NAME], setup your password [LINK] - YouthINS";
+            const settings = await SiteSettings.findOne().lean();
+            const template = (settings as any)?.smsTemplates?.offlineStudentSignup || 
+                             (settings as any)?.smsTemplates?.['offlineStudentSignup'] ||
+                             "[NAME], setup your password [LINK] - YouthINS";
             
             const origin = new URL(request.url).origin;
             const appUrl = (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes('localhost')) 
@@ -125,9 +126,9 @@ export async function POST(request: Request) {
             const magicLink = `${appUrl}/l/${magicToken}`;
 
             const smsMessage = template
-                .replace('[NAME]', body.fullName)
-                .replace('[COURSE]', body.courseName)
-                .replace('[LINK]', magicLink);
+                .replace(/\[NAME\]/g, body.fullName)
+                .replace(/\[COURSE\]/g, body.courseName)
+                .replace(/\[LINK\]/g, magicLink);
 
             console.log(`[Onboarding] Sending SMS to ${body.mobileNo}...`);
             const smsResult = await sendSMS(body.mobileNo, smsMessage);
