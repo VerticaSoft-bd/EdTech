@@ -7,6 +7,7 @@ export default function BookingsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [bookings, setBookings] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [filterCourse, setFilterCourse] = useState('All');
 
     const fetchBookings = async () => {
         setIsLoading(true);
@@ -43,9 +44,15 @@ export default function BookingsPage() {
         }
     };
 
-    const totalPages = Math.ceil(bookings.length / ITEMS_PER_PAGE);
+    const uniqueCourses = ['All', ...new Set(bookings.map(b => b.courseTitle || 'General Seminar'))];
+
+    const filteredBookings = filterCourse === 'All'
+        ? bookings
+        : bookings.filter(b => (b.courseTitle || 'General Seminar') === filterCourse);
+
+    const totalPages = Math.ceil(filteredBookings.length / ITEMS_PER_PAGE);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentBookings = bookings.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const currentBookings = filteredBookings.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
     const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
@@ -55,9 +62,39 @@ export default function BookingsPage() {
 
     return (
         <div className="space-y-6 pb-8">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-black text-[#1A1D1F]">Demo Class Bookings</h1>
-                <p className="text-sm text-gray-500 font-medium tracking-tight">Manage your live seminar registrations</p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-black text-[#1A1D1F]">Demo Class Bookings</h1>
+                    <p className="text-sm text-gray-500 font-medium tracking-tight">Manage your live seminar registrations</p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    {/* Candidate Count */}
+                    <div className="hidden sm:flex items-center gap-2 bg-[#6C5DD3]/10 px-4 py-2.5 rounded-2xl border border-[#6C5DD3]/20">
+                        <span className="text-[10px] font-black text-[#6C5DD3] uppercase tracking-widest">Candidates</span>
+                        <span className="text-sm font-black text-[#6C5DD3]">{filteredBookings.length}</span>
+                    </div>
+
+                    <div className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-gray-100 shadow-sm transition-all hover:border-gray-200">
+                        <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-[#6C5DD3]"></div>
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Filter by Course</span>
+                        </div>
+                        <div className="h-4 w-[1px] bg-gray-100 mx-1"></div>
+                        <select
+                            value={filterCourse}
+                            onChange={(e) => {
+                                setFilterCourse(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="text-sm font-bold text-[#1A1D1F] bg-transparent border-none focus:ring-0 cursor-pointer min-w-[160px] outline-none"
+                        >
+                            {uniqueCourses.map(course => (
+                                <option key={course} value={course}>{course}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
@@ -129,7 +166,7 @@ export default function BookingsPage() {
                 {totalPages > 1 && (
                     <div className="p-6 border-t border-gray-100 flex items-center justify-between">
                         <p className="text-xs text-gray-500 font-medium">
-                            Showing <span className="text-[#1A1D1F] font-bold">{startIndex + 1}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, bookings.length)}</span> of <span className="text-[#1A1D1F] font-bold">{bookings.length}</span> bookings
+                            Showing <span className="text-[#1A1D1F] font-bold">{startIndex + 1}</span> to <span className="text-[#1A1D1F] font-bold">{Math.min(startIndex + ITEMS_PER_PAGE, filteredBookings.length)}</span> of <span className="text-[#1A1D1F] font-bold">{filteredBookings.length}</span> bookings
                         </p>
 
                         <div className="flex items-center gap-2">
