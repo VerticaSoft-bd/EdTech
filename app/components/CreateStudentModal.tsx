@@ -132,10 +132,13 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Privacy policy check removed as per user request to make it optional
+        /*
         if (!formData.privacyPolicyAccepted) {
             toast.error("You must accept the privacy policy.");
             return;
         }
+        */
 
         setIsLoading(true);
 
@@ -300,18 +303,18 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Father's Name <span className="text-red-500">*</span></label>
-                                    <input type="text" name="fatherName" value={formData.fatherName} onChange={handleChange} required placeholder="Enter father's name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">Father's Name</label>
+                                    <input type="text" name="fatherName" value={formData.fatherName} onChange={handleChange} placeholder="Enter father's name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Mother's Name <span className="text-red-500">*</span></label>
-                                    <input type="text" name="motherName" value={formData.motherName} onChange={handleChange} required placeholder="Enter mother's name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">Mother's Name</label>
+                                    <input type="text" name="motherName" value={formData.motherName} onChange={handleChange} placeholder="Enter mother's name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
 
                                 {/* Status Selectors */}
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-gray-700">Residential Status <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-bold text-gray-700">Residential Status</label>
                                     <div className="flex items-center gap-6">
                                         <label className="flex items-center gap-2 cursor-pointer">
                                             <input type="radio" name="residentialStatus" value="Resident" checked={formData.residentialStatus === 'Resident'} onChange={handleChange} className="w-4 h-4 text-[#6C5DD3] focus:ring-[#6C5DD3] border-gray-300" />
@@ -325,7 +328,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-gray-700">Marital Status <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-bold text-gray-700">Marital Status</label>
                                     <div className="flex items-center gap-6">
                                         <label className="flex items-center gap-2 cursor-pointer">
                                             <input type="radio" name="maritalStatus" value="Single" checked={formData.maritalStatus === 'Single'} onChange={handleChange} className="w-4 h-4 text-[#6C5DD3] focus:ring-[#6C5DD3] border-gray-300" />
@@ -343,7 +346,7 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-sm font-bold text-gray-700">Gender <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-bold text-gray-700">Gender</label>
                                     <div className="flex items-center gap-6">
                                         <label className="flex items-center gap-2 cursor-pointer">
                                             <input type="radio" name="gender" value="Male" checked={formData.gender === 'Male'} onChange={handleChange} className="w-4 h-4 text-[#6C5DD3] focus:ring-[#6C5DD3] border-gray-300" />
@@ -357,27 +360,26 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Date of Birth <span className="text-red-500">*</span></label>
+                                    <label className="text-sm font-bold text-gray-700">Date of Birth</label>
                                     <div className="relative">
                                         <input
                                             type="date"
                                             name="dateOfBirth"
                                             value={formData.dateOfBirth}
                                             onChange={handleChange}
-                                            required
                                             className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">National ID (NID) No. <span className="text-red-500">*</span></label>
-                                    <input type="text" name="nidNo" value={formData.nidNo} onChange={handleChange} required placeholder="Enter NID number" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">National ID (NID) No.</label>
+                                    <input type="text" name="nidNo" value={formData.nidNo} onChange={handleChange} placeholder="Enter NID number" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Education <span className="text-red-500">*</span></label>
-                                    <input type="text" name="education" value={formData.education} onChange={handleChange} required placeholder="e.g. BSc in Computer Science" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">Education</label>
+                                    <input type="text" name="education" value={formData.education} onChange={handleChange} placeholder="e.g. BSc in Computer Science" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
                             </div>
                         </div>
@@ -387,8 +389,8 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                             <h3 className="text-lg font-bold text-[#1A1D1F] mb-4 pb-2 border-b border-gray-100">Contact & Address</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Email Address <span className="text-red-500">*</span></label>
-                                    <input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="student@example.com" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">Email Address</label>
+                                    <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="student@example.com" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
 
                                 <div className="space-y-2">
@@ -397,18 +399,18 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Guardian Mobile No. <span className="text-red-500">*</span></label>
-                                    <input type="tel" name="guardianMobileNo" value={formData.guardianMobileNo} onChange={handleChange} required placeholder="Enter guardian mobile number" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">Guardian Mobile No.</label>
+                                    <input type="tel" name="guardianMobileNo" value={formData.guardianMobileNo} onChange={handleChange} placeholder="Enter guardian mobile number" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-sm font-bold text-gray-700">Present Address <span className="text-red-500">*</span></label>
-                                    <input type="text" name="presentAddress" value={formData.presentAddress} onChange={handleChange} required placeholder="Street address, apartment, suite, etc." className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">Present Address</label>
+                                    <input type="text" name="presentAddress" value={formData.presentAddress} onChange={handleChange} placeholder="Street address, apartment, suite, etc." className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
 
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-sm font-bold text-gray-700">Country <span className="text-red-500">*</span></label>
-                                    <input type="text" name="country" value={formData.country} onChange={handleChange} required placeholder="Country name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">Country</label>
+                                    <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Country name" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                 </div>
                             </div>
                         </div>
@@ -418,8 +420,8 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                             <h3 className="text-lg font-bold text-[#1A1D1F] mb-4 pb-2 border-b border-gray-100">Payment Details</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2 col-span-1 md:col-span-2">
-                                    <label className="text-sm font-bold text-gray-700">Course Fee Deposit <span className="text-red-500">*</span></label>
-                                    <input type="number" name="depositCourseFee" value={formData.depositCourseFee} onChange={handleChange} required placeholder="Enter deposit amount" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
+                                    <label className="text-sm font-bold text-gray-700">Course Fee Deposit</label>
+                                    <input type="number" name="depositCourseFee" value={formData.depositCourseFee} onChange={handleChange} placeholder="Enter deposit amount" className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F]" />
                                     
                                     {/* Coupon Code Field */}
                                     <div className="mt-4">
@@ -445,13 +447,12 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                     </div>
 
                                     <div className="mt-4">
-                                        <label className="text-sm font-bold text-gray-700">Payment Type / Method <span className="text-red-500">*</span></label>
+                                        <label className="text-sm font-bold text-gray-700">Payment Type / Method</label>
                                         <div className="relative mt-1">
                                             <select
                                                 name="paymentMethod"
                                                 value={formData.paymentMethod}
                                                 onChange={handleChange}
-                                                required
                                                 className="w-full px-4 py-3 bg-[#F4F4F4] rounded-[16px] border border-transparent focus:outline-none focus:ring-2 focus:ring-[#6C5DD3] transition-all text-[#1A1D1F] appearance-none"
                                             >
                                                 <option value="Cash">Cash</option>
@@ -512,7 +513,6 @@ export default function CreateStudentModal({ isOpen, onClose, onSuccess }: Creat
                                         name="privacyPolicyAccepted"
                                         checked={formData.privacyPolicyAccepted}
                                         onChange={handleChange}
-                                        required
                                         className="peer w-5 h-5 appearance-none rounded border-2 border-gray-300 checked:bg-[#6C5DD3] checked:border-[#6C5DD3] transition-all cursor-pointer"
                                     />
                                     <svg className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">

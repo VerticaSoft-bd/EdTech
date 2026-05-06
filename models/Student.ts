@@ -37,38 +37,38 @@ const StudentSchema: Schema<IStudent> = new mongoose.Schema(
     {
         courseName: { type: String, required: true },
         fullName: { type: String, required: true },
-        fatherName: { type: String, required: true },
-        motherName: { type: String, required: true },
+        fatherName: { type: String, required: false },
+        motherName: { type: String, required: false },
         residentialStatus: {
             type: String,
             enum: ['Resident', 'Non-Resident'],
-            required: true
+            required: false
         },
         maritalStatus: {
             type: String,
             enum: ['Single', 'Married', 'Others'],
-            required: true
+            required: false
         },
         gender: {
             type: String,
             enum: ['Male', 'Female'],
-            required: true
+            required: false
         },
-        dateOfBirth: { type: String, required: true },
-        presentAddress: { type: String, required: true },
+        dateOfBirth: { type: String, required: false },
+        presentAddress: { type: String, required: false },
         totalCourseFee: { type: Number, required: true },
         paidAmount: { type: Number, required: true },
         dueAmount: { type: Number, required: true },
-        country: { type: String, required: true },
-        email: { type: String, required: true },
-        nidNo: { type: String, required: true },
-        education: { type: String, required: true },
+        country: { type: String, required: false },
+        email: { type: String, required: false },
+        nidNo: { type: String, required: false },
+        education: { type: String, required: false },
         mobileNo: { type: String, required: true },
-        guardianMobileNo: { type: String, required: true },
+        guardianMobileNo: { type: String, required: false },
         avatar: { type: String },
         appliedCoupon: { type: String },
         discountAmount: { type: Number, default: 0 },
-        privacyPolicyAccepted: { type: Boolean, required: true, default: false },
+        privacyPolicyAccepted: { type: Boolean, required: false, default: false },
         progress: { type: Number, default: 0 },
         totalClasses: { type: Number, default: 0 },
         attendedClasses: { type: Number, default: 0 },

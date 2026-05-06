@@ -14,17 +14,10 @@ export async function POST(request: Request) {
         const body = await request.json();
 
         // Ensure critical fields exist
-        if (!body.fullName || !body.email || !body.mobileNo || !body.courseName) {
+        // Ensure critical fields exist
+        if (!body.fullName || !body.mobileNo || !body.courseName) {
             return NextResponse.json(
-                { success: false, message: 'Please provide required fields: Full Name, Email, Mobile No, and Course Name' },
-                { status: 400 }
-            );
-        }
-
-        // Must accept privacy policy
-        if (!body.privacyPolicyAccepted) {
-            return NextResponse.json(
-                { success: false, message: 'You must accept the privacy policy' },
+                { success: false, message: 'Please provide required fields: Full Name, Mobile No, and Course Name' },
                 { status: 400 }
             );
         }
@@ -36,7 +29,14 @@ export async function POST(request: Request) {
         const courseMode = courseData?.courseMode || 'Online';
 
         // Check if student is already enrolled in this specific course
-        const existingEnrollment = await Student.findOne({ email: body.email, courseName: body.courseName });
+        // Check if student is already enrolled in this specific course
+        let existingEnrollment = null;
+        if (body.email) {
+            existingEnrollment = await Student.findOne({ email: body.email, courseName: body.courseName });
+        } else {
+            existingEnrollment = await Student.findOne({ mobileNo: body.mobileNo, courseName: body.courseName });
+        }
+
         if (existingEnrollment) {
             return NextResponse.json(
                 { success: false, message: 'Student is already enrolled in this course' },
@@ -85,13 +85,19 @@ export async function POST(request: Request) {
 
         // --- SMART ONBOARDING LOGIC ---
         // 1. Create or Find User account
-        let user = await User.findOne({ email: body.email });
+        let user = null;
+        if (body.email) {
+            user = await User.findOne({ email: body.email });
+        } else {
+            user = await User.findOne({ mobileNo: body.mobileNo });
+        }
+        
         const isNewUser = !user;
 
         if (!user) {
             user = await User.create({
                 name: body.fullName,
-                email: body.email,
+                email: body.email || undefined,
                 password: crypto.randomBytes(16).toString('hex'), // Random temp password
                 role: 'student',
                 mobileNo: body.mobileNo,

@@ -42,8 +42,9 @@ const UserSchema: Schema<IUser> = new Schema({
     },
     email: {
         type: String,
-        required: [true, 'Please provide an email address'],
+        required: false,
         unique: true,
+        sparse: true,
         lowercase: true,
         trim: true,
         match: [
